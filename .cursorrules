@@ -1,0 +1,26 @@
+# Cursor AI Rules for newAI (Enterprise Management System)
+
+You are working on a modern enterprise management system built with:
+- Vue 3.5 (<script setup lang="ts"> mandatory) + TypeScript 5.6
+- Vite 6 + Element Plus 2.13 + Tailwind CSS 4 + Pinia 3 + GSAP 3.15
+- RuoYi architecture backend (proxied via /dev-api)
+
+## Critical Engineering Constraints (Must Follow)
+1. **Never Call Request Directly**: Never import axios or `@/utils/request` in views or components. All API calls MUST be encapsulated in `src/api/` with types in `src/types/api/`.
+2. **Zero Color Literals**: Never write `#fff`, `#409eff`, `rgb()`, etc. in styles. You MUST use design tokens `var(--app-*)` or `var(--el-*)`.
+3. **Component Size & Splitting**:
+   - Single component file MUST NOT exceed 150 lines.
+   - Dialogs, drawers, and heavy forms MUST be split into child components under `components/`.
+4. **Strict TypeScript**: No `any`. Provide full request/response/form interfaces.
+5. **Reusable Asset Priority**: Before creating UI/utils, check and reuse:
+   - Global components: `<Pagination />`, `<RightToolbar />`, `<DictTag />`, `<FileUpload />`, `<ImageUpload />`, `<ImagePreview />`, `<Editor />`, `<svg-icon />`.
+   - Common utilities: `useDict`, `parseTime`, `handleTree`, `addDateRange`, `download`, `resetForm`.
+   - Detailed docs: `docs/ai/ASSET_DICTIONARY.md` and `docs/ai/PAGE_GENERATION_PROTOCOL.md`.
+6. **Page Skeleton**: Root element must be `<div class="app-container">`.
+7. **Production Cleanliness**: No `console.log` (only `console.warn`/`console.error` if needed).
+
+## Page Generation Protocol
+When generating a new module, ALWAYS create the 3-piece bundle:
+1. DTO Types: `src/types/api/[module]/[resource].ts`
+2. API Layer: `src/api/[module]/[resource].ts`
+3. View & Subcomponents: `src/views/[module]/[resource]/index.vue` and `components/[resource]-dialog.vue`

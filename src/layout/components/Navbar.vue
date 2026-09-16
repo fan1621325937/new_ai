@@ -8,6 +8,7 @@ import SizeSelect from '@/components/SizeSelect/index.vue'
 import useAppStore from '@/store/modules/app'
 import useSettingsStore from '@/store/modules/settings'
 import useUserStore from '@/store/modules/user'
+import PlatformMenu from './PlatformMenu/index.vue'
 import Logo from './Sidebar/Logo.vue'
 import TopBar from './TopBar/index.vue'
 import TopNav from './TopNav/index.vue'
@@ -118,6 +119,10 @@ async function toggleTheme(event?: MouseEvent): Promise<void> {
 
         <el-tooltip content="布局大小" effect="dark" placement="bottom">
           <SizeSelect id="size-select" class="right-menu-item hover-effect" />
+        </el-tooltip>
+
+        <el-tooltip content="平台系统切换" effect="dark" placement="bottom">
+          <PlatformMenu class="right-menu-item hover-effect" />
         </el-tooltip>
       </template>
 

@@ -7,12 +7,14 @@
 
 写任何页面/组件/函数之前，按顺序确认已有资产，**禁止重复造轮子**：
 
-1. `src/components/README.md` → 是否已有同类组件（全局组件无需 import）
-2. `src/utils/README.md` → 是否已有现成工具函数
-3. `src/api/` → 是否已有该模块的接口封装
-4. `src/types/api/` → 是否已有对应类型
-5. `docs/styles/STYLES.md` → 视觉/令牌规范
-6. 判定标准：同一逻辑出现 **≥3 处** 才抽公共能力；只服务单页的细节留在页面内
+1. **AI 核心资产速查**：`docs/ai/ASSET_DICTIONARY.md`（高密度全局组件、工具、令牌、请求规范字典）
+2. **页面生成标准协议**：`docs/ai/PAGE_GENERATION_PROTOCOL.md`（三件套模式与拆分标准）
+3. `src/components/README.md` → 是否已有同类组件（全局组件无需 import）
+4. `src/utils/README.md` → 是否已有现成工具函数
+5. `src/api/` → 是否已有该模块的接口封装
+6. `src/types/api/` → 是否已有对应类型
+7. `docs/styles/STYLES.md` → 视觉/令牌规范
+8. 判定标准：同一逻辑出现 **≥3 处** 才抽公共能力；只服务单页的细节留在页面内
 
 ## 1. 项目概览
 
@@ -33,6 +35,7 @@
 | R7 | 页面根元素 | 必须是 `<div class="app-container">` |
 | R8 | 组件全局注册 | 只改 `src/components/index.ts`，不要在 `main.ts` 或组件内散着注册 |
 | R9 | 改规范要同步文档 | 组件/接口/工具/样式/门禁变更 → 同步 `docs/` 与对应 `README.md` |
+| R10 | 组件单文件 ≤ 150 行 | 超过 150 行必须拆分子组件（弹窗、表单、详情拆入 `components/`） |
 
 ## 3. 页面生成准则（摘要）
 
@@ -88,6 +91,8 @@ npm run build:prod     # 生产构建
 | 文档 | 内容 |
 |---|---|
 | `docs/README.md` | 文档总导航与同步规则 |
+| `docs/ai/ASSET_DICTIONARY.md` | AI 核心资产速查字典（全局组件、工具、令牌） |
+| `docs/ai/PAGE_GENERATION_PROTOCOL.md` | AI 页面三件套生成协议与拆分范式 |
 | `docs/guides/PAGE_GENERATION.md` | 页面生成准则（完整版） |
 | `docs/guides/WORKFLOW.md` | 开发流程、提交门禁、CI |
 | `docs/styles/STYLES.md` | 样式/令牌/Tailwind 规范 |

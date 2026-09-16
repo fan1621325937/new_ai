@@ -6,6 +6,8 @@
 
 | 我要做的事 | 看这份 |
 |---|---|
+| AI 生成/编写页面必读 | [ai/PAGE_GENERATION_PROTOCOL.md](./ai/PAGE_GENERATION_PROTOCOL.md) |
+| AI 查项目组件/工具/令牌 | [ai/ASSET_DICTIONARY.md](./ai/ASSET_DICTIONARY.md) |
 | 写一个新页面（列表/表单/详情） | [guides/PAGE_GENERATION.md](./guides/PAGE_GENERATION.md) |
 | 不知道有哪些组件可用 | [components/COMPONENTS.md](./components/COMPONENTS.md)、`src/components/README.md` |
 | 不知道有哪些工具函数可用 | [utils/UTILS.md](./utils/UTILS.md)、`src/utils/README.md` |

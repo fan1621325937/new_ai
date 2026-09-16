@@ -1,8 +1,10 @@
+import type { PlatformRouterGroup } from '@/types/api/platform'
 import { getRouters } from '@/api/menu'
 import ParentView from '@/components/ParentView/index.vue'
 import InnerLink from '@/layout/components/InnerLink/index.vue'
 import Layout from '@/layout/index.vue'
 import auth from '@/plugins/auth'
+
 import router, { constantRoutes, dynamicRoutes } from '@/router'
 
 // 匹配views里面所有的.vue文件
@@ -17,6 +19,7 @@ const usePermissionStore = defineStore(
       defaultRoutes: [] as any[],
       topbarRouters: [] as any[],
       sidebarRouters: [] as any[],
+      platformRouters: [] as PlatformRouterGroup[],
     }),
     actions: {
       setRoutes(routes: any[]) {
@@ -32,18 +35,36 @@ const usePermissionStore = defineStore(
       setSidebarRouters(routes: any[]) {
         this.sidebarRouters = routes
       },
+      setPlatformRouters(routers: PlatformRouterGroup[]) {
+        this.platformRouters = routers
+      },
       generateRoutes(roles?: any[]): Promise<any[]> {
         return new Promise((resolve) => {
           // 向后端请求路由数据
           getRouters().then((res) => {
-            const sdata = JSON.parse(JSON.stringify(res.data))
-            const rdata = JSON.parse(JSON.stringify(res.data))
-            const defaultData = JSON.parse(JSON.stringify(res.data))
+            // 判断是否为融合多平台格式（routerVos1 为当前系统菜单，routerVos0 为子系统网格列表）
+            const hasMultiPlatform = Array.isArray(res.routerVos1) && Array.isArray(res.routerVos0)
+            const menuDataSource = hasMultiPlatform ? res.routerVos1! : (res.data || [])
+
+            if (hasMultiPlatform && res.routerVos0) {
+              this.setPlatformRouters(res.routerVos0)
+            }
+
+            const sdata = JSON.parse(JSON.stringify(menuDataSource))
+            const rdata = JSON.parse(JSON.stringify(menuDataSource))
+            const defaultData = JSON.parse(JSON.stringify(menuDataSource))
             const sidebarRoutes = filterAsyncRouter(sdata)
             const rewriteRoutes = filterAsyncRouter(rdata, false, true)
             const defaultRoutes = filterAsyncRouter(defaultData)
             const asyncRoutes = filterDynamicRoutes(dynamicRoutes)
-            asyncRoutes.forEach((route) => { router.addRoute(route) })
+
+            asyncRoutes.forEach((route) => {
+              router.addRoute(route)
+            })
+            rewriteRoutes.forEach((route) => {
+              router.addRoute(route)
+            })
+
             this.setRoutes(rewriteRoutes)
             this.setSidebarRouters(constantRoutes.concat(sidebarRoutes))
             this.setDefaultRoutes(sidebarRoutes)

@@ -1,0 +1,36 @@
+---
+description: Rules for generating and editing Vue views and components in the enterprise management system
+globs: src/views/**/*.vue, src/components/**/*.vue, src/api/**/*.ts, src/types/api/**/*.ts
+---
+
+# Vue 3 Enterprise Engineering Rules
+
+## 1. Asset Reuse (Non-negotiable)
+- Use `<pagination />` for table pagination (`total > 0`, `v-model:page`, `v-model:limit`, `@pagination="getList"`).
+- Use `<right-toolbar />` for table actions and column toggles (`v-model:showSearch`, `@query-table="getList"`).
+- Use `<dict-tag />` for dictionary status display (`:options="dict"`, `:value="scope.row.status"`).
+- Use `useDict` from `@/utils/dict` to fetch dictionaries.
+- Use `parseTime` from `@/utils/ruoyi` for timestamp formatting.
+- See full dictionary: `docs/ai/ASSET_DICTIONARY.md`.
+
+## 2. Component Splitting & Structure
+- Single `.vue` file limit: **≤ 150 lines**.
+- Split dialogs/drawers into `components/[resource]-dialog.vue`.
+- Root element MUST be `<div class="app-container">`.
+- Use `<script setup lang="ts">`.
+- Always define route/component name using `defineOptions({ name: 'ModuleName' })`.
+
+## 3. Styling & Tokens
+- NO color literals like `#ffffff` or `rgba()`.
+- Use Tailwind 4 utility classes with CSS variables:
+  - Background: `bg-[var(--app-bg-page)]`, `bg-[var(--app-bg-plain)]`, `bg-[var(--app-bg-subtle)]`
+  - Text: `text-[var(--app-text)]`, `text-[var(--app-text-secondary)]`, `text-[var(--app-accent)]`
+  - Border: `border-[var(--app-border)]`
+  - Radius: `rounded-[var(--app-radius-sm)]`, `rounded-[var(--app-radius-md)]`
+
+## 4. API & Types
+- Do NOT import `request` or `axios` in components.
+- Import API functions from `@/api/...`.
+- Define TypeScript interfaces in `src/types/api/...`.
+- Always handle 4 states: Loading (`v-loading`), Empty, Error, Success.
+- Add permissions to buttons with `v-hasPermi="['module:resource:action']"`.
