@@ -81,7 +81,43 @@ chore(tooling): 升级 ESLint 配置
 引入新依赖前评估：体积、维护活跃度、License、依赖树、兼容性、安全性、是否有替代、手写成本。
 锁定版本引入（不用 `^` 随意放开），并在此文档记录用途。
 
-## 六、相关文档
+## 六、依赖版本一致性（重要，踩过坑）
+
+**Vue 全家桶必须保持同一版本**：`vue`、`@vue/shared`、`@vue/runtime-core`、`@vue/runtime-dom`、`@vue/reactivity`。
+
+### 为什么
+
+工程里的开发依赖（`unplugin-vue-setup-extend-plus` → `@vue/compiler-sfc`、`vue-tsc` → `@vue/language-core`）
+会按 `^3.x` 拉取**最新的 `@vue/*`**。若 `vue` 被固定成较旧版本（如 3.5.26）而它们拉到 3.5.42，
+npm 会在 `@vue/reactivity/node_modules/@vue/shared` 等位置生成**嵌套副本**，导致：
+
+- Vite 预打包时把同一份 shared 当成 3 个不同模块 → 生成循环依赖 + esbuild 懒初始化（`__esm` 包装）
+- 运行时报 `Uncaught TypeError: isFunction2 is not a function`（chunk 顶层调用 `defineComponent` 时符号尚未初始化）
+- 应用无法挂载 → 页面永远停在 index.html 的"正在加载系统资源"
+
+### 怎么排查
+
+```bash
+npm ls @vue/shared          # 出现多个版本 / 大量 deduped 之外的嵌套即为异常
+Get-ChildItem node_modules/@vue -Recurse -Directory -Filter shared
+```
+
+检查预打包产物中 `@vue/shared` 的实例数（正常应为 1）：
+
+```bash
+Select-String -Path node_modules/.vite/deps/*.js -Pattern 'node_modules/@vue/shared/dist'
+```
+
+### 怎么修
+
+```bash
+npm install vue@<与 @vue/shared 相同的版本> --save-exact
+npx vite optimize            # 重建预打包（或删除 node_modules/.vite 后重启 dev）
+```
+
+升级 `vue` 时务必同步确认 `npm ls @vue/shared` 只剩一个版本。
+
+## 七、相关文档
 
 - 页面生成准则：`docs/guides/PAGE_GENERATION.md`
 - 样式规范：`docs/styles/STYLES.md`
