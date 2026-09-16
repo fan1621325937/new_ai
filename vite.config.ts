@@ -26,6 +26,12 @@ export default defineConfig(({ mode, command }) => {
       // https://cn.vitejs.dev/config/#resolve-extensions
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
     },
+    optimizeDeps: {
+      // @element-plus/icons-vue 预打包后会直接引用 Vue 内部 chunk 的符号，
+      // 且不会触发 vue 运行时的懒初始化，导致启动即报 "isFunction is not a function"。
+      // 排除后它按源码加载，经过 vue 入口完成初始化（详见 docs/guides/WORKFLOW.md）
+      exclude: ['@element-plus/icons-vue'],
+    },
     // 打包配置
     build: {
       // https://vite.dev/config/build-options.html

@@ -117,6 +117,31 @@ npx vite optimize            # 重建预打包（或删除 node_modules/.vite �
 
 升级 `vue` 时务必同步确认 `npm ls @vue/shared` 只剩一个版本。
 
+### 附：dev 模式预打包的 init 顺序问题（`isFunction is not a function`）
+
+即使 `@vue/*` 已去重，仍可能出现：
+
+```
+Uncaught TypeError: isFunction is not a function
+    at defineComponent (chunk-xxx.js:3703:10)
+    at chunk-yyy.js:9:17
+```
+
+原因：Vite 预打包（esbuild）把 Vue 内部模块（shared / reactivity / runtime-core / runtime-dom）包成
+`__esm` **懒初始化**，只有 `vue/dist/vue.runtime.esm-bundler.js` 这一条入口会触发初始化；
+而 `@element-plus/icons-vue` 这类包在**模块顶层**就调用 `defineComponent`，如果它先被求值就会拿到未初始化的符号。
+
+- 症状：页面卡在 index.html 的"正在加载系统资源"，应用从未挂载
+- 已在 `vite.config.ts` 用 `optimizeDeps.exclude: ['@element-plus/icons-vue']` 规避（让它走源码、经 vue 入口初始化）
+- 排查手法：把 `node_modules/.vite/deps` 下的入口逐个单独 import（新进程），看哪个报错；
+  同时检查该 chunk 是否 `引用了 init_*`：
+
+  ```bash
+  Select-String -Path node_modules/.vite/deps/*.js -Pattern 'init_runtime_core_esm_bundler'
+  ```
+
+- 新依赖若出现同名报错，优先尝试把它加入 `optimizeDeps.exclude`，再重启 dev（并清 `node_modules/.vite`）
+
 ## 七、相关文档
 
 - 页面生成准则：`docs/guides/PAGE_GENERATION.md`
