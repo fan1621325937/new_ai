@@ -39,9 +39,6 @@
             <el-dropdown-item command="setLayout" v-if="settingsStore.showSettings">
                 <span>布局设置</span>
             </el-dropdown-item>
-            <el-dropdown-item command="lockScreen">
-                <span>锁定屏幕</span>
-            </el-dropdown-item>
             <el-dropdown-item divided command="logout">
               <span>退出登录</span>
             </el-dropdown-item>
@@ -64,14 +61,10 @@ import SizeSelect from '@/components/SizeSelect/index.vue'
 import HeaderSearch from '@/components/HeaderSearch/index.vue'
 import useAppStore from '@/store/modules/app'
 import useUserStore from '@/store/modules/user'
-import useLockStore from '@/store/modules/lock'
 import useSettingsStore from '@/store/modules/settings'
 
-const route = useRoute()
-const router = useRouter()
 const appStore = useAppStore()
 const userStore = useUserStore()
-const lockStore = useLockStore()
 const settingsStore = useSettingsStore()
 
 function toggleSideBar(): void {
@@ -82,9 +75,6 @@ function handleCommand(command: string): void {
   switch (command) {
     case "setLayout":
       setLayout()
-      break
-    case "lockScreen":
-      lockScreen()
       break
     case "logout":
       logout()
@@ -109,12 +99,6 @@ function logout(): void {
 const emits = defineEmits(['setLayout'])
 function setLayout(): void {
   emits('setLayout')
-}
-
-function lockScreen() {
-  const currentPath = route.fullPath
-  lockStore.lockScreen(currentPath)
-  router.push('/lock')
 }
 
 async function toggleTheme(event?: MouseEvent): Promise<void> {
@@ -201,13 +185,34 @@ async function toggleTheme(event?: MouseEvent): Promise<void> {
     left: 50px;
   }
 
+  /* 顶部菜单容器：横向超出时显示滚动条 */
   .topbar-container {
     flex: 1;
     min-width: 0;
     display: flex;
     align-items: center;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     margin-left: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(144, 147, 153, 0.4) transparent;
+
+    &::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(144, 147, 153, 0.4);
+      border-radius: 2px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: rgba(144, 147, 153, 0.6);
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
   }
 
   .right-menu {

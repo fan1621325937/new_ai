@@ -5,30 +5,14 @@
     @select="handleSelect"
     :ellipsis="false"
   >
-    <template v-for="(item, index) in topMenus">
-      <el-menu-item :style="{'--theme': theme}" :index="item.path" :key="index" v-if="index < visibleNumber">
+    <template v-for="(item, index) in topMenus" :key="index">
+      <el-menu-item :style="{'--theme': theme}" :index="item.path">
         <svg-icon
         v-if="item.meta && item.meta.icon && item.meta.icon !== '#'"
         :icon-class="item.meta.icon"/>
         {{ item.meta.title }}
       </el-menu-item>
     </template>
-
-    <!-- 顶部菜单超出数量折叠 -->
-    <el-sub-menu :style="{'--theme': theme}" index="more" v-if="topMenus.length > visibleNumber">
-      <template #title>更多菜单</template>
-      <template v-for="(item, index) in topMenus">
-        <el-menu-item
-          :index="item.path"
-          :key="index"
-          v-if="index >= visibleNumber">
-        <svg-icon
-          v-if="item.meta && item.meta.icon && item.meta.icon !== '#'"
-          :icon-class="item.meta.icon"/>
-        {{ item.meta.title }}
-        </el-menu-item>
-      </template>
-    </el-sub-menu>
   </el-menu>
 </template>
 
@@ -39,8 +23,6 @@ import useAppStore from '@/store/modules/app'
 import useSettingsStore from '@/store/modules/settings'
 import usePermissionStore from '@/store/modules/permission'
 
-// 顶部栏初始数
-const visibleNumber = ref<number | null>(null)
 // 当前激活菜单的 index
 const currentIndex = ref<string | null>(null)
 // 隐藏侧边栏路由
@@ -112,11 +94,6 @@ const activeMenu = computed(() => {
   return activePath
 })
 
-function setVisibleNumber(): void {
-  const width = document.body.getBoundingClientRect().width / 3
-  visibleNumber.value = Math.max(1, parseInt(String(width / 85)))
-}
-
 function handleSelect(key: string, keyPath: string[]): void {
   currentIndex.value = key
   const route = routers.value.find((item: any) => item.path === key)
@@ -157,17 +134,6 @@ function activeRoutes(key: string){
   return routes
 }
 
-onMounted(() => {
-  window.addEventListener('resize', setVisibleNumber)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', setVisibleNumber)
-})
-
-onMounted(() => {
-  setVisibleNumber()
-})
 </script>
 
 <style lang="scss">
@@ -208,13 +174,5 @@ onMounted(() => {
 /* 图标右间距 */
 .topmenu-container .svg-icon {
   margin-right: 4px;
-}
-
-/* topmenu more arrow */
-.topmenu-container .el-sub-menu .el-sub-menu__icon-arrow {
-  position: static;
-  vertical-align: middle;
-  margin-left: 8px;
-  margin-top: 0px;
 }
 </style>
