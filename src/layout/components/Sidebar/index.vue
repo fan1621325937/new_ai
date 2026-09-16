@@ -83,7 +83,7 @@ const activeMenu = computed(() => {
 
     .el-menu-item, .el-sub-menu__title {
       &:hover {
-        background-color: var(--menu-hover, rgb(0, 0, 0, 0.06)) !important;
+        background-color: var(--menu-hover, var(--app-overlay-black-06)) !important;
       }
     }
 
@@ -91,8 +91,8 @@ const activeMenu = computed(() => {
       color: v-bind(getMenuTextColor);
 
       &.is-active {
-        color: var(--menu-active-text, #409eff);
-        background-color: var(--menu-hover, rgb(0, 0, 0, 0.06)) !important;
+        color: var(--menu-active-text, var(--el-color-primary));
+        background-color: var(--menu-hover, var(--app-overlay-black-06)) !important;
       }
     }
 

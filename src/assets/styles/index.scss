@@ -1,3 +1,4 @@
+@use './design-tokens';
 @use './mixin';
 @use './transition';
 @use './element-ui';
@@ -98,7 +99,7 @@ div:focus {
 }
 
 aside {
-  background: #eef1f6;
+  background: var(--el-fill-color);
   padding: 8px 24px;
   margin-bottom: 20px;
   border-radius: 2px;
@@ -106,16 +107,16 @@ aside {
   line-height: 32px;
   font-size: 16px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-  color: #2c3e50;
+  color: var(--app-sidebar-bg-deep);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
   a {
-    color: #337ab7;
+    color: var(--el-color-primary);
     cursor: pointer;
 
     &:hover {
-      color: rgb(32, 160, 255);
+      color: var(--app-brand-cyan);
     }
   }
 }
@@ -142,29 +143,29 @@ aside {
   text-align: right;
   padding-right: 20px;
   transition: 600ms ease position;
-  background: linear-gradient(90deg, rgb(32, 182, 249, 1) 0%, rgb(32, 182, 249, 1) 0%, rgb(33, 120, 241, 1) 100%, rgb(33, 120, 241, 1) 100%);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--app-brand-cyan) 100%, transparent) 0%, color-mix(in srgb, var(--app-brand-cyan) 100%, transparent) 0%, color-mix(in srgb, var(--app-brand-blue) 100%, transparent) 100%, color-mix(in srgb, var(--app-brand-blue) 100%, transparent) 100%);
 
   .subtitle {
     font-size: 20px;
-    color: #fff;
+    color: var(--el-color-white);
   }
 
   &.draft {
-    background: #d0d0d0;
+    background: var(--el-border-color-darker);
   }
 
   &.deleted {
-    background: #d0d0d0;
+    background: var(--el-border-color-darker);
   }
 }
 
 .link-type,
 .link-type:focus {
-  color: #337ab7;
+  color: var(--el-color-primary);
   cursor: pointer;
 
   &:hover {
-    color: rgb(32, 160, 255);
+    color: var(--app-brand-cyan);
   }
 }
 

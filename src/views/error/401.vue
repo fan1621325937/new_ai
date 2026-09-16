@@ -47,8 +47,8 @@ function back(): void {
   max-width: 100%;
   margin: 100px auto;
   .pan-back-btn {
-    background: #008489;
-    color: #fff;
+    background: var(--app-brand-teal);
+    color: var(--el-color-white);
     border: none !important;
   }
   .pan-gif {
@@ -63,7 +63,7 @@ function back(): void {
   .text-jumbo {
     font-size: 60px;
     font-weight: 700;
-    color: #484848;
+    color: var(--el-text-color-primary);
   }
   .list-unstyled {
     font-size: 14px;
@@ -71,7 +71,7 @@ function back(): void {
       padding-bottom: 5px;
     }
     a {
-      color: #008489;
+      color: var(--app-brand-teal);
       text-decoration: none;
       &:hover {
         text-decoration: underline;

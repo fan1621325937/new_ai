@@ -124,8 +124,8 @@ function markAllRead(): void {
     position: absolute;
     top: 7px;
     right: -3px;
-    background: #f56c6c;
-    color: #fff;
+    background: var(--el-color-danger);
+    color: var(--el-color-white);
     border-radius: 10px;
     font-size: 10px;
     height: 16px;
@@ -143,11 +143,11 @@ function markAllRead(): void {
   align-items: center;
   justify-content: space-between;
   padding: 10px 14px;
-  background: #f7f9fb;
-  border-bottom: 1px solid #eee;
+  background: var(--el-fill-color-light);
+  border-bottom: 1px solid var(--el-fill-color-light);
   font-size: 13px;
   font-weight: 600;
-  color: #333;
+  color: var(--el-text-color-primary);
 }
 .notice-popover .notice-mark-all {
   font-size: 12px;
@@ -155,12 +155,12 @@ function markAllRead(): void {
   font-weight: normal;
   cursor: pointer;
 }
-.notice-popover .notice-mark-all:hover { color: #2b7cc1; }
+.notice-popover .notice-mark-all:hover { color: var(--el-color-primary); }
 .notice-popover .notice-loading,
 .notice-popover .notice-empty {
   padding: 24px;
   text-align: center;
-  color: #bbb;
+  color: var(--el-text-color-disabled);
   font-size: 12px;
   line-height: 1.8;
 }
@@ -169,20 +169,20 @@ function markAllRead(): void {
   align-items: center;
   gap: 8px;
   padding: 10px 14px;
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 1px solid var(--el-fill-color);
   cursor: pointer;
   transition: background 0.15s;
 }
 .notice-popover .notice-item:last-child { border-bottom: none; }
-.notice-popover .notice-item:hover { background: #f7f9fb; }
+.notice-popover .notice-item:hover { background: var(--el-fill-color-light); }
 .notice-popover .notice-item.is-read .notice-tag,
 .notice-popover .notice-item.is-read .notice-item-title,
-.notice-popover .notice-item.is-read .notice-item-date { opacity: 0.45; filter: grayscale(1); color: #999; }
+.notice-popover .notice-item.is-read .notice-item-date { opacity: 0.45; filter: grayscale(1); color: var(--el-text-color-secondary); }
 .notice-popover .notice-tag { flex-shrink: 0; }
 .notice-popover .notice-item-title {
   flex: 1;
   font-size: 12px;
-  color: #333;
+  color: var(--el-text-color-primary);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -190,6 +190,6 @@ function markAllRead(): void {
 .notice-popover .notice-item-date {
   flex-shrink: 0;
   font-size: 11px;
-  color: #bbb;
+  color: var(--el-text-color-disabled);
 }
 </style>

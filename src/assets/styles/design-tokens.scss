@@ -1,0 +1,115 @@
+/**
+ * 设计令牌（语义层）
+ *
+ * 规范：
+ * 1. 业务代码一律使用本文件的 --app-* 令牌或 Element Plus 的 --el-* 变量，禁止颜色字面量
+ * 2. 令牌分三层：基础令牌（--el-*，随主题色/暗色自动变化）→ 语义令牌（--app-*，本文件）→ 组件令牌
+ * 3. 90/10 原则：中性色承担约 90% 的结构（表面/边框/文字），主题色只承担约 10% 的强调
+ * 4. 只有本文件（与 variables.module.scss）允许出现颜色字面量，stylelint 已做豁免
+ *
+ * 详见 docs/styles/STYLES.md
+ */
+
+:root {
+  /* ==================== 表面 ==================== */
+  --app-bg-page: var(--el-bg-color-page); // 页面底色
+  --app-bg-plain: var(--el-bg-color); // 页面内分区/卡片底
+  --app-bg-card: var(--el-bg-color-overlay); // 浮层：弹窗/抽屉/下拉
+  --app-bg-subtle: var(--el-fill-color-light); // 次级表面：搜索区/表头/页脚
+  --app-bg-hover: var(--el-fill-color); // 中性 hover 底
+  --app-bg-active: var(--el-fill-color-dark); // 中性选中底
+
+  /* ==================== 边框 ==================== */
+  --app-border: var(--el-border-color-lighter); // 常规分隔线
+  --app-border-strong: var(--el-border-color); // 输入框/分组框
+  --app-border-dark: var(--el-border-color-dark); // 加重边框
+
+  /* ==================== 文字 ==================== */
+  --app-text: var(--el-text-color-primary);
+  --app-text-secondary: var(--el-text-color-regular);
+  --app-text-muted: var(--el-text-color-secondary);
+  --app-text-disabled: var(--el-text-color-disabled);
+
+  /* ==================== 强调（仅此四项使用主题色） ==================== */
+  --app-accent: var(--el-color-primary);
+  --app-accent-soft: var(--el-color-primary-light-9); // 极淡底：当前行/选中
+  --app-accent-line: var(--el-color-primary-light-7); // 淡边框
+  --app-accent-text: var(--el-color-primary-light-5); // 淡文字
+
+  /* ==================== 状态色 ==================== */
+  --app-success: var(--el-color-success);
+  --app-success-soft: var(--el-color-success-light-9);
+  --app-warning: var(--el-color-warning);
+  --app-warning-soft: var(--el-color-warning-light-9);
+  --app-danger: var(--el-color-danger);
+  --app-danger-strong: #c0392b; // 历史深红（报警类强调）
+  --app-danger-soft: var(--el-color-danger-light-9);
+  --app-info: var(--el-color-info);
+
+  /* ==================== 品牌扩展色（历史遗留强调色，集中管理便于后续收敛） ==================== */
+  --app-brand-teal: #20b2aa;
+  --app-brand-cyan: #20b6f9;
+  --app-brand-blue: #2178f1;
+  --app-brand-violet: #787be8;
+
+  /* ==================== 导航侧栏（深色，不随主题色变化） ==================== */
+  --app-sidebar-bg: #1b2a47;
+  --app-sidebar-bg-deep: #2c3e50;
+
+  /* ==================== 基色 ==================== */
+  --app-white: var(--el-color-white);
+  --app-black: var(--el-color-black);
+
+  /* ==================== 遮罩与半透明层 ==================== */
+  --app-mask: rgb(0 0 0 / 0.5); // 弹窗遮罩
+  --app-overlay-black-02: rgb(0 0 0 / 0.025);
+  --app-overlay-black-04: rgb(0 0 0 / 0.04);
+  --app-overlay-black-06: rgb(0 0 0 / 0.06);
+  --app-overlay-black-08: rgb(0 0 0 / 0.08);
+  --app-overlay-black-10: rgb(0 0 0 / 0.1);
+  --app-overlay-black-20: rgb(0 0 0 / 0.2);
+  --app-overlay-black-30: rgb(0 0 0 / 0.3);
+  --app-overlay-black-40: rgb(0 0 0 / 0.4);
+  --app-overlay-black-55: rgb(0 0 0 / 0.55);
+  --app-overlay-black-65: rgb(0 0 0 / 0.65);
+  --app-overlay-black-85: rgb(0 0 0 / 0.85);
+  --app-overlay-white-10: rgb(255 255 255 / 0.1);
+  --app-overlay-white-20: rgb(255 255 255 / 0.2);
+  --app-overlay-white-30: rgb(255 255 255 / 0.3);
+  --app-overlay-white-50: rgb(255 255 255 / 0.5);
+  --app-overlay-white-80: rgb(255 255 255 / 0.8);
+  --app-overlay-white-90: rgb(255 255 255 / 0.9);
+  --app-overlay-navy-08: rgb(0 21 41 / 0.08);
+  --app-overlay-navy-35: rgb(0 21 41 / 0.35);
+
+  /* 主题色半透明层（跟随主题色变化） */
+  --app-accent-a20: color-mix(in srgb, var(--el-color-primary) 20%, transparent);
+  --app-accent-a30: color-mix(in srgb, var(--el-color-primary) 30%, transparent);
+
+  /* ==================== 圆角 ==================== */
+  --app-radius-sm: 4px;
+  --app-radius-md: 6px;
+  --app-radius-lg: 8px;
+
+  /* ==================== 阴影 ==================== */
+  --app-shadow-sm: var(--el-box-shadow-light);
+  --app-shadow-md: var(--el-box-shadow);
+  --app-shadow-lg: var(--el-box-shadow-dark);
+}
+
+/* 暗色模式下含字面量的令牌需要覆盖 */
+html.dark {
+  --app-danger-strong: #e04b3a;
+  --app-brand-teal: #2cc7bf;
+  --app-brand-cyan: #35bdfa;
+  --app-brand-blue: #3b8ef5;
+  --app-brand-violet: #8b8ef0;
+  --app-sidebar-bg: #131d31;
+  --app-sidebar-bg-deep: #1f2b38;
+  --app-mask: rgb(0 0 0 / 0.7);
+  --app-overlay-black-02: rgb(255 255 255 / 0.03);
+  --app-overlay-black-04: rgb(255 255 255 / 0.05);
+  --app-overlay-black-06: rgb(255 255 255 / 0.07);
+  --app-overlay-black-08: rgb(255 255 255 / 0.09);
+  --app-overlay-black-10: rgb(255 255 255 / 0.12);
+}

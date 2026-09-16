@@ -3,7 +3,7 @@
     <!-- 自定义标题 -->
     <template #header>
       <div class="drawer-head">
-        <el-icon style="color:#5b9bd5;margin-right:8px;"><List /></el-icon>
+        <el-icon style="color:var(--el-color-primary);margin-right:8px;"><List /></el-icon>
         <span class="drawer-head-name">{{ row.dictName }}</span>
         <span class="drawer-head-type">{{ row.dictType }}</span>
       </div>
@@ -117,12 +117,12 @@ function loadData() {
 .drawer-head-name {
   font-size: 16px;
   font-weight: 600;
-  color: var(--dict-drawer-title-color, #2c3e50);
+  color: var(--dict-drawer-title-color, var(--app-sidebar-bg-deep));
   margin-right: 8px;
 }
 .drawer-head-type {
   font-size: 14px;
-  color: var(--dict-drawer-subtext-color, #95a5a6);
+  color: var(--dict-drawer-subtext-color, var(--el-text-color-secondary));
   font-family: monospace;
 }
 .drawer-wrap {
@@ -133,13 +133,13 @@ function loadData() {
   align-items: center;
   justify-content: center;
   height: 120px;
-  color: var(--dict-drawer-subtext-color, #aaa);
+  color: var(--dict-drawer-subtext-color, var(--el-text-color-disabled));
   font-size: 13px;
   gap: 8px;
 }
 .drawer-empty {
   text-align: center;
-  color: var(--dict-drawer-subtext-color, #bbb);
+  color: var(--dict-drawer-subtext-color, var(--el-text-color-disabled));
   padding: 60px 0;
   font-size: 13px;
 }
@@ -151,8 +151,8 @@ function loadData() {
   margin-bottom: 16px;
 }
 .stat-card {
-  background: var(--dict-drawer-card-bg, #f7f9fb);
-  border: 1px solid var(--dict-drawer-border-color, #e8ecf0);
+  background: var(--dict-drawer-card-bg, var(--el-fill-color-light));
+  border: 1px solid var(--dict-drawer-border-color, var(--el-fill-color-light));
   border-radius: 6px;
   padding: 10px 14px;
   text-align: center;
@@ -160,19 +160,19 @@ function loadData() {
 .stat-num {
   font-size: 22px;
   font-weight: 700;
-  color: var(--dict-drawer-title-color, #2c3e50);
+  color: var(--dict-drawer-title-color, var(--app-sidebar-bg-deep));
 }
-.stat-num.success { color: #27ae60; }
-.stat-num.danger  { color: #e74c3c; }
+.stat-num.success { color: var(--el-color-success); }
+.stat-num.danger  { color: var(--el-color-danger); }
 .stat-label {
   font-size: 11px;
-  color: var(--dict-drawer-subtext-color, #95a5a6);
+  color: var(--dict-drawer-subtext-color, var(--el-text-color-secondary));
   margin-top: 4px;
 }
 .dict-item {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  border: 1px solid var(--dict-drawer-border-color, #e8ecf0);
+  border: 1px solid var(--dict-drawer-border-color, var(--el-fill-color-light));
   border-radius: 6px;
   overflow: hidden;
   margin-bottom: 8px;
@@ -180,7 +180,7 @@ function loadData() {
 .dict-cell {
   display: grid;
   grid-template-columns: 70px 1fr;
-  border-right: 1px solid var(--dict-drawer-cell-divider, #f0f4f8);
+  border-right: 1px solid var(--dict-drawer-cell-divider, var(--el-fill-color));
 }
 .dict-cell:last-child {
   border-right: 0;
@@ -188,14 +188,14 @@ function loadData() {
 .dict-cell-key {
   padding: 9px 14px;
   font-size: 12px;
-  color: var(--dict-drawer-subtext-color, #888);
-  background: var(--dict-drawer-card-bg, #f7f9fb);
-  border-right: 1px solid var(--dict-drawer-cell-divider, #f0f4f8);
+  color: var(--dict-drawer-subtext-color, var(--el-text-color-regular));
+  background: var(--dict-drawer-card-bg, var(--el-fill-color-light));
+  border-right: 1px solid var(--dict-drawer-cell-divider, var(--el-fill-color));
 }
 .dict-cell-val {
   padding: 9px 14px;
   font-size: 13px;
-  color: var(--dict-drawer-title-color, #2c3e50);
+  color: var(--dict-drawer-title-color, var(--app-sidebar-bg-deep));
   word-break: break-all;
   display: flex;
   align-items: center;

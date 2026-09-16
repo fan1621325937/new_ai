@@ -153,14 +153,14 @@ function activeRoutes(key: string) {
   float: left;
   height: 50px !important;
   line-height: 50px !important;
-  color: #303133 !important;
+  color: var(--el-text-color-primary) !important;
   padding: 0 5px !important;
   margin: 0 10px !important;
 }
 
 .topmenu-container.el-menu--horizontal > .el-menu-item.is-active, .el-menu--horizontal > .el-sub-menu.is-active .el-submenu__title {
   border-bottom: 2px solid #{'var(--theme)'} !important;
-  color: #303133;
+  color: var(--el-text-color-primary);
 }
 
 /* sub-menu item */
@@ -168,14 +168,14 @@ function activeRoutes(key: string) {
   float: left;
   height: 50px !important;
   line-height: 50px !important;
-  color: #303133 !important;
+  color: var(--el-text-color-primary) !important;
   padding: 0 5px !important;
   margin: 0 10px !important;
 }
 
 /* 背景色隐藏 */
 .topmenu-container.el-menu--horizontal>.el-menu-item:not(.is-disabled):focus, .topmenu-container.el-menu--horizontal>.el-menu-item:not(.is-disabled):hover, .topmenu-container.el-menu--horizontal>.el-submenu .el-submenu__title:hover {
-  background-color: #fff;
+  background-color: var(--el-color-white);
 }
 
 /* 图标右间距 */

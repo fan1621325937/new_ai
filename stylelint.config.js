@@ -19,9 +19,9 @@ export default {
     'html/**',
   ],
   rules: {
-    // 禁止颜色字面量（TODO: 存量清理完成后改回 error，见 docs/styles/STYLES.md）
-    'color-no-hex': [true, { severity: 'warning' }],
-    'function-disallowed-list': [['rgb', 'rgba', 'hsl', 'hsla'], { severity: 'warning' }],
+    // 禁止颜色字面量（存量已清理完成，硬约束生效）
+    'color-no-hex': true,
+    'function-disallowed-list': ['rgb', 'rgba', 'hsl', 'hsla'],
 
     // Tailwind v4 指令与 SCSS 指令放行
     'at-rule-no-unknown': [true, {

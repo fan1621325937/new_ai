@@ -243,10 +243,10 @@ onMounted(() => {
     <div v-if="showTip && !disabled" class="el-upload__tip">
       请上传
       <template v-if="fileSize">
-        大小不超过 <b style="color: #f56c6c">{{ fileSize }}MB</b>
+        大小不超过 <b style="color: var(--el-color-danger)">{{ fileSize }}MB</b>
       </template>
       <template v-if="fileType">
-        格式为 <b style="color: #f56c6c">{{ fileType.join("/") }}</b>
+        格式为 <b style="color: var(--el-color-danger)">{{ fileType.join("/") }}</b>
       </template>
       的文件
     </div>

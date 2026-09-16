@@ -85,7 +85,7 @@ defineExpose({
             height: 100%;
             padding: 0 5px;
             &:hover {
-              background: #ececec;
+              background: var(--el-fill-color);
               border-radius: 5px;
             }
             .icon {
@@ -102,7 +102,7 @@ defineExpose({
             }
           }
           .icon-item.active {
-            background: #ececec;
+            background: var(--el-fill-color);
             border-radius: 5px;
           }
         }

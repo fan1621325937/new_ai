@@ -156,7 +156,7 @@ async function toggleTheme(event?: MouseEvent): Promise<void> {
   overflow: hidden;
   position: relative;
   background: var(--navbar-bg);
-  box-shadow: 0 1px 4px rgb(0, 21, 41, 0.08);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--app-sidebar-bg) 8%, transparent);
   display: flex;
   align-items: center;
 
@@ -175,7 +175,7 @@ async function toggleTheme(event?: MouseEvent): Promise<void> {
     margin-right: 8px;
 
     &:hover {
-      background: rgb(0, 0, 0, 0.025);
+      background: var(--app-overlay-black-02);
     }
   }
 
@@ -198,19 +198,19 @@ async function toggleTheme(event?: MouseEvent): Promise<void> {
     overflow-y: hidden;
     margin-left: 8px;
     scrollbar-width: thin;
-    scrollbar-color: rgb(144, 147, 153, 0.4) transparent;
+    scrollbar-color: color-mix(in srgb, var(--el-text-color-secondary) 40%, transparent) transparent;
 
     &::-webkit-scrollbar {
       height: 4px;
     }
 
     &::-webkit-scrollbar-thumb {
-      background: rgb(144, 147, 153, 0.4);
+      background: color-mix(in srgb, var(--el-text-color-secondary) 40%, transparent);
       border-radius: 2px;
     }
 
     &::-webkit-scrollbar-thumb:hover {
-      background: rgb(144, 147, 153, 0.6);
+      background: color-mix(in srgb, var(--el-text-color-secondary) 60%, transparent);
     }
 
     &::-webkit-scrollbar-track {
@@ -234,7 +234,7 @@ async function toggleTheme(event?: MouseEvent): Promise<void> {
       padding: 0 8px;
       height: 100%;
       font-size: 18px;
-      color: #5a5e66;
+      color: var(--el-text-color-regular);
       vertical-align: text-bottom;
 
       &.hover-effect {
@@ -242,7 +242,7 @@ async function toggleTheme(event?: MouseEvent): Promise<void> {
         transition: background 0.3s;
 
         &:hover {
-          background: rgb(0, 0, 0, 0.025);
+          background: var(--app-overlay-black-02);
         }
       }
 

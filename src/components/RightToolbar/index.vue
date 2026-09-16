@@ -267,7 +267,7 @@ function saveStorage(): void {
 .check-line {
   width: 90%;
   height: 1px;
-  background-color: #ccc;
+  background-color: var(--el-border-color-darker);
   margin: 3px auto;
 }
 </style>

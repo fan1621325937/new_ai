@@ -167,8 +167,8 @@ function closeDialog() {
   right: 0;
   top: 0;
   bottom: 0;
-  color: #eee;
-  background: rgb(0, 0, 0, 0.5);
+  color: var(--el-fill-color-light);
+  background: var(--app-overlay-black-50);
   font-size: 24px;
   font-style: normal;
   -webkit-font-smoothing: antialiased;

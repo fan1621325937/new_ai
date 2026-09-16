@@ -41,7 +41,7 @@ const topMenus = computed(() => {
   float: left;
   height: 46px !important;
   line-height: 46px !important;
-  color: #303133 !important;
+  color: var(--el-text-color-primary) !important;
   padding: 0 5px !important;
   margin: 0 10px !important;
 }
@@ -55,7 +55,7 @@ const topMenus = computed(() => {
   float: left;
   height: 46px !important;
   line-height: 46px !important;
-  color: #303133 !important;
+  color: var(--el-text-color-primary) !important;
   margin: 0 15px -3px!important;
 }
 

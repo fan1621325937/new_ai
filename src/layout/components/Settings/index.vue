@@ -236,7 +236,7 @@ defineExpose({
 <style lang='scss' scoped>
 .setting-drawer-title {
   margin-bottom: 12px;
-  color: var(--el-text-color-primary, rgb(0, 0, 0, 0.85));
+  color: var(--el-text-color-primary, var(--app-overlay-black-85));
   line-height: 22px;
   font-weight: bold;
 
@@ -271,7 +271,7 @@ defineExpose({
       height: 100%;
       padding-top: 15px;
       padding-left: 24px;
-      color: #1890ff;
+      color: var(--el-color-primary);
       font-weight: 700;
       font-size: 14px;
     }
@@ -279,7 +279,7 @@ defineExpose({
 }
 
 .drawer-item {
-  color: var(--el-text-color-regular, rgb(0, 0, 0, 0.65));
+  color: var(--el-text-color-regular, var(--app-overlay-black-65));
   padding: 12px 0;
   font-size: 14px;
 
@@ -308,7 +308,7 @@ defineExpose({
     width: 56px;
     height: 48px;
     border-radius: 4px;
-    background: #f0f2f5;
+    background: var(--el-fill-color);
     border: 2px solid transparent;
   }
 
@@ -316,11 +316,11 @@ defineExpose({
     b:first-child {
       display: block;
       height: 30%;
-      background: #fff;
+      background: var(--el-color-white);
     }
     b:last-child {
       width: 30%;
-      background: #1b2a47;
+      background: var(--app-sidebar-bg);
       position: absolute;
       height: 100%;
       top: 0;
@@ -332,11 +332,11 @@ defineExpose({
       border-radius: 4px 4px 0 0;
       display: block;
       height: 30%;
-      background: #1b2a47;
+      background: var(--app-sidebar-bg);
     }
     b:last-child {
       width: 30%;
-      background: #1b2a47;
+      background: var(--app-sidebar-bg);
       position: absolute;
       height: 70%;
       border-radius: 0 0 0 4px;
@@ -346,7 +346,7 @@ defineExpose({
     b:first-child {
       display: block;
       height: 30%;
-      background: #1b2a47;
+      background: var(--app-sidebar-bg);
       border-radius: 4px 4px 0 0;
     }
   }

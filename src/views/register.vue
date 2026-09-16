@@ -167,12 +167,12 @@ getCode()
 .title {
   margin: 0 auto 30px auto;
   text-align: center;
-  color: #707070;
+  color: var(--el-text-color-regular);
 }
 
 .register-form {
   border-radius: 6px;
-  background: #fff;
+  background: var(--el-color-white);
   width: 400px;
   padding: 25px 25px 5px 25px;
   .el-input {
@@ -190,7 +190,7 @@ getCode()
 .register-tip {
   font-size: 13px;
   text-align: center;
-  color: #bfbfbf;
+  color: var(--el-text-color-disabled);
 }
 .register-code {
   width: 33%;
@@ -208,7 +208,7 @@ getCode()
   bottom: 0;
   width: 100%;
   text-align: center;
-  color: #fff;
+  color: var(--el-color-white);
   font-family: Arial;
   font-size: 12px;
   letter-spacing: 1px;

@@ -1,0 +1,53 @@
+/**
+ * Tailwind CSS v4 入口
+ *
+ * 接入约定（详见 docs/styles/STYLES.md）：
+ * 1. 不引入 preflight —— Tailwind 的基础样式重置会打乱 Element Plus 的默认样式
+ * 2. dark 变体绑定 html.dark，与 Element Plus 暗色模式保持一致（而不是 prefers-color-scheme）
+ * 3. @theme 中的颜色全部映射到设计令牌，工具类与 SCSS 组件样式同源，换主题色/切暗色自动生效
+ * 4. 页面布局优先用 Tailwind 工具类；组件皮肤、复杂交互仍用 SCSS + 令牌
+ */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* 暗色模式绑定到 html.dark（Element Plus 的暗色机制） */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* 扫描范围：src 下所有源码与根 index.html */
+@source "../../";
+@source "../../../index.html";
+
+@theme {
+  /* ===== 主题色（跟随 Element Plus 主题色切换） ===== */
+  --color-primary: var(--el-color-primary);
+  --color-primary-soft: var(--el-color-primary-light-9);
+  --color-primary-line: var(--el-color-primary-light-7);
+  --color-primary-text: var(--el-color-primary-light-5);
+  --color-success: var(--el-color-success);
+  --color-warning: var(--el-color-warning);
+  --color-danger: var(--el-color-danger);
+  --color-info: var(--el-color-info);
+
+  /* ===== 中性表面 ===== */
+  --color-surface: var(--app-bg-plain);
+  --color-surface-page: var(--app-bg-page);
+  --color-surface-card: var(--app-bg-card);
+  --color-surface-subtle: var(--app-bg-subtle);
+  --color-surface-hover: var(--app-bg-hover);
+
+  /* ===== 边框 ===== */
+  --color-line: var(--app-border);
+  --color-line-strong: var(--app-border-strong);
+
+  /* ===== 文字 ===== */
+  --color-fg: var(--app-text);
+  --color-fg-secondary: var(--app-text-secondary);
+  --color-fg-muted: var(--app-text-muted);
+  --color-fg-disabled: var(--app-text-disabled);
+
+  /* ===== 圆角（与设计令牌一致） ===== */
+  --radius-sm: var(--app-radius-sm);
+  --radius-md: var(--app-radius-md);
+  --radius-lg: var(--app-radius-lg);
+}

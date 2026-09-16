@@ -831,9 +831,9 @@ function tagChange(tagIcon: string): void {
     width: 16px;
     height: 16px;
     line-height: 16px;
-    background: rgb(0, 0, 0, .2);
+    background: var(--app-overlay-black-20);
     border-radius: 50%;
-    color: #fff;
+    color: var(--el-color-white);
     z-index: 1;
     cursor: pointer;
     font-size: 12px;
@@ -842,12 +842,12 @@ function tagChange(tagIcon: string): void {
 
 .select-item {
   display: flex;
-  border: 1px dashed #fff;
+  border: 1px dashed var(--el-color-white);
   box-sizing: border-box;
 
   & .close-btn {
     cursor: pointer;
-    color: #f56c6c;
+    color: var(--el-color-danger);
   }
 
   & .el-input+.el-input {
@@ -860,14 +860,14 @@ function tagChange(tagIcon: string): void {
 }
 
 .select-item.sortable-chosen {
-  border: 1px dashed #409eff;
+  border: 1px dashed var(--el-color-primary);
 }
 
 .select-line-icon {
   line-height: 32px;
   font-size: 22px;
   padding: 0 4px;
-  color: #777;
+  color: var(--el-text-color-regular);
 }
 
 .option-drag {
@@ -894,12 +894,12 @@ function tagChange(tagIcon: string): void {
   top: 0;
   left: 0;
   cursor: pointer;
-  background: #409eff;
+  background: var(--el-color-primary);
   z-index: 1;
   border-radius: 0 0 6px 0;
   justify-content: center;
   align-items: center;
-  color: #fff;
+  color: var(--el-color-white);
   font-size: 18px;
 }
 
@@ -908,7 +908,7 @@ function tagChange(tagIcon: string): void {
 }
 
 .node-icon {
-  color: #bebfc3;
+  color: var(--el-text-color-disabled);
 }
 
 .custom-tree-node {

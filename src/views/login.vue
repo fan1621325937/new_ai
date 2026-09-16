@@ -179,12 +179,12 @@ getCookie()
 .title {
   margin: 0 auto 30px auto;
   text-align: center;
-  color: #707070;
+  color: var(--el-text-color-regular);
 }
 
 .login-form {
   border-radius: 6px;
-  background: #fff;
+  background: var(--el-color-white);
   width: 400px;
   padding: 25px 25px 5px 25px;
   z-index: 1;
@@ -203,7 +203,7 @@ getCookie()
 .login-tip {
   font-size: 13px;
   text-align: center;
-  color: #bfbfbf;
+  color: var(--el-text-color-disabled);
 }
 .login-code {
   width: 33%;
@@ -221,7 +221,7 @@ getCookie()
   bottom: 0;
   width: 100%;
   text-align: center;
-  color: #fff;
+  color: var(--el-color-white);
   font-family: Arial;
   font-size: 12px;
   letter-spacing: 1px;
@@ -232,10 +232,10 @@ getCookie()
 }
 
 html.dark .login {
-  background-image: linear-gradient(rgb(0, 0, 0, 0.55), rgb(0, 0, 0, 0.55)), url("../assets/images/login-background.jpg");
+  background-image: linear-gradient(var(--app-overlay-black-55), var(--app-overlay-black-55)), url("../assets/images/login-background.jpg");
   .login-form {
     background: var(--el-bg-color-overlay) !important;
-    box-shadow: 0 12px 40px rgb(0, 0, 0, 0.5);
+    box-shadow: 0 12px 40px var(--app-overlay-black-50);
   }
 }
 </style>
