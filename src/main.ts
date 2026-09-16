@@ -5,25 +5,8 @@ import locale from 'element-plus/es/locale/lang/zh-cn'
 import Cookies from 'js-cookie'
 import { createApp } from 'vue'
 import { getConfigKey } from '@/api/system/config'
-// 字典标签组件
-import DictTag from '@/components/DictTag/index.vue'
-
-// 富文本组件
-import Editor from '@/components/Editor/index.vue'
-
-// 文件上传组件
-import FileUpload from '@/components/FileUpload/index.vue'
-// 图片预览组件
-import ImagePreview from '@/components/ImagePreview/index.vue'
-// 图片上传组件
-import ImageUpload from '@/components/ImageUpload/index.vue'
-// 分页组件
-import Pagination from '@/components/Pagination/index.vue'
-
-// 自定义表格工具组件
-import RightToolbar from '@/components/RightToolbar/index.vue'
-import SvgIcon from '@/components/SvgIcon/index.vue'
-
+// 全局组件统一注册入口（新增全局组件只改 src/components/index.ts）
+import { setupGlobalComponents } from '@/components'
 import elementIcons from '@/components/SvgIcon/svgicon'
 import { useDict } from '@/utils/dict'
 import { download } from '@/utils/request'
@@ -59,19 +42,12 @@ app.config.globalProperties.selectDictLabel = selectDictLabel
 app.config.globalProperties.selectDictLabels = selectDictLabels
 
 // 全局组件挂载
-app.component('DictTag', DictTag)
-app.component('Pagination', Pagination)
-app.component('FileUpload', FileUpload)
-app.component('ImageUpload', ImageUpload)
-app.component('ImagePreview', ImagePreview)
-app.component('RightToolbar', RightToolbar)
-app.component('Editor', Editor)
+setupGlobalComponents(app)
 
 app.use(router)
 app.use(store)
 app.use(plugins)
 app.use(elementIcons)
-app.component('svg-icon', SvgIcon)
 
 directive(app)
 
