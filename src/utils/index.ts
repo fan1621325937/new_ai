@@ -4,15 +4,16 @@ import { parseTime } from './ruoyi'
  * 表格时间格式化
  */
 export function formatDate(cellValue: any): string {
-  if (cellValue == null || cellValue == "") return ""
-  const date = new Date(cellValue) 
+  if (cellValue == null || cellValue == '')
+    return ''
+  const date = new Date(cellValue)
   const year = date.getFullYear()
-  const month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
-  const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate() 
-  const hours = date.getHours() < 10 ? '0' + date.getHours() : date.getHours() 
-  const minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes() 
-  const seconds = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
-  return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds
+  const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
+  const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
+  const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
+  const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+  const seconds = date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds()
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
 }
 
 /**
@@ -21,9 +22,10 @@ export function formatDate(cellValue: any): string {
  * @returns {string}
  */
 export function formatTime(time: number | string, option?: string): string {
-  if (('' + time).length === 10) {
+  if ((`${time}`).length === 10) {
     time = parseInt(time as string) * 1000
-  } else {
+  }
+  else {
     time = +time
   }
   const d = new Date(time)
@@ -33,37 +35,41 @@ export function formatTime(time: number | string, option?: string): string {
 
   if (diff < 30) {
     return '刚刚'
-  } else if (diff < 3600) {
+  }
+  else if (diff < 3600) {
     // less 1 hour
-    return Math.ceil(diff / 60) + '分钟前'
-  } else if (diff < 3600 * 24) {
-    return Math.ceil(diff / 3600) + '小时前'
-  } else if (diff < 3600 * 24 * 2) {
+    return `${Math.ceil(diff / 60)}分钟前`
+  }
+  else if (diff < 3600 * 24) {
+    return `${Math.ceil(diff / 3600)}小时前`
+  }
+  else if (diff < 3600 * 24 * 2) {
     return '1天前'
   }
   if (option) {
     return parseTime(time, option) || ''
-  } else {
+  }
+  else {
     return (
-      d.getMonth() +
-      1 +
-      '月' +
-      d.getDate() +
-      '日' +
-      d.getHours() +
-      '时' +
-      d.getMinutes() +
-      '分'
+      `${d.getMonth()
+      + 1
+      }月${
+        d.getDate()
+      }日${
+        d.getHours()
+      }时${
+        d.getMinutes()
+      }分`
     )
   }
 }
 
 /**
  * @param url
- * @returns {Object}
+ * @returns {object}
  */
 export function getQueryObject(url?: string | null): Record<string, string> {
-  url = url == null ? window.location.href : url
+  url = url ?? window.location.href
   const search = url.substring(url.lastIndexOf('?') + 1)
   const obj: Record<string, string> = {}
   const reg = /([^?&=]+)=([^?&=]*)/g
@@ -86,9 +92,12 @@ export function byteLength(str: string): number {
   let s = str.length
   for (let i = str.length - 1; i >= 0; i--) {
     const code = str.charCodeAt(i)
-    if (code > 0x7f && code <= 0x7ff) s++
-    else if (code > 0x7ff && code <= 0xffff) s += 2
-    if (code >= 0xDC00 && code <= 0xDFFF) i--
+    if (code > 0x7F && code <= 0x7FF)
+      s++
+    else if (code > 0x7FF && code <= 0xFFFF)
+      s += 2
+    if (code >= 0xDC00 && code <= 0xDFFF)
+      i--
   }
   return s
 }
@@ -112,18 +121,20 @@ export function cleanArray(actual: any[]): any[] {
  * @returns {Array}
  */
 export function param(json: Record<string, any>): string {
-  if (!json) return ''
+  if (!json)
+    return ''
   return cleanArray(
-    Object.keys(json).map(key => {
-      if (json[key] === undefined) return ''
-      return encodeURIComponent(key) + '=' + encodeURIComponent(json[key])
-    })
+    Object.keys(json).map((key) => {
+      if (json[key] === undefined)
+        return ''
+      return `${encodeURIComponent(key)}=${encodeURIComponent(json[key])}`
+    }),
   ).join('&')
 }
 
 /**
  * @param url
- * @returns {Object}
+ * @returns {object}
  */
 export function param2Obj(url: string): Record<string, string> {
   const search = decodeURIComponent(url.split('?')[1]).replace(/\+/g, ' ')
@@ -132,7 +143,7 @@ export function param2Obj(url: string): Record<string, string> {
   }
   const obj: Record<string, string> = {}
   const searchArr = search.split('&')
-  searchArr.forEach(v => {
+  searchArr.forEach((v) => {
     const index = v.indexOf('=')
     if (index !== -1) {
       const name = v.substring(0, index)
@@ -150,14 +161,14 @@ export function param2Obj(url: string): Record<string, string> {
 export function html2Text(val: string): string {
   const div = document.createElement('div')
   div.innerHTML = val
-  return div.textContent || div.innerText || ''
+  return div.textContent || ''
 }
 
 /**
  * Merges two objects, giving the last one precedence
  * @param target
  * @param source
- * @returns {Object}
+ * @returns {object}
  */
 export function objectMerge(target: any, source: any): any {
   if (typeof target !== 'object') {
@@ -166,11 +177,12 @@ export function objectMerge(target: any, source: any): any {
   if (Array.isArray(source)) {
     return source.slice()
   }
-  Object.keys(source).forEach(property => {
+  Object.keys(source).forEach((property) => {
     const sourceProperty = source[property]
     if (typeof sourceProperty === 'object') {
       target[property] = objectMerge(target[property], sourceProperty)
-    } else {
+    }
+    else {
       target[property] = sourceProperty
     }
   })
@@ -188,11 +200,12 @@ export function toggleClass(element: HTMLElement, className: string): void {
   let classString = element.className
   const nameIndex = classString.indexOf(className)
   if (nameIndex === -1) {
-    classString += ' ' + className
-  } else {
-    classString =
-      classString.substr(0, nameIndex) +
-      classString.substr(nameIndex + className.length)
+    classString += ` ${className}`
+  }
+  else {
+    classString
+      = classString.substr(0, nameIndex)
+        + classString.substr(nameIndex + className.length)
   }
   element.className = classString
 }
@@ -203,8 +216,9 @@ export function toggleClass(element: HTMLElement, className: string): void {
  */
 export function getTime(type?: string): number {
   if (type === 'start') {
-    return new Date().getTime() - 3600 * 1000 * 24 * 90
-  } else {
+    return Date.now() - 3600 * 1000 * 24 * 90
+  }
+  else {
     return new Date(new Date().toDateString()).getTime()
   }
 }
@@ -214,17 +228,18 @@ export function getTime(type?: string): number {
  * Has a lot of edge cases bug
  * If you want to use a perfect deep copy, use lodash's _.cloneDeep
  * @param source
- * @returns {Object}
+ * @returns {object}
  */
 export function deepClone<T>(source: T): T {
   if (!source && typeof source !== 'object') {
     throw new Error('error arguments')
   }
   const targetObj = (source as any).constructor === Array ? [] : {}
-  Object.keys(source as any).forEach(keys => {
+  Object.keys(source as any).forEach((keys) => {
     if ((source as any)[keys] && typeof (source as any)[keys] === 'object') {
       (targetObj as any)[keys] = deepClone((source as any)[keys])
-    } else {
+    }
+    else {
       (targetObj as any)[keys] = (source as any)[keys]
     }
   })
@@ -243,8 +258,8 @@ export function uniqueArr<T>(arr: T[]): T[] {
  * @returns {string}
  */
 export function createUniqueString(): string {
-  const timestamp = +new Date() + ''
-  const randomNum = parseInt((1 + Math.random()) * 65536 + '') + ''
+  const timestamp = `${Date.now()}`
+  const randomNum = `${parseInt(`${(1 + Math.random()) * 65536}`)}`
   return (+(randomNum + timestamp)).toString(32)
 }
 
@@ -255,7 +270,7 @@ export function createUniqueString(): string {
  * @returns {boolean}
  */
 export function hasClass(ele: HTMLElement, cls: string): boolean {
-  return !!ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'))
+  return !!ele.className.match(new RegExp(`(\\s|^)${cls}(\\s|$)`))
 }
 
 /**
@@ -264,7 +279,8 @@ export function hasClass(ele: HTMLElement, cls: string): boolean {
  * @param cls
  */
 export function addClass(ele: HTMLElement, cls: string): void {
-  if (!hasClass(ele, cls)) ele.className += ' ' + cls
+  if (!hasClass(ele, cls))
+    ele.className += ` ${cls}`
 }
 
 /**
@@ -274,7 +290,7 @@ export function addClass(ele: HTMLElement, cls: string): void {
  */
 export function removeClass(ele: HTMLElement, cls: string): void {
   if (hasClass(ele, cls)) {
-    const reg = new RegExp('(\\s|^)' + cls + '(\\s|$)')
+    const reg = new RegExp(`(\\s|^)${cls}(\\s|$)`)
     ele.className = ele.className.replace(reg, ' ')
   }
 }
@@ -289,7 +305,7 @@ export function makeMap(str: string, expectsLowerCase?: boolean): (val: string) 
     ? (val: string) => map[val.toLowerCase()]
     : (val: string) => map[val]
 }
- 
+
 export const exportDefault = 'export default '
 
 export const beautifierConf = {
@@ -310,7 +326,7 @@ export const beautifierConf = {
     indent_inner_html: true,
     comma_first: false,
     e4x: true,
-    indent_empty_lines: true
+    indent_empty_lines: true,
   },
   js: {
     indent_size: '2',
@@ -329,8 +345,8 @@ export const beautifierConf = {
     indent_inner_html: true,
     comma_first: false,
     e4x: true,
-    indent_empty_lines: true
-  }
+    indent_empty_lines: true,
+  },
 }
 
 // 首字母大小
@@ -344,5 +360,5 @@ export function camelCase(str: string): string {
 }
 
 export function isNumberStr(str: string): boolean {
-  return /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g.test(str)
+  return /^[+-]?(0|([1-9]\d*))(\.\d+)?$/.test(str)
 }

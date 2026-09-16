@@ -1,10 +1,10 @@
+import type { AjaxResult, RouterVo } from '@/types'
 import request from '@/utils/request'
-import type { RouterVo, AjaxResult } from '@/types'
 
 // 获取路由
-export const getRouters = (): Promise<AjaxResult<RouterVo>> => {
+export function getRouters(): Promise<AjaxResult<RouterVo>> {
   return request({
     url: '/getRouters',
-    method: 'get'
+    method: 'get',
   })
 }

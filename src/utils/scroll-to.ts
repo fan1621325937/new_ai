@@ -4,7 +4,7 @@ declare global {
   }
 }
 
-Math.easeInOutQuad = function(t: number, b: number, c: number, d: number): number {
+Math.easeInOutQuad = function (t: number, b: number, c: number, d: number): number {
   t /= d / 2
   if (t < 1) {
     return c / 2 * t * t + b
@@ -14,8 +14,8 @@ Math.easeInOutQuad = function(t: number, b: number, c: number, d: number): numbe
 }
 
 // requestAnimationFrame for Smart Animating http://goo.gl/sx5sts
-const requestAnimFrame = (function() {
-  return window.requestAnimationFrame || (window as any).webkitRequestAnimationFrame || (window as any).mozRequestAnimationFrame || function(callback: FrameRequestCallback) { window.setTimeout(callback, 1000 / 60) }
+const requestAnimFrame = (function () {
+  return window.requestAnimationFrame || (window as any).webkitRequestAnimationFrame || (window as any).mozRequestAnimationFrame || function (callback: FrameRequestCallback) { window.setTimeout(callback, 1000 / 60) }
 })()
 
 /**
@@ -43,7 +43,7 @@ export function scrollTo(to: number, duration?: number, callback?: () => void): 
   const increment = 20
   let currentTime = 0
   duration = (typeof (duration) === 'undefined') ? 500 : duration
-  const animateScroll = function() {
+  const animateScroll = function () {
     // increment the time
     currentTime += increment
     // find the value with the quadratic in-out easing function
@@ -53,7 +53,8 @@ export function scrollTo(to: number, duration?: number, callback?: () => void): 
     // do the animation unless its over
     if (currentTime < duration) {
       requestAnimFrame(animateScroll)
-    } else {
+    }
+    else {
       if (callback && typeof (callback) === 'function') {
         // the animation is done so lets callback
         callback()

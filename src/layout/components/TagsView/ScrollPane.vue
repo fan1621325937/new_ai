@@ -1,17 +1,10 @@
-<template>
-  <el-scrollbar
-    ref="scrollContainer"
-    :vertical="false"
-    class="scroll-container"
-    @wheel.prevent="handleScroll"
-  >
-    <slot />
-  </el-scrollbar>
-</template>
-
 <script setup lang="ts">
 import useTagsViewStore from '@/store/modules/tagsView'
 
+const emits = defineEmits<{
+  (e: 'scroll'): void
+  (e: 'updateArrows'): void
+}>()
 const tagAndTagSpacing = ref<number>(4)
 const { proxy } = getCurrentInstance()
 
@@ -41,18 +34,21 @@ function smoothScrollTo(target: number): void {
 
   function ease(t: number, b: number, c: number, d: number): number {
     t /= d / 2
-    if (t < 1) return c / 2 * t * t + b
+    if (t < 1)
+      return c / 2 * t * t + b
     t--
     return -c / 2 * (t * (t - 2) - 1) + b
   }
 
   function step(timestamp: number): void {
-    if (!startTime) startTime = timestamp
+    if (!startTime)
+      startTime = timestamp
     const elapsed = timestamp - startTime
     $scrollWrapper.scrollLeft = ease(elapsed, start, distance, duration)
     if (elapsed < duration) {
       requestAnimationFrame(step)
-    } else {
+    }
+    else {
       $scrollWrapper.scrollLeft = target
       emits('updateArrows')
     }
@@ -61,12 +57,7 @@ function smoothScrollTo(target: number): void {
   requestAnimationFrame(step)
 }
 
-const emits = defineEmits<{
-  (e: 'scroll'): void
-  (e: 'updateArrows'): void
-}>()
-
-const emitScroll = (): void => {
+function emitScroll(): void {
   emits('scroll')
   emits('updateArrows')
 }
@@ -89,9 +80,11 @@ function moveToTarget(currentTag: any): void {
 
   if (firstTag === currentTag) {
     smoothScrollTo(0)
-  } else if (lastTag === currentTag) {
+  }
+  else if (lastTag === currentTag) {
     smoothScrollTo($scrollWrapper.scrollWidth - $containerWidth)
-  } else {
+  }
+  else {
     const tagListDom = document.getElementsByClassName('tags-view-item')
     const currentIndex = visitedViews.value.findIndex((item: any) => item === currentTag)
     let prevTag: HTMLElement | null = null
@@ -113,7 +106,8 @@ function moveToTarget(currentTag: any): void {
       const beforePrevTagOffsetLeft = prevTag.offsetLeft - tagAndTagSpacing.value
       if (afterNextTagOffsetLeft > $scrollWrapper.scrollLeft + $containerWidth) {
         smoothScrollTo(afterNextTagOffsetLeft - $containerWidth)
-      } else if (beforePrevTagOffsetLeft < $scrollWrapper.scrollLeft) {
+      }
+      else if (beforePrevTagOffsetLeft < $scrollWrapper.scrollLeft) {
         smoothScrollTo(beforePrevTagOffsetLeft)
       }
     }
@@ -129,11 +123,11 @@ function scrollToEnd(): void {
   smoothScrollTo($scrollWrapper.scrollWidth - $scrollWrapper.clientWidth)
 }
 
-function getScrollState(): { canLeft: boolean; canRight: boolean } {
+function getScrollState(): { canLeft: boolean, canRight: boolean } {
   const $scrollWrapper = scrollWrapper.value
   return {
     canLeft: $scrollWrapper.scrollLeft > 0,
-    canRight: $scrollWrapper.scrollLeft < $scrollWrapper.scrollWidth - $scrollWrapper.clientWidth - 1
+    canRight: $scrollWrapper.scrollLeft < $scrollWrapper.scrollWidth - $scrollWrapper.clientWidth - 1,
   }
 }
 
@@ -141,9 +135,20 @@ defineExpose({
   moveToTarget,
   scrollToStart,
   scrollToEnd,
-  getScrollState
+  getScrollState,
 })
 </script>
+
+<template>
+  <el-scrollbar
+    ref="scrollContainer"
+    :vertical="false"
+    class="scroll-container"
+    @wheel.prevent="handleScroll"
+  >
+    <slot />
+  </el-scrollbar>
+</template>
 
 <style lang='scss' scoped>
 .scroll-container {
@@ -152,7 +157,7 @@ defineExpose({
   overflow: hidden;
   width: 100%;
   :deep(.el-scrollbar__bar) {
-    bottom: 0px;
+    bottom: 0;
   }
   :deep(.el-scrollbar__wrap) {
     height: 34px;

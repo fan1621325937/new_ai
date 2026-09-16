@@ -1,21 +1,7 @@
-<template>
-  <section class="app-main">
-    <router-view v-slot="{ Component, route }">
-      <transition name="fade-transform" mode="out-in">
-        <keep-alive :include="tagsViewStore.cachedViews">
-          <component v-if="!route.meta.link" :is="Component" :key="route.path"/>
-        </keep-alive>
-      </transition>
-    </router-view>
-    <iframe-toggle />
-    <copyright />
-  </section>
-</template>
-
 <script setup lang="ts">
-import copyright from "./Copyright/index.vue"
-import iframeToggle from "./IframeToggle/index.vue"
 import useTagsViewStore from '@/store/modules/tagsView'
+import copyright from './Copyright/index.vue'
+import iframeToggle from './IframeToggle/index.vue'
 
 const route = useRoute()
 const tagsViewStore = useTagsViewStore()
@@ -35,6 +21,20 @@ function addIframe(): void {
 }
 </script>
 
+<template>
+  <section class="app-main">
+    <router-view v-slot="{ Component, route }">
+      <transition name="fade-transform" mode="out-in">
+        <keep-alive :include="tagsViewStore.cachedViews">
+          <component :is="Component" v-if="!route.meta.link" :key="route.path" />
+        </keep-alive>
+      </transition>
+    </router-view>
+    <iframe-toggle />
+    <copyright />
+  </section>
+</template>
+
 <style lang="scss" scoped>
 .app-main {
   /* 50= navbar  50  */
@@ -48,7 +48,7 @@ function addIframe(): void {
   overflow-y: auto;
   scrollbar-gutter: auto;
   height: calc(100vh - 50px);
-  min-height: 0px;
+  min-height: 0;
 }
 
 .app-main:has(.copyright) {
@@ -68,7 +68,7 @@ function addIframe(): void {
   .fixed-header + .app-main {
     margin-top: 84px;
     height: calc(100vh - 84px);
-    min-height: 0px;
+    min-height: 0;
   }
 }
 

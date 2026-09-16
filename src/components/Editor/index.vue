@@ -1,45 +1,9 @@
-<template>
-  <div>
-    <el-upload
-      :action="uploadUrl"
-      :before-upload="handleBeforeUpload"
-      :on-success="handleUploadSuccess"
-      :on-error="handleUploadError"
-      name="file"
-      :show-file-list="false"
-      :headers="headers"
-      class="editor-img-uploader"
-      v-if="type == 'url'"
-    >
-      <i ref="uploadRef" class="editor-img-uploader"></i>
-    </el-upload>
-  </div>
-  <div class="editor">
-    <quill-editor
-      ref="quillEditorRef"
-      v-model:content="content"
-      contentType="html"
-      @textChange="(e: any) => $emit('update:modelValue', content)"
-      :options="options"
-      :style="styles"
-    />
-  </div>
-</template>
-
 <script setup lang="ts">
-import axios from 'axios'
-import { QuillEditor } from "@vueup/vue-quill"
-import "@vueup/vue-quill/dist/vue-quill.snow.css"
-import { getToken } from "@/utils/auth"
 import type { UploadFileResult } from '@/types/api/common'
-
-const { proxy } = getCurrentInstance()
-
-const quillEditorRef = ref()
-const uploadUrl = ref(import.meta.env.VITE_APP_BASE_API + "/common/upload") // 上传的图片服务器地址
-const headers = ref({
-  Authorization: "Bearer " + getToken()
-})
+import { QuillEditor } from '@vueup/vue-quill'
+import axios from 'axios'
+import { getToken } from '@/utils/auth'
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
 const props = defineProps({
   /* 编辑器的内容 */
@@ -69,31 +33,39 @@ const props = defineProps({
   /* 类型（base64格式、url格式） */
   type: {
     type: String,
-    default: "url",
-  }
+    default: 'url',
+  },
+})
+
+const { proxy } = getCurrentInstance()
+
+const quillEditorRef = ref()
+const uploadUrl = ref(`${import.meta.env.VITE_APP_BASE_API}/common/upload`) // 上传的图片服务器地址
+const headers = ref({
+  Authorization: `Bearer ${getToken()}`,
 })
 
 const options = ref({
-  theme: "snow",
+  theme: 'snow',
   bounds: document.body,
-  debug: "warn",
+  debug: 'warn',
   modules: {
     // 工具栏配置
     toolbar: [
-      ["bold", "italic", "underline", "strike"],      // 加粗 斜体 下划线 删除线
-      ["blockquote", "code-block"],                   // 引用  代码块
-      [{ list: "ordered" }, { list: "bullet" }],      // 有序、无序列表
-      [{ indent: "-1" }, { indent: "+1" }],           // 缩进
-      [{ size: ["small", false, "large", "huge"] }],  // 字体大小
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],        // 标题
-      [{ color: [] }, { background: [] }],            // 字体颜色、字体背景颜色
-      [{ align: [] }],                                // 对齐方式
-      ["clean"],                                      // 清除文本格式
-      ["link", "image", "video"]                      // 链接、图片、视频
+      ['bold', 'italic', 'underline', 'strike'], // 加粗 斜体 下划线 删除线
+      ['blockquote', 'code-block'], // 引用  代码块
+      [{ list: 'ordered' }, { list: 'bullet' }], // 有序、无序列表
+      [{ indent: '-1' }, { indent: '+1' }], // 缩进
+      [{ size: ['small', false, 'large', 'huge'] }], // 字体大小
+      [{ header: [1, 2, 3, 4, 5, 6, false] }], // 标题
+      [{ color: [] }, { background: [] }], // 字体颜色、字体背景颜色
+      [{ align: [] }], // 对齐方式
+      ['clean'], // 清除文本格式
+      ['link', 'image', 'video'], // 链接、图片、视频
     ],
   },
-  placeholder: "请输入内容",
-  readOnly: props.readOnly
+  placeholder: '请输入内容',
+  readOnly: props.readOnly,
 })
 
 const styles = computed(() => {
@@ -107,23 +79,24 @@ const styles = computed(() => {
   return style
 })
 
-const content = ref("")
+const content = ref('')
 watch(() => props.modelValue, (v: string) => {
   if (v !== content.value) {
-    content.value = v == undefined ? "<p></p>" : v
+    content.value = v == undefined ? '<p></p>' : v
   }
 }, { immediate: true })
 
 // 如果设置了上传地址则自定义图片上传事件
 onMounted(() => {
   if (props.type == 'url') {
-    let quill = quillEditorRef.value.getQuill()
-    let toolbar = quill.getModule("toolbar")
-    toolbar.addHandler("image", (value: boolean) => {
+    const quill = quillEditorRef.value.getQuill()
+    const toolbar = quill.getModule('toolbar')
+    toolbar.addHandler('image', (value: boolean) => {
       if (value) {
         proxy.$refs.uploadRef.click()
-      } else {
-        quill.format("image", false)
+      }
+      else {
+        quill.format('image', false)
       }
     })
     quill.root.addEventListener('paste', handlePasteCapture, true)
@@ -132,9 +105,9 @@ onMounted(() => {
 
 // 上传前校检格式和大小
 function handleBeforeUpload(file: File) {
-  const type = ["image/jpeg", "image/jpg", "image/png", "image/svg"]
+  const type = ['image/jpeg', 'image/jpg', 'image/png', 'image/svg']
   const isJPG = type.includes(file.type)
-  //检验文件格式
+  // 检验文件格式
   if (!isJPG) {
     proxy.$modal.msgError(`图片格式错误!`)
     return false
@@ -155,21 +128,22 @@ function handleUploadSuccess(res: UploadFileResult, file: File) {
   // 如果上传成功
   if (res.code == 200) {
     // 获取富文本实例
-    let quill = toRaw(quillEditorRef.value).getQuill()
+    const quill = toRaw(quillEditorRef.value).getQuill()
     // 获取光标位置
-    let length = quill.selection.savedRange.index
+    const length = quill.selection.savedRange.index
     // 插入图片，res.url为服务器返回的图片链接地址
-    quill.insertEmbed(length, "image", import.meta.env.VITE_APP_BASE_API + res.fileName)
+    quill.insertEmbed(length, 'image', import.meta.env.VITE_APP_BASE_API + res.fileName)
     // 调整光标到最后
     quill.setSelection(length + 1)
-  } else {
-    proxy.$modal.msgError("图片插入失败")
+  }
+  else {
+    proxy.$modal.msgError('图片插入失败')
   }
 }
 
 // 上传失败处理
 function handleUploadError() {
-  proxy.$modal.msgError("图片插入失败")
+  proxy.$modal.msgError('图片插入失败')
 }
 
 // 复制粘贴图片处理
@@ -178,7 +152,7 @@ function handlePasteCapture(e: ClipboardEvent) {
   if (clipboard && clipboard.items) {
     for (let i = 0; i < clipboard.items.length; i++) {
       const item = clipboard.items[i]
-      if (item.type.indexOf('image') !== -1) {
+      if (item.type.includes('image')) {
         e.preventDefault()
         const file = item.getAsFile()
         insertImage(file)
@@ -189,12 +163,40 @@ function handlePasteCapture(e: ClipboardEvent) {
 
 function insertImage(file: File) {
   const formData = new FormData()
-  formData.append("file", file)
-  axios.post(uploadUrl.value, formData, { headers: { "Content-Type": "multipart/form-data", Authorization: headers.value.Authorization } }).then((res: { data: UploadFileResult }) => {
+  formData.append('file', file)
+  axios.post(uploadUrl.value, formData, { headers: { 'Content-Type': 'multipart/form-data', 'Authorization': headers.value.Authorization } }).then((res: { data: UploadFileResult }) => {
     handleUploadSuccess(res.data as UploadFileResult, file)
   })
 }
 </script>
+
+<template>
+  <div>
+    <el-upload
+      v-if="type == 'url'"
+      :action="uploadUrl"
+      :before-upload="handleBeforeUpload"
+      :on-success="handleUploadSuccess"
+      :on-error="handleUploadError"
+      name="file"
+      :show-file-list="false"
+      :headers="headers"
+      class="editor-img-uploader"
+    >
+      <i ref="uploadRef" class="editor-img-uploader" />
+    </el-upload>
+  </div>
+  <div class="editor">
+    <QuillEditor
+      ref="quillEditorRef"
+      v-model:content="content"
+      content-type="html"
+      :options="options"
+      :style="styles"
+      @text-change="(e: any) => $emit('update:modelValue', content)"
+    />
+  </div>
+</template>
 
 <style>
 .editor-img-uploader {
@@ -211,9 +213,9 @@ function insertImage(file: File) {
   content: "请输入链接地址:";
 }
 .ql-snow .ql-tooltip.ql-editing a.ql-action::after {
-  border-right: 0px;
+  border-right: 0;
   content: "保存";
-  padding-right: 0px;
+  padding-right: 0;
 }
 .ql-snow .ql-tooltip[data-mode="video"]::before {
   content: "请输入视频地址:";

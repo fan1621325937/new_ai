@@ -1,12 +1,13 @@
 /**
-* v-copyText 复制文本内容
-* Copyright (c) 2022 ruoyi
-*/
+ * v-copyText 复制文本内容
+ * Copyright (c) 2022 ruoyi
+ */
 export default {
   beforeMount(el: HTMLElement, { value, arg }: DirectiveBinding) {
-    if (arg === "callback") {
+    if (arg === 'callback') {
       (el as any).$copyCallback = value
-    } else {
+    }
+    else {
       (el as any).$copyValue = value
       const handler = () => {
         copyTextToClipboard((el as any).$copyValue)
@@ -14,10 +15,10 @@ export default {
           (el as any).$copyCallback((el as any).$copyValue)
         }
       }
-      el.addEventListener("click", handler)
-      ;(el as any).$destroyCopy = () => el.removeEventListener("click", handler)
+      el.addEventListener('click', handler)
+      ;(el as any).$destroyCopy = () => el.removeEventListener('click', handler)
     }
-  }
+  },
 }
 
 function copyTextToClipboard(input: string, { target = document.body }: { target?: HTMLElement } = {}): boolean {
@@ -47,7 +48,8 @@ function copyTextToClipboard(input: string, { target = document.body }: { target
   let isSuccess = false
   try {
     isSuccess = document.execCommand('copy')
-  } catch { }
+  }
+  catch { }
 
   element.remove()
 

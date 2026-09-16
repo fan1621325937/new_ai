@@ -1,20 +1,20 @@
+import type { AjaxResult, DictTypeQueryParams, SysDictType, TableDataInfo } from '@/types'
 import request from '@/utils/request'
-import type { DictTypeQueryParams, SysDictType, AjaxResult, TableDataInfo } from '@/types'
 
 // 查询字典类型列表
 export function listType(query: DictTypeQueryParams): Promise<TableDataInfo<SysDictType[]>> {
   return request({
     url: '/system/dict/type/list',
     method: 'get',
-    params: query
+    params: query,
   })
 }
 
 // 查询字典类型详细
 export function getType(dictId: number): Promise<AjaxResult<SysDictType>> {
   return request({
-    url: '/system/dict/type/' + dictId,
-    method: 'get'
+    url: `/system/dict/type/${dictId}`,
+    method: 'get',
   })
 }
 
@@ -23,7 +23,7 @@ export function addType(data: SysDictType): Promise<AjaxResult> {
   return request({
     url: '/system/dict/type',
     method: 'post',
-    data: data
+    data,
   })
 }
 
@@ -32,15 +32,15 @@ export function updateType(data: SysDictType): Promise<AjaxResult> {
   return request({
     url: '/system/dict/type',
     method: 'put',
-    data: data
+    data,
   })
 }
 
 // 删除字典类型
 export function delType(dictId: number | number[]): Promise<AjaxResult> {
   return request({
-    url: '/system/dict/type/' + dictId,
-    method: 'delete'
+    url: `/system/dict/type/${dictId}`,
+    method: 'delete',
   })
 }
 
@@ -48,7 +48,7 @@ export function delType(dictId: number | number[]): Promise<AjaxResult> {
 export function refreshCache(): Promise<AjaxResult> {
   return request({
     url: '/system/dict/type/refreshCache',
-    method: 'delete'
+    method: 'delete',
   })
 }
 
@@ -56,6 +56,6 @@ export function refreshCache(): Promise<AjaxResult> {
 export function optionselect(): Promise<AjaxResult<SysDictType[]>> {
   return request({
     url: '/system/dict/type/optionselect',
-    method: 'get'
+    method: 'get',
   })
 }

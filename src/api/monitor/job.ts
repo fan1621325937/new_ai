@@ -1,20 +1,20 @@
+import type { AjaxResult, JobQueryParams, SysJob, TableDataInfo } from '@/types'
 import request from '@/utils/request'
-import type { JobQueryParams, SysJob, AjaxResult, TableDataInfo } from '@/types'
 
 // 查询定时任务调度列表
 export function listJob(query: JobQueryParams): Promise<TableDataInfo<SysJob[]>> {
   return request({
     url: '/monitor/job/list',
     method: 'get',
-    params: query
+    params: query,
   })
 }
 
 // 查询定时任务调度详细
 export function getJob(jobId: number): Promise<AjaxResult<SysJob>> {
   return request({
-    url: '/monitor/job/' + jobId,
-    method: 'get'
+    url: `/monitor/job/${jobId}`,
+    method: 'get',
   })
 }
 
@@ -23,7 +23,7 @@ export function addJob(data: SysJob): Promise<AjaxResult> {
   return request({
     url: '/monitor/job',
     method: 'post',
-    data: data
+    data,
   })
 }
 
@@ -32,15 +32,15 @@ export function updateJob(data: SysJob): Promise<AjaxResult> {
   return request({
     url: '/monitor/job',
     method: 'put',
-    data: data
+    data,
   })
 }
 
 // 删除定时任务调度
 export function delJob(jobId: number | number[]): Promise<AjaxResult> {
   return request({
-    url: '/monitor/job/' + jobId,
-    method: 'delete'
+    url: `/monitor/job/${jobId}`,
+    method: 'delete',
   })
 }
 
@@ -48,12 +48,12 @@ export function delJob(jobId: number | number[]): Promise<AjaxResult> {
 export function changeJobStatus(jobId: number, status: string): Promise<AjaxResult> {
   const data = {
     jobId,
-    status
+    status,
   }
   return request({
     url: '/monitor/job/changeStatus',
     method: 'put',
-    data: data
+    data,
   })
 }
 
@@ -61,11 +61,11 @@ export function changeJobStatus(jobId: number, status: string): Promise<AjaxResu
 export function runJob(jobId: number, jobGroup: string): Promise<AjaxResult> {
   const data = {
     jobId,
-    jobGroup
+    jobGroup,
   }
   return request({
     url: '/monitor/job/run',
     method: 'put',
-    data: data
+    data,
   })
 }

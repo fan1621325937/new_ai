@@ -1,38 +1,22 @@
+<script setup lang="ts">
+const props = withDefaults(defineProps<{
+  iconClass: string
+  className?: string
+  color?: string
+}>(), {
+  className: '',
+  color: '',
+})
+
+const iconName = computed(() => `#icon-${props.iconClass}`)
+const svgClass = computed(() => (props.className ? `svg-icon ${props.className}` : 'svg-icon'))
+</script>
+
 <template>
   <svg :class="svgClass" aria-hidden="true">
     <use :xlink:href="iconName" :fill="color" />
   </svg>
 </template>
-
-<script lang="ts">
-export default defineComponent({
-  props: {
-    iconClass: {
-      type: String,
-      required: true
-    },
-    className: {
-      type: String,
-      default: ''
-    },
-    color: {
-      type: String,
-      default: ''
-    },
-  },
-  setup(props: any) {
-    return {
-      iconName: computed(() => `#icon-${props.iconClass}`),
-      svgClass: computed(() => {
-        if (props.className) {
-          return `svg-icon ${props.className}`
-        }
-        return 'svg-icon'
-      })
-    }
-  }
-})
-</script>
 
 <style scope lang="scss">
 .sub-el-icon,

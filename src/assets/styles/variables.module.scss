@@ -15,7 +15,7 @@ $menuBg: #1a1f2e;
 $menuHover: #263445;
 
 // 浅色主题theme-light
-$menuLightBg: #ffffff;
+$menuLightBg: #fff;
 $menuLightHover: #f0f1f5;
 $menuLightText: #303133;
 $menuLightActiveText: #409EFF;
@@ -25,11 +25,11 @@ $base-sidebar-width: 200px;
 $sideBarWidth: 200px;
 
 // 菜单暗色变量
-$base-menu-color: rgba(255,255,255,.65);
-$base-menu-color-active: #ffffff;
+$base-menu-color: rgb(255,255,255,.65);
+$base-menu-color-active: #fff;
 $base-menu-background: #1a1f2e;
 $base-sub-menu-background: #141824;
-$base-sub-menu-hover: rgba(255,255,255,.06);
+$base-sub-menu-hover: rgb(255,255,255,.06);
 
 // 组件变量
 $--color-primary: #409EFF;
@@ -48,6 +48,7 @@ $--color-info: #909399;
   menuLightText: $menuLightText;
   menuLightActiveText: $menuLightActiveText;
   sideBarWidth: $sideBarWidth;
+
   // 导出基础颜色
   blue: $blue;
   lightBlue: $light-blue;
@@ -57,6 +58,7 @@ $--color-info: #909399;
   tiffany: $tiffany;
   yellow: $yellow;
   panGreen: $panGreen;
+
   // 导出组件颜色
   colorPrimary: $--color-primary;
   colorSuccess: $--color-success;
@@ -71,12 +73,11 @@ $--color-info: #909399;
   --sidebar-bg: #{$menuBg};
   --sidebar-text: #{$menuText};
   --menu-hover: #{$menuHover};
-  
-  --navbar-bg: #ffffff;
+  --navbar-bg: #fff;
   --navbar-text: #303133;
   
   /* splitpanes default-theme 变量 */
-  --splitpanes-default-bg: #ffffff;
+  --splitpanes-default-bg: #fff;
 
 }
 
@@ -85,7 +86,7 @@ html.dark {
   /* 默认通用 */
   --el-bg-color: #141414;
   --el-bg-color-overlay: #1d1e1f;
-  --el-text-color-primary: #ffffff;
+  --el-text-color-primary: #fff;
   --el-text-color-regular: #d0d0d0;
   --el-border-color: #434343;
   --el-border-color-light: #434343;
@@ -97,13 +98,13 @@ html.dark {
 
   /* 侧边栏 */
   --sidebar-bg: #141414;
-  --sidebar-text: #ffffff;
+  --sidebar-text: #fff;
   --menu-hover: #2d2d2d;
   --menu-active-text: #{$menuActiveText};
 
   /* 顶部导航栏 */
   --navbar-bg: #141414;
-  --navbar-text: #ffffff;
+  --navbar-text: #fff;
   --navbar-hover: #141414;
 
   /* 标签栏 */
@@ -201,7 +202,7 @@ html.dark {
 
   /* 页签样式覆盖 */
   .navbar {
-    box-shadow: 0 1px 4px rgba(255, 255, 255, 0.08);
+    box-shadow: 0 1px 4px rgb(255, 255, 255, 0.08);
   }
   .tags-view-container {
     &.tags-view-container--chrome {
@@ -220,7 +221,7 @@ html.dark {
           color: var(--el-text-color-primary);
         }
         &.active {
-          box-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+          box-shadow: 0 1px 6px rgb(0, 0, 0, 0.45);
         }
       }
     }
@@ -228,7 +229,7 @@ html.dark {
       background-color: var(--tags-card-active-bg) !important;
       border-color: var(--tags-card-active-border) !important;
       color: var(--current-color, #409eff) !important;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 1px 4px rgb(0, 0, 0, 0.35);
 
       &::before {
         background: var(--current-color, #409eff) !important;
@@ -399,7 +400,7 @@ html.dark {
     color: var(--el-text-color-regular);
   }
   .code-action .el-button {
-    background: rgba(30, 30, 30, 0.9);
+    background: rgb(30, 30, 30, 0.9);
     border-color: var(--el-border-color);
     color: var(--el-text-color-regular);
     &:hover {
@@ -421,7 +422,7 @@ html.dark {
   --notice-meta-icon-color: var(--el-text-color-placeholder, #606266);
   --notice-border-color: var(--el-border-color);
   --notice-body-bg: var(--el-bg-color-overlay);
-  --notice-body-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --notice-body-shadow: 0 1px 4px rgb(0, 0, 0, 0.3), 0 0 0 1px rgb(255, 255, 255, 0.04);
   --notice-content-color: var(--el-text-color-regular);
   --notice-drawer-body-bg: var(--el-bg-color);
   --notice-divider-gradient: linear-gradient(to right, transparent, var(--el-border-color), transparent);
@@ -430,9 +431,9 @@ html.dark {
   --notice-blockquote-border: var(--el-border-color);
   --notice-table-border: var(--el-border-color);
   --notice-table-header-bg: var(--el-bg-color);
-  --notice-tag-notify-bg: rgba(217, 119, 6, 0.15);
+  --notice-tag-notify-bg: rgb(217, 119, 6, 0.15);
   --notice-tag-notify-color: #f6ad55;
-  --notice-tag-announce-bg: rgba(56, 161, 105, 0.15);
+  --notice-tag-announce-bg: rgb(56, 161, 105, 0.15);
   --notice-tag-announce-color: #68d391;
 }
 

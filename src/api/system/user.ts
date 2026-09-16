@@ -1,21 +1,21 @@
+import type { AjaxResult, SysUser, SysUserRoles, TableDataInfo, TreeSelect, UserAuthRoleResult, UserFormDataResult, UserProfileAvatarResult, UserProfileResult, UserQueryParams } from '@/types'
 import request from '@/utils/request'
-import { parseStrEmpty } from "@/utils/ruoyi"
-import type { UserQueryParams, UserFormDataResult, UserProfileResult, UserAuthRoleResult, UserProfileAvatarResult, SysUser, SysUserRole, SysUserRoles, AjaxResult, TableDataInfo, TreeSelect } from '@/types'
+import { parseStrEmpty } from '@/utils/ruoyi'
 
 // 查询用户列表
 export function listUser(query: UserQueryParams): Promise<TableDataInfo<SysUser[]>> {
   return request({
     url: '/system/user/list',
     method: 'get',
-    params: query
+    params: query,
   })
 }
 
 // 查询用户详细
 export function getUser(userId?: number): Promise<UserFormDataResult> {
   return request({
-    url: '/system/user/' + parseStrEmpty(userId),
-    method: 'get'
+    url: `/system/user/${parseStrEmpty(userId)}`,
+    method: 'get',
   })
 }
 
@@ -24,7 +24,7 @@ export function addUser(data: SysUser): Promise<AjaxResult> {
   return request({
     url: '/system/user',
     method: 'post',
-    data: data
+    data,
   })
 }
 
@@ -33,15 +33,15 @@ export function updateUser(data: SysUser): Promise<AjaxResult> {
   return request({
     url: '/system/user',
     method: 'put',
-    data: data
+    data,
   })
 }
 
 // 删除用户
 export function delUser(userId: number | number[]): Promise<AjaxResult> {
   return request({
-    url: '/system/user/' + userId,
-    method: 'delete'
+    url: `/system/user/${userId}`,
+    method: 'delete',
   })
 }
 
@@ -49,12 +49,12 @@ export function delUser(userId: number | number[]): Promise<AjaxResult> {
 export function resetUserPwd(userId: number, password: string): Promise<AjaxResult> {
   const data = {
     userId,
-    password
+    password,
   }
   return request({
     url: '/system/user/resetPwd',
     method: 'put',
-    data: data
+    data,
   })
 }
 
@@ -62,12 +62,12 @@ export function resetUserPwd(userId: number, password: string): Promise<AjaxResu
 export function changeUserStatus(userId: number, status: string): Promise<AjaxResult> {
   const data = {
     userId,
-    status
+    status,
   }
   return request({
     url: '/system/user/changeStatus',
     method: 'put',
-    data: data
+    data,
   })
 }
 
@@ -75,7 +75,7 @@ export function changeUserStatus(userId: number, status: string): Promise<AjaxRe
 export function getUserProfile(): Promise<UserProfileResult> {
   return request({
     url: '/system/user/profile',
-    method: 'get'
+    method: 'get',
   })
 }
 
@@ -84,7 +84,7 @@ export function updateUserProfile(data: SysUser): Promise<AjaxResult> {
   return request({
     url: '/system/user/profile',
     method: 'put',
-    data: data
+    data,
   })
 }
 
@@ -92,12 +92,12 @@ export function updateUserProfile(data: SysUser): Promise<AjaxResult> {
 export function updateUserPwd(oldPassword: string, newPassword: string): Promise<AjaxResult> {
   const data = {
     oldPassword,
-    newPassword
+    newPassword,
   }
   return request({
     url: '/system/user/profile/updatePwd',
     method: 'put',
-    data: data
+    data,
   })
 }
 
@@ -107,15 +107,15 @@ export function uploadAvatar(file: FormData | File): Promise<UserProfileAvatarRe
     url: '/system/user/profile/avatar',
     method: 'post',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    data: file
+    data: file,
   })
 }
 
 // 查询授权角色
 export function getAuthRole(userId: number): Promise<UserAuthRoleResult> {
   return request({
-    url: '/system/user/authRole/' + userId,
-    method: 'get'
+    url: `/system/user/authRole/${userId}`,
+    method: 'get',
   })
 }
 
@@ -124,7 +124,7 @@ export function updateAuthRole(data: SysUserRoles): Promise<AjaxResult> {
   return request({
     url: '/system/user/authRole',
     method: 'put',
-    params: data
+    params: data,
   })
 }
 
@@ -132,6 +132,6 @@ export function updateAuthRole(data: SysUserRoles): Promise<AjaxResult> {
 export function deptTreeSelect(): Promise<AjaxResult<TreeSelect>> {
   return request({
     url: '/system/user/deptTree',
-    method: 'get'
+    method: 'get',
   })
 }

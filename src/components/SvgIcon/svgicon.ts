@@ -1,4 +1,4 @@
-import { App } from 'vue'
+import type { App } from 'vue'
 import * as components from '@element-plus/icons-vue'
 
 export default {
@@ -7,5 +7,5 @@ export default {
       const componentConfig = (components as any)[key]
       app.component(componentConfig.name, componentConfig)
     }
-  }
+  },
 }

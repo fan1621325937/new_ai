@@ -1,20 +1,20 @@
+import type { AjaxResult, MenuQueryParams, MenuSortParams, RoleMenuTreeselectResult, SysMenu, TreeSelect } from '@/types'
 import request from '@/utils/request'
-import type { MenuQueryParams, SysMenu, MenuSortParams, TreeSelect, AjaxResult, RoleMenuTreeselectResult } from '@/types'
 
 // 查询菜单列表
 export function listMenu(query?: MenuQueryParams): Promise<AjaxResult<SysMenu[]>> {
   return request({
     url: '/system/menu/list',
     method: 'get',
-    params: query
+    params: query,
   })
 }
 
 // 查询菜单详细
 export function getMenu(menuId: number): Promise<AjaxResult<SysMenu>> {
   return request({
-    url: '/system/menu/' + menuId,
-    method: 'get'
+    url: `/system/menu/${menuId}`,
+    method: 'get',
   })
 }
 
@@ -22,15 +22,15 @@ export function getMenu(menuId: number): Promise<AjaxResult<SysMenu>> {
 export function treeselect(): Promise<AjaxResult<TreeSelect[]>> {
   return request({
     url: '/system/menu/treeselect',
-    method: 'get'
+    method: 'get',
   })
 }
 
 // 根据角色ID查询菜单下拉树结构
 export function roleMenuTreeselect(roleId: number): Promise<RoleMenuTreeselectResult> {
   return request({
-    url: '/system/menu/roleMenuTreeselect/' + roleId,
-    method: 'get'
+    url: `/system/menu/roleMenuTreeselect/${roleId}`,
+    method: 'get',
   })
 }
 
@@ -39,7 +39,7 @@ export function addMenu(data: SysMenu): Promise<AjaxResult> {
   return request({
     url: '/system/menu',
     method: 'post',
-    data: data
+    data,
   })
 }
 
@@ -48,7 +48,7 @@ export function updateMenu(data: SysMenu): Promise<AjaxResult> {
   return request({
     url: '/system/menu',
     method: 'put',
-    data: data
+    data,
   })
 }
 
@@ -57,14 +57,14 @@ export function updateMenuSort(data: MenuSortParams): Promise<AjaxResult> {
   return request({
     url: '/system/menu/updateSort',
     method: 'put',
-    data: data
+    data,
   })
 }
 
 // 删除菜单
 export function delMenu(menuId: number): Promise<AjaxResult> {
   return request({
-    url: '/system/menu/' + menuId,
-    method: 'delete'
+    url: `/system/menu/${menuId}`,
+    method: 'delete',
   })
 }

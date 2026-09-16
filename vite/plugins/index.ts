@@ -1,10 +1,10 @@
-import vue from '@vitejs/plugin-vue'
+import type { PluginOption } from 'vite'
 
+import vue from '@vitejs/plugin-vue'
 import createAutoImport from './auto-import'
-import createSvgIcon from './svg-icon'
 import createCompression from './compression'
 import createSetupExtend from './setup-extend'
-import { PluginOption } from 'vite'
+import createSvgIcon from './svg-icon'
 
 export default function createVitePlugins(viteEnv: Record<string, string>, isBuild = false) {
   const vitePlugins: PluginOption[] = [vue()]

@@ -6,8 +6,8 @@
   &:hover {
     color: $color;
 
-    &:before,
-    &:after {
+    &::before,
+    &::after {
       background: $color;
     }
   }
@@ -55,15 +55,15 @@
   &:hover {
     background: #fff;
 
-    &:before,
-    &:after {
+    &::before,
+    &::after {
       width: 100%;
       transition: 600ms ease all;
     }
   }
 
-  &:before,
-  &:after {
+  &::before,
+  &::after {
     content: '';
     position: absolute;
     top: 0;
@@ -88,7 +88,7 @@
   cursor: pointer;
   background: #fff;
   color: #fff;
-  -webkit-appearance: none;
+  appearance: none;
   text-align: center;
   box-sizing: border-box;
   outline: 0;

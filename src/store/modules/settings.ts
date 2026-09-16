@@ -1,5 +1,5 @@
-import defaultSettings from '@/settings'
 import { useDark, useToggle } from '@vueuse/core'
+import defaultSettings from '@/settings'
 import { useDynamicTitle } from '@/utils/dynamicTitle'
 import { handleThemeStyle } from '@/utils/theme'
 
@@ -8,7 +8,7 @@ const toggleDark = useToggle(isDark)
 
 const { sideTheme, showSettings, navType, tagsView, tagsViewPersist, tagsIcon, tagsViewStyle, fixedHeader, sidebarLogo, dynamicTitle, footerVisible, footerContent } = defaultSettings
 
-const storageSetting = JSON.parse(localStorage.getItem('layout-setting') || '{}') || {} 
+const storageSetting = JSON.parse(localStorage.getItem('layout-setting') || '{}') || {}
 
 interface SettingsState {
   title: string
@@ -35,7 +35,7 @@ const useSettingsStore = defineStore(
       title: '',
       theme: storageSetting.theme || '#409EFF',
       sideTheme: storageSetting.sideTheme || sideTheme,
-      showSettings: showSettings,
+      showSettings,
       navType: storageSetting.navType === undefined ? navType : storageSetting.navType,
       tagsView: storageSetting.tagsView === undefined ? tagsView : storageSetting.tagsView,
       tagsViewPersist: storageSetting.tagsViewPersist === undefined ? tagsViewPersist : storageSetting.tagsViewPersist,
@@ -45,14 +45,14 @@ const useSettingsStore = defineStore(
       sidebarLogo: storageSetting.sidebarLogo === undefined ? sidebarLogo : storageSetting.sidebarLogo,
       dynamicTitle: storageSetting.dynamicTitle === undefined ? dynamicTitle : storageSetting.dynamicTitle,
       footerVisible: storageSetting.footerVisible === undefined ? footerVisible : storageSetting.footerVisible,
-      footerContent: footerContent,
-      isDark: isDark.value
+      footerContent,
+      isDark: isDark.value,
     }),
     actions: {
       // 修改布局设置
-      changeSetting(data: { key: string; value: any }) {
+      changeSetting(data: { key: string, value: any }) {
         const { key, value } = data
-        if (this.hasOwnProperty(key)) {
+        if (Object.hasOwn(this, key)) {
           (this as any)[key] = value
         }
       },
@@ -68,8 +68,9 @@ const useSettingsStore = defineStore(
         nextTick(() => {
           handleThemeStyle(this.theme)
         })
-      }
-    }
-  })
+      },
+    },
+  },
+)
 
 export default useSettingsStore

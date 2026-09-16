@@ -1,20 +1,20 @@
+import type { AjaxResult, AuthUserQueryParams, AuthUserSelectParams, RoleDeptTreeResult, RoleQueryParams, SysRole, SysUser, SysUserRole, TableDataInfo } from '@/types'
 import request from '@/utils/request'
-import type { RoleQueryParams, AuthUserQueryParams, SysRole, SysUser, SysUserRole, AuthUserSelectParams, AjaxResult, RoleDeptTreeResult, TableDataInfo } from '@/types'
 
 // 查询角色列表
 export function listRole(query: RoleQueryParams): Promise<TableDataInfo<SysRole[]>> {
   return request({
     url: '/system/role/list',
     method: 'get',
-    params: query
+    params: query,
   })
 }
 
 // 查询角色详细
 export function getRole(roleId: number): Promise<AjaxResult<SysRole>> {
   return request({
-    url: '/system/role/' + roleId,
-    method: 'get'
+    url: `/system/role/${roleId}`,
+    method: 'get',
   })
 }
 
@@ -23,7 +23,7 @@ export function addRole(data: SysRole): Promise<AjaxResult> {
   return request({
     url: '/system/role',
     method: 'post',
-    data: data
+    data,
   })
 }
 
@@ -32,7 +32,7 @@ export function updateRole(data: SysRole): Promise<AjaxResult> {
   return request({
     url: '/system/role',
     method: 'put',
-    data: data
+    data,
   })
 }
 
@@ -41,7 +41,7 @@ export function dataScope(data: SysRole): Promise<AjaxResult> {
   return request({
     url: '/system/role/dataScope',
     method: 'put',
-    data: data
+    data,
   })
 }
 
@@ -49,20 +49,20 @@ export function dataScope(data: SysRole): Promise<AjaxResult> {
 export function changeRoleStatus(roleId: number, status: string): Promise<AjaxResult> {
   const data = {
     roleId,
-    status
+    status,
   }
   return request({
     url: '/system/role/changeStatus',
     method: 'put',
-    data: data
+    data,
   })
 }
 
 // 删除角色
 export function delRole(roleId: number | number[]): Promise<AjaxResult> {
   return request({
-    url: '/system/role/' + roleId,
-    method: 'delete'
+    url: `/system/role/${roleId}`,
+    method: 'delete',
   })
 }
 
@@ -71,7 +71,7 @@ export function allocatedUserList(query: AuthUserQueryParams): Promise<TableData
   return request({
     url: '/system/role/authUser/allocatedList',
     method: 'get',
-    params: query
+    params: query,
   })
 }
 
@@ -80,7 +80,7 @@ export function unallocatedUserList(query: AuthUserQueryParams): Promise<TableDa
   return request({
     url: '/system/role/authUser/unallocatedList',
     method: 'get',
-    params: query
+    params: query,
   })
 }
 
@@ -89,7 +89,7 @@ export function authUserCancel(data: SysUserRole): Promise<AjaxResult> {
   return request({
     url: '/system/role/authUser/cancel',
     method: 'put',
-    data: data
+    data,
   })
 }
 
@@ -98,7 +98,7 @@ export function authUserCancelAll(data: AuthUserSelectParams): Promise<AjaxResul
   return request({
     url: '/system/role/authUser/cancelAll',
     method: 'put',
-    params: data
+    params: data,
   })
 }
 
@@ -107,14 +107,14 @@ export function authUserSelectAll(data: AuthUserSelectParams): Promise<AjaxResul
   return request({
     url: '/system/role/authUser/selectAll',
     method: 'put',
-    params: data
+    params: data,
   })
 }
 
 // 根据角色ID查询部门树结构
 export function deptTreeSelect(roleId: number): Promise<RoleDeptTreeResult> {
   return request({
-    url: '/system/role/deptTree/' + roleId,
-    method: 'get'
+    url: `/system/role/deptTree/${roleId}`,
+    method: 'get',
   })
 }

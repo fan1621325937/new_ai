@@ -24,9 +24,9 @@ export interface UserInfoResult extends AjaxResult {
 /** 验证码响应 */
 export interface CaptchaInfoResult extends AjaxResult {
   /** 验证码缓存key */
-  uuid: string;
+  uuid: string
   /** 验证码图片Base64 */
-  img: string;
+  img: string
   /** 验证码开关 */
   captchaEnabled: boolean
 }

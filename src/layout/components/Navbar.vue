@@ -1,68 +1,18 @@
-<template>
-  <div class="navbar" :class="'nav' + settingsStore.navType">
-    <hamburger id="hamburger-container" :is-active="appStore.sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
-    <breadcrumb v-if="settingsStore.navType == 1" id="breadcrumb-container" class="breadcrumb-container" />
-    <top-nav v-if="settingsStore.navType == 2" id="topmenu-container" class="topmenu-container" />
-    <template v-if="settingsStore.navType == 3">
-      <logo v-show="settingsStore.sidebarLogo" :collapse="false"></logo>
-      <top-bar id="topbar-container" class="topbar-container" />
-    </template>
-
-    <div class="right-menu">
-      <template v-if="appStore.device !== 'mobile'">
-        <header-search id="header-search" class="right-menu-item" />
-
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
-
-        <el-tooltip content="主题模式" effect="dark" placement="bottom">
-          <div class="right-menu-item hover-effect theme-switch-wrapper" @click="toggleTheme">
-            <svg-icon v-if="settingsStore.isDark" icon-class="sunny" />
-            <svg-icon v-if="!settingsStore.isDark" icon-class="moon" />
-          </div>
-        </el-tooltip>
-
-        <el-tooltip content="布局大小" effect="dark" placement="bottom">
-          <size-select id="size-select" class="right-menu-item hover-effect" />
-        </el-tooltip>
-      </template>
-
-      <el-dropdown @command="handleCommand" class="avatar-container right-menu-item hover-effect" trigger="hover">
-        <div class="avatar-wrapper">
-          <img :src="userStore.avatar" class="user-avatar" />
-          <span class="user-nickname"> {{ userStore.nickName }} </span>
-        </div>
-        <template #dropdown>
-          <el-dropdown-menu>
-            <router-link to="/user/profile">
-              <el-dropdown-item>个人中心</el-dropdown-item>
-            </router-link>
-            <el-dropdown-item command="setLayout" v-if="settingsStore.showSettings">
-                <span>布局设置</span>
-            </el-dropdown-item>
-            <el-dropdown-item divided command="logout">
-              <span>退出登录</span>
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ElMessageBox } from 'element-plus'
 import Breadcrumb from '@/components/Breadcrumb/index.vue'
-import TopNav from './TopNav/index.vue'
-import TopBar from './TopBar/index.vue'
-import Logo from './Sidebar/Logo.vue'
 import Hamburger from '@/components/Hamburger/index.vue'
+import HeaderSearch from '@/components/HeaderSearch/index.vue'
 import Screenfull from '@/components/Screenfull/index.vue'
 import SizeSelect from '@/components/SizeSelect/index.vue'
-import HeaderSearch from '@/components/HeaderSearch/index.vue'
 import useAppStore from '@/store/modules/app'
-import useUserStore from '@/store/modules/user'
 import useSettingsStore from '@/store/modules/settings'
+import useUserStore from '@/store/modules/user'
+import Logo from './Sidebar/Logo.vue'
+import TopBar from './TopBar/index.vue'
+import TopNav from './TopNav/index.vue'
 
+const emits = defineEmits(['setLayout'])
 const appStore = useAppStore()
 const userStore = useUserStore()
 const settingsStore = useSettingsStore()
@@ -73,10 +23,10 @@ function toggleSideBar(): void {
 
 function handleCommand(command: string): void {
   switch (command) {
-    case "setLayout":
+    case 'setLayout':
       setLayout()
       break
-    case "logout":
+    case 'logout':
       logout()
       break
     default:
@@ -88,7 +38,7 @@ function logout(): void {
   ElMessageBox.confirm('确定注销并退出系统吗？', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning'
+    type: 'warning',
   }).then(() => {
     userStore.logOut().then(() => {
       location.href = '/index'
@@ -96,7 +46,6 @@ function logout(): void {
   }).catch(() => { })
 }
 
-const emits = defineEmits(['setLayout'])
 function setLayout(): void {
   emits('setLayout')
 }
@@ -106,7 +55,7 @@ async function toggleTheme(event?: MouseEvent): Promise<void> {
   const y = event?.clientY || window.innerHeight / 2
   const wasDark = settingsStore.isDark
 
-  const isReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const isSupported = typeof (document as any).startViewTransition === 'function' && !isReducedMotion
 
   if (!isSupported) {
@@ -116,7 +65,7 @@ async function toggleTheme(event?: MouseEvent): Promise<void> {
 
   try {
     const transition = document.startViewTransition(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 10))
+      await new Promise(resolve => setTimeout(resolve, 10))
       settingsStore.toggleTheme()
       await nextTick()
     })
@@ -126,21 +75,74 @@ async function toggleTheme(event?: MouseEvent): Promise<void> {
     const clipPath = [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`]
     document.documentElement.animate(
       {
-        clipPath: !wasDark ? [...clipPath].reverse() : clipPath
-      }, {
+        clipPath: !wasDark ? [...clipPath].reverse() : clipPath,
+      },
+      {
         duration: 650,
-        easing: "cubic-bezier(0.4, 0, 0.2, 1)",
-        fill: "forwards",
-        pseudoElement: !wasDark ? "::view-transition-old(root)" : "::view-transition-new(root)"
-      }
+        easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        fill: 'forwards',
+        pseudoElement: !wasDark ? '::view-transition-old(root)' : '::view-transition-new(root)',
+      },
     )
     await transition.finished
-  } catch (error) {
-    console.warn("View transition failed, falling back to immediate toggle:", error)
+  }
+  catch (error) {
+    console.warn('View transition failed, falling back to immediate toggle:', error)
     settingsStore.toggleTheme()
   }
 }
 </script>
+
+<template>
+  <div class="navbar" :class="`nav${settingsStore.navType}`">
+    <Hamburger id="hamburger-container" :is-active="appStore.sidebar.opened" class="hamburger-container" @toggle-click="toggleSideBar" />
+    <Breadcrumb v-if="settingsStore.navType == 1" id="breadcrumb-container" class="breadcrumb-container" />
+    <TopNav v-if="settingsStore.navType == 2" id="topmenu-container" class="topmenu-container" />
+    <template v-if="settingsStore.navType == 3">
+      <Logo v-show="settingsStore.sidebarLogo" :collapse="false" />
+      <TopBar id="topbar-container" class="topbar-container" />
+    </template>
+
+    <div class="right-menu">
+      <template v-if="appStore.device !== 'mobile'">
+        <HeaderSearch id="header-search" class="right-menu-item" />
+
+        <Screenfull id="screenfull" class="right-menu-item hover-effect" />
+
+        <el-tooltip content="主题模式" effect="dark" placement="bottom">
+          <div class="right-menu-item hover-effect theme-switch-wrapper" @click="toggleTheme">
+            <svg-icon v-if="settingsStore.isDark" icon-class="sunny" />
+            <svg-icon v-if="!settingsStore.isDark" icon-class="moon" />
+          </div>
+        </el-tooltip>
+
+        <el-tooltip content="布局大小" effect="dark" placement="bottom">
+          <SizeSelect id="size-select" class="right-menu-item hover-effect" />
+        </el-tooltip>
+      </template>
+
+      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="hover" @command="handleCommand">
+        <div class="avatar-wrapper">
+          <img :src="userStore.avatar" class="user-avatar">
+          <span class="user-nickname"> {{ userStore.nickName }} </span>
+        </div>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <router-link to="/user/profile">
+              <el-dropdown-item>个人中心</el-dropdown-item>
+            </router-link>
+            <el-dropdown-item v-if="settingsStore.showSettings" command="setLayout">
+              <span>布局设置</span>
+            </el-dropdown-item>
+            <el-dropdown-item divided command="logout">
+              <span>退出登录</span>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </div>
+  </div>
+</template>
 
 <style lang='scss' scoped>
 .navbar.nav3 {
@@ -154,9 +156,10 @@ async function toggleTheme(event?: MouseEvent): Promise<void> {
   overflow: hidden;
   position: relative;
   background: var(--navbar-bg);
-  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  box-shadow: 0 1px 4px rgb(0, 21, 41, 0.08);
   display: flex;
   align-items: center;
+
   // padding: 0 8px;
   box-sizing: border-box;
 
@@ -172,7 +175,7 @@ async function toggleTheme(event?: MouseEvent): Promise<void> {
     margin-right: 8px;
 
     &:hover {
-      background: rgba(0, 0, 0, 0.025);
+      background: rgb(0, 0, 0, 0.025);
     }
   }
 
@@ -195,19 +198,19 @@ async function toggleTheme(event?: MouseEvent): Promise<void> {
     overflow-y: hidden;
     margin-left: 8px;
     scrollbar-width: thin;
-    scrollbar-color: rgba(144, 147, 153, 0.4) transparent;
+    scrollbar-color: rgb(144, 147, 153, 0.4) transparent;
 
     &::-webkit-scrollbar {
       height: 4px;
     }
 
     &::-webkit-scrollbar-thumb {
-      background: rgba(144, 147, 153, 0.4);
+      background: rgb(144, 147, 153, 0.4);
       border-radius: 2px;
     }
 
     &::-webkit-scrollbar-thumb:hover {
-      background: rgba(144, 147, 153, 0.6);
+      background: rgb(144, 147, 153, 0.6);
     }
 
     &::-webkit-scrollbar-track {
@@ -239,7 +242,7 @@ async function toggleTheme(event?: MouseEvent): Promise<void> {
         transition: background 0.3s;
 
         &:hover {
-          background: rgba(0, 0, 0, 0.025);
+          background: rgb(0, 0, 0, 0.025);
         }
       }
 
@@ -249,7 +252,7 @@ async function toggleTheme(event?: MouseEvent): Promise<void> {
 
         svg {
           transition: transform 0.3s;
-          
+
           &:hover {
             transform: scale(1.15);
           }
@@ -258,8 +261,8 @@ async function toggleTheme(event?: MouseEvent): Promise<void> {
     }
 
     .avatar-container {
-      margin-right: 0px;
-      padding-right: 0px;
+      margin-right: 0;
+      padding-right: 0;
 
       .avatar-wrapper {
         margin-top: 10px;
@@ -276,7 +279,7 @@ async function toggleTheme(event?: MouseEvent): Promise<void> {
 
         .user-nickname{
           position: relative;
-          left: 0px;
+          left: 0;
           bottom: 10px;
           font-size: 14px;
           font-weight: bold;

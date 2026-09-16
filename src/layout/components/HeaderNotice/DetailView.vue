@@ -1,60 +1,6 @@
-<template>
-  <el-drawer v-model="visible" title="公告详情" direction="rtl" size="50%" append-to-body :before-close="handleClose" class="notice-detail-drawer">
-    <div v-loading="loading" class="notice-detail-drawer__body">
-      <div v-if="!detail" class="notice-empty">
-        <el-icon><Document /></el-icon>
-        <span>暂无数据</span>
-      </div>
-      <div v-else class="notice-page">
-        <div class="notice-type-wrap">
-          <span v-if="detail.noticeType === '1'" class="notice-type-tag type-notify">
-            <el-icon><Bell /></el-icon> 通知
-          </span>
-          <span v-else-if="detail.noticeType === '2'" class="notice-type-tag type-announce">
-            <el-icon><Message /></el-icon> 公告
-          </span>
-          <span v-else class="notice-type-tag type-notify">
-            <el-icon><Document /></el-icon> 消息
-          </span>
-        </div>
-
-        <h1 class="notice-title">{{ detail.noticeTitle }}</h1>
-
-        <div class="notice-meta">
-          <span class="meta-item">
-            <el-icon><User /></el-icon>
-            <span>{{ detail.createBy || '—' }}</span>
-          </span>
-          <span class="meta-item">
-            <el-icon><Clock /></el-icon>
-            <span>{{ detail.createTime || '—' }}</span>
-          </span>
-          <span class="meta-item">
-            <span :class="['status-dot', isStatusNormal ? 'status-ok' : 'status-off']"></span>
-            <span>{{ isStatusNormal ? '正常' : '已关闭' }}</span>
-          </span>
-        </div>
-
-        <div class="notice-divider">
-          <span class="notice-divider-dot"></span>
-          <span class="notice-divider-dot"></span>
-          <span class="notice-divider-dot"></span>
-        </div>
-
-        <div class="notice-body">
-          <div v-if="hasContent" class="notice-content" v-html="detail.noticeContent" />
-          <div v-else class="notice-empty notice-empty--inner">
-            <el-icon><Document /></el-icon> 暂无内容
-          </div>
-        </div>
-      </div>
-    </div>
-  </el-drawer>
-</template>
-
 <script setup lang="ts">
-import { getNotice } from '@/api/system/notice'
 import type { SysNotice } from '@/types/api/system/notice'
+import { getNotice } from '@/api/system/notice'
 
 const visible = ref<boolean>(false)
 const loading = ref<boolean>(false)
@@ -78,7 +24,8 @@ function open(payload: any) {
     if (payload.noticeContent != null) {
       preset = payload
     }
-  } else {
+  }
+  else {
     id = payload
   }
   visible.value = true
@@ -92,7 +39,7 @@ function open(payload: any) {
   }
   loading.value = true
   detail.value = null
-  getNotice(id).then(res => {
+  getNotice(id).then((res) => {
     detail.value = res.data
   }).catch(() => {
     detail.value = null
@@ -108,9 +55,65 @@ function handleClose() {
 }
 
 defineExpose({
-  open
+  open,
 })
 </script>
+
+<template>
+  <el-drawer v-model="visible" title="公告详情" direction="rtl" size="50%" append-to-body :before-close="handleClose" class="notice-detail-drawer">
+    <div v-loading="loading" class="notice-detail-drawer__body">
+      <div v-if="!detail" class="notice-empty">
+        <el-icon><Document /></el-icon>
+        <span>暂无数据</span>
+      </div>
+      <div v-else class="notice-page">
+        <div class="notice-type-wrap">
+          <span v-if="detail.noticeType === '1'" class="notice-type-tag type-notify">
+            <el-icon><Bell /></el-icon> 通知
+          </span>
+          <span v-else-if="detail.noticeType === '2'" class="notice-type-tag type-announce">
+            <el-icon><Message /></el-icon> 公告
+          </span>
+          <span v-else class="notice-type-tag type-notify">
+            <el-icon><Document /></el-icon> 消息
+          </span>
+        </div>
+
+        <h1 class="notice-title">
+          {{ detail.noticeTitle }}
+        </h1>
+
+        <div class="notice-meta">
+          <span class="meta-item">
+            <el-icon><User /></el-icon>
+            <span>{{ detail.createBy || '—' }}</span>
+          </span>
+          <span class="meta-item">
+            <el-icon><Clock /></el-icon>
+            <span>{{ detail.createTime || '—' }}</span>
+          </span>
+          <span class="meta-item">
+            <span class="status-dot" :class="[isStatusNormal ? 'status-ok' : 'status-off']" />
+            <span>{{ isStatusNormal ? '正常' : '已关闭' }}</span>
+          </span>
+        </div>
+
+        <div class="notice-divider">
+          <span class="notice-divider-dot" />
+          <span class="notice-divider-dot" />
+          <span class="notice-divider-dot" />
+        </div>
+
+        <div class="notice-body">
+          <div v-if="hasContent" class="notice-content" v-html="detail.noticeContent" />
+          <div v-else class="notice-empty notice-empty--inner">
+            <el-icon><Document /></el-icon> 暂无内容
+          </div>
+        </div>
+      </div>
+    </div>
+  </el-drawer>
+</template>
 
 <style lang="scss" scoped>
 .notice-page {
@@ -220,7 +223,7 @@ defineExpose({
   background: var(--notice-body-bg, #fff);
   border-radius: 6px;
   padding: 28px 32px;
-  box-shadow: var(--notice-body-shadow, 0 1px 4px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.04));
+  box-shadow: var(--notice-body-shadow, 0 1px 4px rgb(0, 0, 0, 0.06), 0 0 0 1px rgb(0, 0, 0, 0.04));
   min-height: 120px;
 }
 

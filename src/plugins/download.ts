@@ -10,53 +10,56 @@ let downloadLoadingInstance: ReturnType<typeof ElLoading.service>
 
 export default {
   name(name: string, isDelete = true) {
-    const url = baseURL + "/common/download?fileName=" + encodeURIComponent(name) + "&delete=" + isDelete
+    const url = `${baseURL}/common/download?fileName=${encodeURIComponent(name)}&delete=${isDelete}`
     axios({
       method: 'get',
-      url: url,
+      url,
       responseType: 'blob',
-      headers: { 'Authorization': 'Bearer ' + getToken() }
+      headers: { Authorization: `Bearer ${getToken()}` },
     }).then((res: any) => {
       const isBlob = blobValidate(res.data)
       if (isBlob) {
         const blob = new Blob([res.data])
         this.saveAs(blob, decodeURIComponent(res.headers['download-filename']))
-      } else {
+      }
+      else {
         this.printErrMsg(res.data)
       }
     })
   },
   resource(resource: string) {
-    const url = baseURL + "/common/download/resource?resource=" + encodeURIComponent(resource)
+    const url = `${baseURL}/common/download/resource?resource=${encodeURIComponent(resource)}`
     axios({
       method: 'get',
-      url: url,
+      url,
       responseType: 'blob',
-      headers: { 'Authorization': 'Bearer ' + getToken() }
+      headers: { Authorization: `Bearer ${getToken()}` },
     }).then((res: any) => {
       const isBlob = blobValidate(res.data)
       if (isBlob) {
         const blob = new Blob([res.data])
         this.saveAs(blob, decodeURIComponent(res.headers['download-filename']))
-      } else {
+      }
+      else {
         this.printErrMsg(res.data)
       }
     })
   },
   zip(url: string, name: string) {
     const downloadUrl = baseURL + url
-    downloadLoadingInstance = ElLoading.service({ text: "正在下载数据，请稍候", background: "rgba(0, 0, 0, 0.7)", })
+    downloadLoadingInstance = ElLoading.service({ text: '正在下载数据，请稍候', background: 'rgba(0, 0, 0, 0.7)' })
     axios({
       method: 'get',
       url: downloadUrl,
       responseType: 'blob',
-      headers: { 'Authorization': 'Bearer ' + getToken() }
+      headers: { Authorization: `Bearer ${getToken()}` },
     }).then((res: any) => {
       const isBlob = blobValidate(res.data)
       if (isBlob) {
         const blob = new Blob([res.data], { type: 'application/zip' })
         this.saveAs(blob, name)
-      } else {
+      }
+      else {
         this.printErrMsg(res.data)
       }
       downloadLoadingInstance.close()
@@ -72,7 +75,7 @@ export default {
   async printErrMsg(data: any) {
     const resText = await data.text()
     const rspObj = JSON.parse(resText)
-    const errMsg = errorCode[rspObj.code] || rspObj.msg || errorCode['default']
+    const errMsg = errorCode[rspObj.code] || rspObj.msg || errorCode.default
     ElMessage.error(errMsg)
-  }
+  },
 }

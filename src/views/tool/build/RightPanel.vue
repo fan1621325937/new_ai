@@ -831,7 +831,7 @@ function tagChange(tagIcon: string): void {
     width: 16px;
     height: 16px;
     line-height: 16px;
-    background: rgba(0, 0, 0, .2);
+    background: rgb(0, 0, 0, .2);
     border-radius: 50%;
     color: #fff;
     z-index: 1;

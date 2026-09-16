@@ -40,7 +40,7 @@
       v-model:page="queryParams.pageNum"
       v-model:limit="queryParams.pageSize"
       @pagination="getList"
-      style="padding: 6px 0px;"
+      style="padding: 6px 0;"
     />
   </el-dialog>
 </template>

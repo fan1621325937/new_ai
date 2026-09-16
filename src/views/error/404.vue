@@ -86,6 +86,7 @@ const message = computed(() => {
         animation-fill-mode: forwards;
         animation-delay: 1s;
       }
+
       @keyframes cloudLeft {
         0% {
           top: 17px;
@@ -108,6 +109,7 @@ const message = computed(() => {
           opacity: 0;
         }
       }
+
       @keyframes cloudMid {
         0% {
           top: 10px;
@@ -130,6 +132,7 @@ const message = computed(() => {
           opacity: 0;
         }
       }
+
       @keyframes cloudRight {
         0% {
           top: 100px;
@@ -202,7 +205,7 @@ const message = computed(() => {
       background: #1482f0;
       border-radius: 100px;
       text-align: center;
-      color: #ffffff;
+      color: #fff;
       opacity: 0;
       font-size: 14px;
       line-height: 36px;
@@ -212,6 +215,7 @@ const message = computed(() => {
       animation-delay: 0.3s;
       animation-fill-mode: forwards;
     }
+
     @keyframes slideUp {
       0% {
         transform: translateY(60px);

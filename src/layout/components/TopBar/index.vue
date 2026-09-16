@@ -1,14 +1,8 @@
-<template>
-  <el-menu class="topbar-menu" :ellipsis="false" :default-active="activeMenu" :active-text-color="theme" mode="horizontal">
-    <sidebar-item :key="route.path + index" v-for="(route, index) in topMenus" :item="route" :base-path="route.path" />
-  </el-menu>
-</template>
-
 <script setup lang="ts">
-import SidebarItem from '../Sidebar/SidebarItem.vue'
 import useAppStore from '@/store/modules/app'
-import useSettingsStore from '@/store/modules/settings'
 import usePermissionStore from '@/store/modules/permission'
+import useSettingsStore from '@/store/modules/settings'
+import SidebarItem from '../Sidebar/SidebarItem.vue'
 
 const route = useRoute()
 const appStore = useAppStore()
@@ -30,6 +24,12 @@ const topMenus = computed(() => {
   return permissionStore.sidebarRouters.filter((f: any) => !f.hidden)
 })
 </script>
+
+<template>
+  <el-menu class="topbar-menu" :ellipsis="false" :default-active="activeMenu" :active-text-color="theme" mode="horizontal">
+    <SidebarItem v-for="(route, index) in topMenus" :key="route.path + index" :item="route" :base-path="route.path" />
+  </el-menu>
+</template>
 
 <style lang="scss">
 /* menu item */

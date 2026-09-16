@@ -1,9 +1,9 @@
-@use './mixin.scss';
-@use './transition.scss';
-@use './element-ui.scss';
-@use './sidebar.scss';
-@use './btn.scss';
-@use './ruoyi.scss';
+@use './mixin';
+@use './transition';
+@use './element-ui';
+@use './sidebar';
+@use './btn';
+@use './ruoyi';
 
 body {
   height: 100%;
@@ -11,7 +11,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
 }
 
 label {
@@ -28,13 +28,13 @@ html {
 }
 
 *,
-*:before,
-*:after {
+*::before,
+*::after {
   box-sizing: inherit;
 }
 
 .no-padding {
-  padding: 0px !important;
+  padding: 0 !important;
 }
 
 .padding-content {
@@ -87,7 +87,7 @@ div:focus {
 }
 
 .clearfix {
-  &:after {
+  &::after {
     visibility: hidden;
     display: block;
     font-size: 0;
@@ -120,7 +120,7 @@ aside {
   }
 }
 
-//main-container全局样式
+// main-container全局样式
 .app-container {
   padding: 20px;
 }
@@ -142,7 +142,7 @@ aside {
   text-align: right;
   padding-right: 20px;
   transition: 600ms ease position;
-  background: linear-gradient(90deg, rgba(32, 182, 249, 1) 0%, rgba(32, 182, 249, 1) 0%, rgba(33, 120, 241, 1) 100%, rgba(33, 120, 241, 1) 100%);
+  background: linear-gradient(90deg, rgb(32, 182, 249, 1) 0%, rgb(32, 182, 249, 1) 0%, rgb(33, 120, 241, 1) 100%, rgb(33, 120, 241, 1) 100%);
 
   .subtitle {
     font-size: 20px;

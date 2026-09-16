@@ -15,7 +15,7 @@ export function handleThemeStyle(theme: string): void {
 export function mixHexColors(fg: string, bg: string, t: number): string {
   const a = hexToRgb(String(fg).replace('#', ''))
   const b = hexToRgb(String(bg).replace('#', ''))
-  const out = [0, 1, 2].map((i) => Math.round(a[i] * (1 - t) + b[i] * t))
+  const out = [0, 1, 2].map(i => Math.round(a[i] * (1 - t) + b[i] * t))
   return rgbToHex(out[0], out[1], out[2])
 }
 
@@ -29,7 +29,7 @@ export function hexToRgb(str: string): number[] {
   str = str.replace('#', '')
   const hexs = str.match(/../g) || []
   for (let i = 0; i < 3; i++) {
-    hexs[i] = String(parseInt(hexs[i], 16))
+    hexs[i] = String(Number.parseInt(hexs[i], 16))
   }
   return hexs.map(h => parseInt(h))
 }

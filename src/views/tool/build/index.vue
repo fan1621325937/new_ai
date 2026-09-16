@@ -380,6 +380,7 @@ $lighterBlue: #409EFF;
 
           .components-title {
             font-size: 14px;
+
             // color: #222;
             margin: 6px 2px;
 

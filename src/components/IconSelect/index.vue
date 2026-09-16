@@ -1,45 +1,19 @@
-<template>
-  <div class="icon-body">
-    <el-input
-      v-model="iconName"
-      class="icon-search"
-      clearable
-      placeholder="请输入图标名称"
-      @clear="filterIcons"
-      @input="filterIcons"
-    >
-      <template #suffix><i class="el-icon-search el-input__icon" /></template>
-    </el-input>
-    <div class="icon-list">
-      <div class="list-container">
-        <div v-for="(item, index) in iconList" class="icon-item-wrapper" :key="index" @click="selectedIcon(item)">
-          <div :class="['icon-item', { active: activeIcon === item }]">
-            <svg-icon :icon-class="item" class-name="icon" style="height: 25px;width: 16px;"/>
-            <span>{{ item }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import icons from './requireIcons'
 
 const props = defineProps({
   activeIcon: {
-    type: String
-  }
+    type: String,
+  },
 })
 
+const emit = defineEmits(['selected'])
 const iconName = ref('')
 const iconList = ref(icons)
-const emit = defineEmits(['selected'])
-
 function filterIcons(): void {
   iconList.value = icons
   if (iconName.value) {
-    iconList.value = icons.filter(item => item.indexOf(iconName.value) !== -1)
+    iconList.value = icons.filter(item => item.includes(iconName.value))
   }
 }
 
@@ -54,9 +28,36 @@ function reset(): void {
 }
 
 defineExpose({
-  reset
+  reset,
 })
 </script>
+
+<template>
+  <div class="icon-body">
+    <el-input
+      v-model="iconName"
+      class="icon-search"
+      clearable
+      placeholder="请输入图标名称"
+      @clear="filterIcons"
+      @input="filterIcons"
+    >
+      <template #suffix>
+        <i class="el-icon-search el-input__icon" />
+      </template>
+    </el-input>
+    <div class="icon-list">
+      <div class="list-container">
+        <div v-for="(item, index) in iconList" :key="index" class="icon-item-wrapper" @click="selectedIcon(item)">
+          <div class="icon-item" :class="[{ active: activeIcon === item }]">
+            <svg-icon :icon-class="item" class-name="icon" style="height: 25px;width: 16px;" />
+            <span>{{ item }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style lang='scss' scoped>
    .icon-body {

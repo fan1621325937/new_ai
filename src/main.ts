@@ -1,48 +1,48 @@
-import { createApp } from 'vue'
-
-import Cookies from 'js-cookie'
-
 import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
-import 'element-plus/theme-chalk/dark/css-vars.css'
+
 import locale from 'element-plus/es/locale/lang/zh-cn'
 
-import '@/assets/styles/index.scss' // global css
-
-import App from './App.vue'
-import store from './store/index.js'
-import router from './router/index.js'
-import directive from './directive/index.js' // directive
-
-// 注册指令
-import plugins from './plugins/index.js' // plugins
-import { download } from '@/utils/request'
-
-// svg图标
-import 'virtual:svg-icons-register'
-import SvgIcon from '@/components/SvgIcon/index.vue'
-import elementIcons from '@/components/SvgIcon/svgicon'
-
-import './permission.js' // permission control
-
-import { useDict } from '@/utils/dict'
-import { getConfigKey } from "@/api/system/config"
-import { parseTime, resetForm, addDateRange, handleTree, selectDictLabel, selectDictLabels } from '@/utils/ruoyi'
-
-// 分页组件
-import Pagination from '@/components/Pagination/index.vue'
-// 自定义表格工具组件
-import RightToolbar from '@/components/RightToolbar/index.vue'
-// 富文本组件
-import Editor from "@/components/Editor/index.vue"
-// 文件上传组件
-import FileUpload from "@/components/FileUpload/index.vue"
-// 图片上传组件
-import ImageUpload from "@/components/ImageUpload/index.vue"
-// 图片预览组件
-import ImagePreview from "@/components/ImagePreview/index.vue"
+import Cookies from 'js-cookie'
+import { createApp } from 'vue'
+import { getConfigKey } from '@/api/system/config'
 // 字典标签组件
 import DictTag from '@/components/DictTag/index.vue'
+
+// 富文本组件
+import Editor from '@/components/Editor/index.vue'
+
+// 文件上传组件
+import FileUpload from '@/components/FileUpload/index.vue'
+// 图片预览组件
+import ImagePreview from '@/components/ImagePreview/index.vue'
+// 图片上传组件
+import ImageUpload from '@/components/ImageUpload/index.vue'
+// 分页组件
+import Pagination from '@/components/Pagination/index.vue'
+
+// 自定义表格工具组件
+import RightToolbar from '@/components/RightToolbar/index.vue'
+import SvgIcon from '@/components/SvgIcon/index.vue'
+
+import elementIcons from '@/components/SvgIcon/svgicon'
+import { useDict } from '@/utils/dict'
+import { download } from '@/utils/request'
+
+import { addDateRange, handleTree, parseTime, resetForm, selectDictLabel, selectDictLabels } from '@/utils/ruoyi'
+
+import App from './App.vue'
+import directive from './directive/index.js' // directive
+// 注册指令
+import plugins from './plugins/index.js' // plugins
+
+import router from './router/index.js'
+import store from './store/index.js'
+import 'element-plus/dist/index.css'
+import 'element-plus/theme-chalk/dark/css-vars.css'
+import '@/assets/styles/index.scss' // global css
+// svg图标
+import 'virtual:svg-icons-register'
+import './permission.js' // permission control
 
 const app = createApp(App)
 
@@ -77,9 +77,9 @@ directive(app)
 // 使用element-plus 并且设置全局的大小
 // @ts-ignore
 app.use(ElementPlus, {
-  locale: locale,
+  locale,
   // 支持 large、default、small
-  size: Cookies.get('size') || 'default'
+  size: Cookies.get('size') || 'default',
 })
 
 app.mount('#app')

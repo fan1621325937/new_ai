@@ -165,14 +165,14 @@ getCode()
   background-size: cover;
 }
 .title {
-  margin: 0px auto 30px auto;
+  margin: 0 auto 30px auto;
   text-align: center;
   color: #707070;
 }
 
 .register-form {
   border-radius: 6px;
-  background: #ffffff;
+  background: #fff;
   width: 400px;
   padding: 25px 25px 5px 25px;
   .el-input {
@@ -184,7 +184,7 @@ getCode()
   .input-icon {
     height: 39px;
     width: 14px;
-    margin-left: 0px;
+    margin-left: 0;
   }
 }
 .register-tip {

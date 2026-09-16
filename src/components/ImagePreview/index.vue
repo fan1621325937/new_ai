@@ -1,3 +1,58 @@
+<script setup lang="ts">
+import { isExternal } from '@/utils/validate'
+
+const props = defineProps({
+  src: {
+    type: String,
+    default: '',
+  },
+  width: {
+    type: [Number, String],
+    default: '',
+  },
+  height: {
+    type: [Number, String],
+    default: '',
+  },
+})
+
+const realSrc = computed(() => {
+  if (!props.src) {
+    return undefined
+  }
+  const real_src = props.src.split(',')[0]
+  if (isExternal(real_src)) {
+    return real_src
+  }
+  return import.meta.env.VITE_APP_BASE_API + real_src
+})
+
+const realSrcList = computed(() => {
+  if (!props.src) {
+    return undefined
+  }
+  const real_src_list = props.src.split(',')
+  const srcList: string[] = []
+  real_src_list.forEach((item: string) => {
+    if (isExternal(item)) {
+      srcList.push(item)
+    }
+    else {
+      srcList.push(import.meta.env.VITE_APP_BASE_API + item)
+    }
+  })
+  return srcList
+})
+
+const realWidth = computed(() =>
+  typeof props.width == 'string' ? props.width : `${props.width}px`,
+)
+
+const realHeight = computed(() =>
+  typeof props.height == 'string' ? props.height : `${props.height}px`,
+)
+</script>
+
 <template>
   <el-image
     :src="`${realSrc}`"
@@ -13,60 +68,6 @@
     </template>
   </el-image>
 </template>
-
-<script setup lang="ts">
-import { isExternal } from "@/utils/validate"
-
-const props = defineProps({
-  src: {
-    type: String,
-    default: ""
-  },
-  width: {
-    type: [Number, String],
-    default: ""
-  },
-  height: {
-    type: [Number, String],
-    default: ""
-  }
-})
-
-const realSrc = computed(() => {
-  if (!props.src) {
-    return undefined
-  }
-  const real_src = props.src.split(",")[0]
-  if (isExternal(real_src)) {
-    return real_src
-  }
-  return import.meta.env.VITE_APP_BASE_API + real_src
-})
-
-const realSrcList = computed(() => {
-  if (!props.src) {
-    return undefined
-  }
-  const real_src_list = props.src.split(",")
-  const srcList: string[] = []
-  real_src_list.forEach((item: string) => {
-    if (isExternal(item)) {
-      srcList.push(item)
-    } else {
-      srcList.push(import.meta.env.VITE_APP_BASE_API + item)
-    }
-  })
-  return srcList
-})
-
-const realWidth = computed(() =>
-  typeof props.width == "string" ? props.width : `${props.width}px`
-)
-
-const realHeight = computed(() =>
-  typeof props.height == "string" ? props.height : `${props.height}px`
-)
-</script>
 
 <style lang="scss" scoped>
 .el-image {

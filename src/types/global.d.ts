@@ -1,7 +1,8 @@
 /** 模块类型声明 */
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'
-  const component: DefineComponent<{}, {}, any>
+
+  const component: DefineComponent<Record<string, unknown>, Record<string, unknown>, any>
   export default component
 }
 
@@ -67,6 +68,7 @@ declare module 'file-saver' {
 // jsencrypt
 declare module 'jsencrypt/bin/jsencrypt.min' {
   import JSEncrypt from 'jsencrypt'
+
   export default JSEncrypt
 }
 
@@ -79,32 +81,32 @@ declare module '@vueup/vue-quill'
 // sortablejs
 declare module 'sortablejs' {
   export interface SortableEvent {
-    oldIndex: number;
-    newIndex: number;
+    oldIndex: number
+    newIndex: number
   }
-  
+
   export interface SortableOptions {
-    ghostClass?: string;
-    onEnd?: (evt: SortableEvent) => void;
+    ghostClass?: string
+    onEnd?: (evt: SortableEvent) => void
   }
-  
+
   export default class Sortable {
-    static create(el: HTMLElement, options: SortableOptions): Sortable;
+    static create(el: HTMLElement, options: SortableOptions): Sortable
   }
 }
 
 // fuse
 declare module 'fuse.js' {
   export interface FuseOptions<T> {
-    keys: string[];
-    threshold?: number;
-    includeScore?: boolean;
-    includeMatches?: boolean;
-    minMatchCharLength?: number;
-    shouldSort?: boolean;
+    keys: string[]
+    threshold?: number
+    includeScore?: boolean
+    includeMatches?: boolean
+    minMatchCharLength?: number
+    shouldSort?: boolean
     // 添加其他你需要的选项
   }
-  
+
   export default class Fuse<T> {
     constructor(list: T[], options?: FuseOptions<T>)
     search(pattern: string): T[]
@@ -113,22 +115,24 @@ declare module 'fuse.js' {
 
 // vuedraggable
 declare module 'vuedraggable/dist/vuedraggable.common' {
-  import { DefineComponent } from 'vue'
+  import type { DefineComponent } from 'vue'
+
   const draggable: DefineComponent
   export default draggable
 }
 
 // vue-cropper
 declare module 'vue-cropper' {
-  import { DefineComponent } from 'vue'
+  import type { DefineComponent } from 'vue'
+
   const VueCropper: DefineComponent
   export { VueCropper }
 }
 
 // splitpanes
 declare module 'splitpanes' {
-  import { DefineComponent } from 'vue'
-  
+  import type { DefineComponent } from 'vue'
+
   export const Splitpanes: DefineComponent
   export const Pane: DefineComponent
 }

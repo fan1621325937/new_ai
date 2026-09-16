@@ -1,5 +1,5 @@
+import type { AjaxResult, CaptchaInfoResult, LoginInfoResult, SysRegister, UserInfoResult } from '@/types'
 import request from '@/utils/request'
-import type { SysRegister, LoginInfoResult, UserInfoResult, CaptchaInfoResult, AjaxResult } from '@/types'
 
 // 登录方法
 export function login(username: string, password: string, code: string, uuid: string): Promise<LoginInfoResult> {
@@ -7,16 +7,16 @@ export function login(username: string, password: string, code: string, uuid: st
     username,
     password,
     code,
-    uuid
+    uuid,
   }
   return request({
     url: '/login',
     headers: {
       isToken: false,
-      repeatSubmit: false
+      repeatSubmit: false,
     },
     method: 'post',
-    data: data
+    data,
   })
 }
 
@@ -25,10 +25,10 @@ export function register(data: SysRegister): Promise<AjaxResult> {
   return request({
     url: '/register',
     headers: {
-      isToken: false
+      isToken: false,
     },
     method: 'post',
-    data: data
+    data,
   })
 }
 
@@ -36,7 +36,7 @@ export function register(data: SysRegister): Promise<AjaxResult> {
 export function getInfo(): Promise<UserInfoResult> {
   return request({
     url: '/getInfo',
-    method: 'get'
+    method: 'get',
   })
 }
 
@@ -44,7 +44,7 @@ export function getInfo(): Promise<UserInfoResult> {
 export function logout() {
   return request({
     url: '/logout',
-    method: 'post'
+    method: 'post',
   })
 }
 
@@ -53,9 +53,9 @@ export function getCodeImg(): Promise<CaptchaInfoResult> {
   return request({
     url: '/captchaImage',
     headers: {
-      isToken: false
+      isToken: false,
     },
     method: 'get',
-    timeout: 20000
+    timeout: 20000,
   })
 }

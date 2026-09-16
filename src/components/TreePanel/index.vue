@@ -1,12 +1,502 @@
+<script setup lang="ts">
+const props = defineProps({
+  // 树形数据
+  treeData: {
+    type: Array,
+    default: () => [],
+  },
+  // 标题
+  title: {
+    type: String,
+    default: '树形结构',
+  },
+  // 标题图标
+  titleIcon: {
+    type: [String, Object],
+    default: 'OfficeBuilding',
+  },
+  // 是否显示搜索框
+  showSearch: {
+    type: Boolean,
+    default: true,
+  },
+  // 搜索框占位符
+  searchPlaceholder: {
+    type: String,
+    default: '请输入名称',
+  },
+  // 是否默认收起侧边栏
+  defaultCollapsed: {
+    type: Boolean,
+    default: false,
+  },
+  // 树配置项
+  treeProps: {
+    type: Object,
+    default: () => ({
+      children: 'children',
+      label: 'label',
+    }),
+  },
+  // 节点唯一标识字段
+  nodeKey: {
+    type: String,
+    default: 'id',
+  },
+  // 是否在点击节点时展开或收起
+  expandOnClickNode: {
+    type: Boolean,
+    default: false,
+  },
+  // 是否显示复选框
+  showCheckbox: {
+    type: Boolean,
+    default: false,
+  },
+  // 是否严格的遵循父子不互相关联
+  checkStrictly: {
+    type: Boolean,
+    default: false,
+  },
+  // 是否默认展开所有节点
+  defaultExpandAll: {
+    type: Boolean,
+    default: false,
+  },
+  // 默认展开的节点的key数组
+  defaultExpandedKeys: {
+    type: Array,
+    default: () => [],
+  },
+  // 默认宽度
+  defaultWidth: {
+    type: Number,
+    default: 220,
+  },
+  // 收起时的宽度
+  collapsedWidth: {
+    type: Number,
+    default: 20,
+  },
+  // 最小宽度
+  minWidth: {
+    type: Number,
+    default: 180,
+  },
+  // 最大宽度
+  maxWidth: {
+    type: Number,
+    default: 400,
+  },
+  // 本地存储的宽度key
+  storageKey: {
+    type: String,
+    default: 'tree-sidebar-width',
+  },
+  // 是否启用本地存储宽度
+  enableStorage: {
+    type: Boolean,
+    default: true,
+  },
+  // 自定义过滤方法
+  filterMethod: {
+    type: Function,
+    default: null,
+  },
+})
+
+const emit = defineEmits([
+  'collapsed-change',
+  'expanded-all-change',
+  'refresh',
+  'node-click',
+  'check',
+  'node-expand',
+  'node-collapse',
+  'search',
+])
+
+const treeRef = ref<any>(null)
+
+// 响应式数据
+const searchKeyword = ref<string>('')
+const collapsed = ref<boolean>(props.defaultCollapsed)
+const sidebarWidth = ref<number>(props.defaultCollapsed ? props.collapsedWidth : props.defaultWidth)
+const isResizing = ref<boolean>(false)
+const startX = ref<number>(0)
+const startWidth = ref<number>(0)
+const saveWidthTimer = ref<NodeJS.Timeout | null>(null)
+const rafId = ref<number | null>(null)
+const isLoadingFromStorage = ref<boolean>(false)
+const expandedAll = ref<boolean>(props.defaultExpandAll)
+
+// 计算属性
+const isExpandedAll = computed<boolean>({
+  get: () => expandedAll.value,
+  set: (val: boolean) => {
+    expandedAll.value = val
+  },
+})
+
+// 节点过滤方法
+function filterNodeMethod(value: string, data: any): boolean {
+  if (props.filterMethod) {
+    return props.filterMethod(value, data)
+  }
+  if (!value)
+    return true
+  return data.label && data.label.includes(value)
+}
+
+// 监听折叠状态
+watch(collapsed, (newVal: boolean, oldVal: boolean) => {
+  if (newVal !== oldVal) {
+    handleCollapseChange(newVal)
+    emit('collapsed-change', newVal)
+  }
+})
+
+// 监听内部展开状态变化，触发实际树的展开/收起
+watch(expandedAll, (newVal: boolean) => {
+  nextTick(() => {
+    if (newVal) {
+      expandAllNodes()
+    }
+    else {
+      collapseAllNodes()
+    }
+  })
+  emit('expanded-all-change', newVal)
+})
+
+// 监听搜索关键词
+watch(searchKeyword, (val: string) => {
+  if (treeRef.value) {
+    treeRef.value.filter(val)
+    emit('search', val)
+  }
+})
+
+// 清理定时器和动画帧
+function cleanup(): void {
+  if (rafId.value) {
+    cancelAnimationFrame(rafId.value)
+    rafId.value = null
+  }
+  if (saveWidthTimer.value) {
+    clearTimeout(saveWidthTimer.value)
+    saveWidthTimer.value = null
+  }
+}
+
+// 处理收起/展开状态变化
+function handleCollapseChange(isCollapsed: boolean): void {
+  if (isCollapsed) {
+    saveWidthToStorage()
+    sidebarWidth.value = props.collapsedWidth
+  }
+  else {
+    const savedWidth = getSavedWidth()
+    sidebarWidth.value = savedWidth !== null ? savedWidth : props.defaultWidth
+  }
+}
+
+// 获取保存的宽度
+function getSavedWidth(): number | null {
+  if (!props.enableStorage) {
+    return null
+  }
+  try {
+    const savedWidth = localStorage.getItem(props.storageKey)
+    if (savedWidth) {
+      const width = parseInt(savedWidth, 10)
+      if (!isNaN(width) && width >= props.minWidth && width <= props.maxWidth) {
+        return width
+      }
+    }
+  }
+  catch (error) {
+    console.warn(`Failed to load sidebar width from storage with key ${props.storageKey}:`, error)
+  }
+  return null
+}
+
+// 保存宽度到本地存储
+function saveWidthToStorage(): void {
+  if (collapsed.value || !props.enableStorage)
+    return
+  try {
+    localStorage.setItem(props.storageKey, sidebarWidth.value.toString())
+  }
+  catch (error) {
+    console.warn(`Failed to save sidebar width to storage with key ${props.storageKey}:`, error)
+  }
+}
+
+// 切换侧边栏收起/展开状态
+function toggleCollapsed(): void {
+  collapsed.value = !collapsed.value
+}
+
+// 切换展开/折叠所有节点
+function toggleExpandAll(): void {
+  expandedAll.value = !expandedAll.value
+}
+
+// 展开所有节点
+function expandAllNodes(): void {
+  if (!treeRef.value)
+    return
+  const allNodes = getAllNodes(treeRef.value.root)
+  allNodes.forEach((node) => {
+    if (node.expanded !== undefined && !node.expanded) {
+      node.expanded = true
+    }
+  })
+}
+
+// 获取所有节点
+function getAllNodes(rootNode: any): any[] {
+  const nodes: any[] = []
+  const traverse = (node: any): void => {
+    if (!node)
+      return
+    nodes.push(node)
+    if (node.childNodes && node.childNodes.length) {
+      node.childNodes.forEach((child: any) => traverse(child))
+    }
+  }
+  traverse(rootNode)
+  return nodes
+}
+
+// 收起所有节点
+function collapseAllNodes(): void {
+  if (!treeRef.value)
+    return
+  const allNodes = getAllNodes(treeRef.value.root)
+  allNodes.forEach((node) => {
+    if (node.expanded !== undefined && node.expanded) {
+      node.expanded = false
+    }
+  })
+}
+
+// 处理刷新操作
+function handleRefresh(): void {
+  emit('refresh')
+}
+
+// 节点点击事件
+function onNodeClick(data: any, node: any, e: Event): void {
+  emit('node-click', data, node, e)
+}
+
+// 复选框选中事件
+function onCheck(data: any, checkedInfo: any): void {
+  emit('check', data, checkedInfo)
+}
+
+// 节点展开事件
+function onNodeExpand(data: any, node: any, e: Event): void {
+  emit('node-expand', data, node, e)
+}
+
+// 节点折叠事件
+function onNodeCollapse(data: any, node: any, e: Event): void {
+  emit('node-collapse', data, node, e)
+}
+
+function setCurrentKey(key: string | number): void {
+  if (treeRef.value) {
+    treeRef.value.setCurrentKey(key)
+  }
+}
+
+function getCurrentNode(): any | null {
+  if (treeRef.value) {
+    return treeRef.value.getCurrentNode()
+  }
+  return null
+}
+
+function getCurrentKey(): string | number | null {
+  if (treeRef.value) {
+    return treeRef.value.getCurrentKey()
+  }
+  return null
+}
+
+function setCheckedKeys(keys: (string | number)[]): void {
+  if (treeRef.value && props.showCheckbox) {
+    treeRef.value.setCheckedKeys(keys)
+  }
+}
+
+function getCheckedKeys(): (string | number)[] {
+  if (treeRef.value && props.showCheckbox) {
+    return treeRef.value.getCheckedKeys()
+  }
+  return []
+}
+
+function getCheckedNodes(): any[] {
+  if (treeRef.value && props.showCheckbox) {
+    return treeRef.value.getCheckedNodes()
+  }
+  return []
+}
+
+function clearSearch(): void {
+  searchKeyword.value = ''
+  if (treeRef.value) {
+    treeRef.value.filter('')
+  }
+}
+
+function filter(value: string): void {
+  searchKeyword.value = value
+}
+
+function startResize(e: MouseEvent | TouchEvent): void {
+  e.preventDefault()
+  e.stopPropagation()
+  isResizing.value = true
+  startX.value = e.type === 'mousedown' ? (e as MouseEvent).clientX : (e as TouchEvent).touches[0].clientX
+  startWidth.value = sidebarWidth.value
+
+  if (e.type === 'mousedown') {
+    document.addEventListener('mousemove', handleResizeMove)
+    document.addEventListener('mouseup', stopResize)
+  }
+  else {
+    document.addEventListener('touchmove', handleResizeMove, { passive: false })
+    document.addEventListener('touchend', stopResize)
+  }
+  disableUserSelect()
+}
+
+function handleResizeMove(e: MouseEvent | TouchEvent): void {
+  if (!isResizing.value)
+    return
+  if (rafId.value) {
+    cancelAnimationFrame(rafId.value)
+  }
+  rafId.value = requestAnimationFrame(() => {
+    e.preventDefault()
+    e.stopPropagation()
+    const clientX = e.type === 'mousemove' ? (e as MouseEvent).clientX : (e as TouchEvent).touches[0].clientX
+    const deltaX = clientX - startX.value
+    const newWidth = startWidth.value + deltaX
+    const clampedWidth = Math.max(props.minWidth, Math.min(props.maxWidth, newWidth))
+    if (Math.abs(clampedWidth - sidebarWidth.value) >= 1) {
+      sidebarWidth.value = clampedWidth
+    }
+  })
+}
+
+function stopResize(): void {
+  if (!isResizing.value)
+    return
+  isResizing.value = false
+  if (rafId.value) {
+    cancelAnimationFrame(rafId.value)
+    rafId.value = null
+  }
+  startX.value = 0
+  startWidth.value = 0
+  document.removeEventListener('mousemove', handleResizeMove)
+  document.removeEventListener('mouseup', stopResize)
+  document.removeEventListener('touchmove', handleResizeMove)
+  document.removeEventListener('touchend', stopResize)
+  enableUserSelect()
+  saveWidthToStorage()
+}
+
+function disableUserSelect(): void {
+  const bodyStyle: any = document.body.style
+  bodyStyle.userSelect = 'none'
+  bodyStyle.webkitUserSelect = 'none'
+  bodyStyle.mozUserSelect = 'none'
+  bodyStyle.msUserSelect = 'none'
+}
+
+function enableUserSelect(): void {
+  const bodyStyle: any = document.body.style
+  bodyStyle.userSelect = ''
+  bodyStyle.webkitUserSelect = ''
+  bodyStyle.mozUserSelect = ''
+  bodyStyle.msUserSelect = ''
+}
+
+function resetWidth(): void {
+  sidebarWidth.value = props.defaultWidth
+  saveWidthToStorage()
+}
+
+function getCurrentWidth(): number {
+  return sidebarWidth.value
+}
+
+function setWidth(width: number): void {
+  if (typeof width === 'number' && width >= props.minWidth && width <= props.maxWidth) {
+    sidebarWidth.value = width
+    if (!collapsed.value) {
+      saveWidthToStorage()
+    }
+  }
+}
+
+defineExpose({
+  setCurrentKey,
+  getCurrentNode,
+  getCurrentKey,
+  setCheckedKeys,
+  getCheckedKeys,
+  getCheckedNodes,
+  clearSearch,
+  filter,
+  resetWidth,
+  getCurrentWidth,
+  setWidth,
+  expandAllNodes,
+  collapseAllNodes,
+  toggleCollapsed,
+  treeRef,
+})
+
+onMounted(() => {
+  isLoadingFromStorage.value = true
+  if (!collapsed.value && props.enableStorage) {
+    const savedWidth = getSavedWidth()
+    if (savedWidth !== null) {
+      sidebarWidth.value = savedWidth
+    }
+  }
+  nextTick(() => {
+    isLoadingFromStorage.value = false
+  })
+  if (expandedAll.value) {
+    nextTick(() => {
+      expandAllNodes()
+    })
+  }
+})
+
+onBeforeUnmount(() => {
+  cleanup()
+})
+</script>
+
 <template>
-  <div class="tree-sidebar" :class="{ collapsed: collapsed, resizing: isResizing, 'no-initial-transition': isLoadingFromStorage}" :style="{ width: sidebarWidth + 'px' }">
+  <div class="tree-sidebar" :class="{ 'collapsed': collapsed, 'resizing': isResizing, 'no-initial-transition': isLoadingFromStorage }" :style="{ width: `${sidebarWidth}px` }">
     <!-- 右侧拖动条 -->
-    <div v-if="!collapsed" class="resize-handle" @mousedown="startResize" @touchstart="startResize" :class="{ active: isResizing }" />
+    <div v-if="!collapsed" class="resize-handle" :class="{ active: isResizing }" @mousedown="startResize" @touchstart="startResize" />
     <div class="tree-header">
-      <span class="tree-title" v-show="!collapsed">
+      <span v-show="!collapsed" class="tree-title">
         <el-icon><component :is="titleIcon" /></el-icon> {{ title }}
       </span>
-      <div class="tree-actions" v-show="!collapsed">
+      <div v-show="!collapsed" class="tree-actions">
         <el-tooltip :content="isExpandedAll ? '收起全部' : '展开全部'" placement="right">
           <el-icon class="tree-action-icon" @click="toggleExpandAll">
             <ArrowDown v-if="isExpandedAll" />
@@ -14,12 +504,14 @@
           </el-icon>
         </el-tooltip>
         <el-tooltip content="刷新" placement="right">
-          <el-icon class="tree-action-icon" @click="handleRefresh"><Refresh /></el-icon>
+          <el-icon class="tree-action-icon" @click="handleRefresh">
+            <Refresh />
+          </el-icon>
         </el-tooltip>
-        <slot name="actions"></slot>
+        <slot name="actions" />
       </div>
     </div>
-    
+
     <!-- 侧边栏展开/收起按钮 -->
     <div class="collapse-button-container">
       <el-tooltip :content="collapsed ? '展开' : '收起'" placement="right">
@@ -30,7 +522,7 @@
       </el-tooltip>
     </div>
 
-    <div class="tree-search" v-show="!collapsed" v-if="showSearch">
+    <div v-show="!collapsed" v-if="showSearch" class="tree-search">
       <el-input v-model="searchKeyword" :placeholder="searchPlaceholder" clearable>
         <template #prefix>
           <el-icon><Search /></el-icon>
@@ -38,11 +530,11 @@
       </el-input>
     </div>
 
-    <div class="tree-wrap" v-show="!collapsed">
-      <el-tree 
-        ref="treeRef" 
-        :data="treeData" 
-        :props="treeProps" 
+    <div v-show="!collapsed" class="tree-wrap">
+      <el-tree
+        ref="treeRef"
+        :data="treeData"
+        :props="treeProps"
         :expand-on-click-node="expandOnClickNode"
         :filter-node-method="filterNodeMethod"
         :default-expand-all="defaultExpandAll"
@@ -71,484 +563,6 @@
   </div>
 </template>
 
-<script setup lang="ts">
-const props = defineProps({
-  // 树形数据
-  treeData: {
-    type: Array,
-    default: () => []
-  },
-  // 标题
-  title: {
-    type: String,
-    default: '树形结构'
-  },
-  // 标题图标
-  titleIcon: {
-    type: [String, Object],
-    default: 'OfficeBuilding'
-  },
-  // 是否显示搜索框
-  showSearch: {
-    type: Boolean,
-    default: true
-  },
-  // 搜索框占位符
-  searchPlaceholder: {
-    type: String,
-    default: '请输入名称'
-  },
-  // 是否默认收起侧边栏
-  defaultCollapsed: {
-    type: Boolean,
-    default: false
-  },
-  // 树配置项
-  treeProps: {
-    type: Object,
-    default: () => ({
-      children: "children",
-      label: "label"
-    })
-  },
-  // 节点唯一标识字段
-  nodeKey: {
-    type: String,
-    default: 'id'
-  },
-  // 是否在点击节点时展开或收起
-  expandOnClickNode: {
-    type: Boolean,
-    default: false
-  },
-  // 是否显示复选框
-  showCheckbox: {
-    type: Boolean,
-    default: false
-  },
-  // 是否严格的遵循父子不互相关联
-  checkStrictly: {
-    type: Boolean,
-    default: false
-  },
-  // 是否默认展开所有节点
-  defaultExpandAll: {
-    type: Boolean,
-    default: false
-  },
-  // 默认展开的节点的key数组
-  defaultExpandedKeys: {
-    type: Array,
-    default: () => []
-  },
-  // 默认宽度
-  defaultWidth: {
-    type: Number,
-    default: 220
-  },
-  // 收起时的宽度
-  collapsedWidth: {
-    type: Number,
-    default: 20
-  },
-  // 最小宽度
-  minWidth: {
-    type: Number,
-    default: 180
-  },
-  // 最大宽度
-  maxWidth: {
-    type: Number,
-    default: 400
-  },
-  // 本地存储的宽度key
-  storageKey: {
-    type: String,
-    default: 'tree-sidebar-width'
-  },
-  // 是否启用本地存储宽度
-  enableStorage: {
-    type: Boolean,
-    default: true
-  },
-  // 自定义过滤方法
-  filterMethod: {
-    type: Function,
-    default: null
-  }
-})
-
-const emit = defineEmits([
-  'collapsed-change',
-  'expanded-all-change',
-  'refresh',
-  'node-click',
-  'check',
-  'node-expand',
-  'node-collapse',
-  'search'
-])
-
-const treeRef = ref<any>(null)
-
-// 响应式数据
-const searchKeyword = ref<string>('')
-const collapsed = ref<boolean>(props.defaultCollapsed)
-const sidebarWidth = ref<number>(props.defaultCollapsed ? props.collapsedWidth : props.defaultWidth)
-const isResizing = ref<boolean>(false)
-const startX = ref<number>(0)
-const startWidth = ref<number>(0)
-const saveWidthTimer = ref<NodeJS.Timeout | null>(null)
-const rafId = ref<number | null>(null)
-const isLoadingFromStorage = ref<boolean>(false)
-const expandedAll = ref<boolean>(props.defaultExpandAll)
-
-// 计算属性
-const isExpandedAll = computed<boolean>({
-  get: () => expandedAll.value,
-  set: (val: boolean) => {
-    expandedAll.value = val
-  }
-})
-
-// 节点过滤方法
-const filterNodeMethod = (value: string, data: any): boolean => {
-  if (props.filterMethod) {
-    return props.filterMethod(value, data)
-  }
-  if (!value) return true
-  return data.label && data.label.indexOf(value) !== -1
-}
-
-// 监听折叠状态
-watch(collapsed, (newVal: boolean, oldVal: boolean) => {
-  if (newVal !== oldVal) {
-    handleCollapseChange(newVal)
-    emit('collapsed-change', newVal)
-  }
-})
-
-// 监听内部展开状态变化，触发实际树的展开/收起
-watch(expandedAll, (newVal: boolean) => {
-  nextTick(() => {
-    if (newVal) {
-      expandAllNodes()
-    } else {
-      collapseAllNodes()
-    }
-  })
-  emit('expanded-all-change', newVal)
-})
-
-// 监听搜索关键词
-watch(searchKeyword, (val: string) => {
-  if (treeRef.value) {
-    treeRef.value.filter(val)
-    emit('search', val)
-  }
-})
-
-// 清理定时器和动画帧
-const cleanup = (): void => {
-  if (rafId.value) {
-    cancelAnimationFrame(rafId.value)
-    rafId.value = null
-  }
-  if (saveWidthTimer.value) {
-    clearTimeout(saveWidthTimer.value)
-    saveWidthTimer.value = null
-  }
-}
-
-// 处理收起/展开状态变化
-const handleCollapseChange = (isCollapsed: boolean): void => {
-  if (isCollapsed) {
-    saveWidthToStorage()
-    sidebarWidth.value = props.collapsedWidth
-  } else {
-    const savedWidth = getSavedWidth()
-    sidebarWidth.value = savedWidth !== null ? savedWidth : props.defaultWidth
-  }
-}
-
-// 获取保存的宽度
-const getSavedWidth = (): number | null => {
-  if (!props.enableStorage) {
-    return null
-  }
-  try {
-    const savedWidth = localStorage.getItem(props.storageKey)
-    if (savedWidth) {
-      const width = parseInt(savedWidth, 10)
-      if (!isNaN(width) && width >= props.minWidth && width <= props.maxWidth) {
-        return width
-      }
-    }
-  } catch (error) {
-    console.warn(`Failed to load sidebar width from storage with key ${props.storageKey}:`, error)
-  }
-  return null
-}
-
-// 保存宽度到本地存储
-const saveWidthToStorage = (): void => {
-  if (collapsed.value || !props.enableStorage) return
-  try {
-    localStorage.setItem(props.storageKey, sidebarWidth.value.toString())
-  } catch (error) {
-    console.warn(`Failed to save sidebar width to storage with key ${props.storageKey}:`, error)
-  }
-}
-
-// 切换侧边栏收起/展开状态
-const toggleCollapsed = (): void => {
-  collapsed.value = !collapsed.value
-}
-
-// 切换展开/折叠所有节点
-const toggleExpandAll = (): void => {
-  expandedAll.value = !expandedAll.value
-}
-
-// 展开所有节点
-const expandAllNodes = (): void => {
-  if (!treeRef.value) return
-  const allNodes = getAllNodes(treeRef.value.root)
-  allNodes.forEach(node => {
-    if (node.expanded !== undefined && !node.expanded) {
-      node.expanded = true
-    }
-  })
-}
-
-// 获取所有节点
-const getAllNodes = (rootNode: any): any[] => {
-  const nodes: any[] = []
-  const traverse = (node: any): void => {
-    if (!node) return
-    nodes.push(node)
-    if (node.childNodes && node.childNodes.length) {
-      node.childNodes.forEach((child: any) => traverse(child))
-    }
-  }
-  traverse(rootNode)
-  return nodes
-}
-
-// 收起所有节点
-const collapseAllNodes = (): void => {
-  if (!treeRef.value) return
-  const allNodes = getAllNodes(treeRef.value.root)
-  allNodes.forEach(node => {
-    if (node.expanded !== undefined && node.expanded) {
-      node.expanded = false
-    }
-  })
-}
-
-// 处理刷新操作
-const handleRefresh = (): void => {
-  emit('refresh')
-}
-
-// 节点点击事件
-const onNodeClick = (data: any, node: any, e: Event): void => {
-  emit('node-click', data, node, e)
-}
-
-// 复选框选中事件
-const onCheck = (data: any, checkedInfo: any): void => {
-  emit('check', data, checkedInfo)
-}
-
-// 节点展开事件
-const onNodeExpand = (data: any, node: any, e: Event): void => {
-  emit('node-expand', data, node, e)
-}
-
-// 节点折叠事件
-const onNodeCollapse = (data: any, node: any, e: Event): void => {
-  emit('node-collapse', data, node, e)
-}
-
-const setCurrentKey = (key: string | number): void => {
-  if (treeRef.value) {
-    treeRef.value.setCurrentKey(key)
-  }
-}
-
-const getCurrentNode = (): any | null => {
-  if (treeRef.value) {
-    return treeRef.value.getCurrentNode()
-  }
-  return null
-}
-
-const getCurrentKey = (): string | number | null => {
-  if (treeRef.value) {
-    return treeRef.value.getCurrentKey()
-  }
-  return null
-}
-
-const setCheckedKeys = (keys: (string | number)[]): void => {
-  if (treeRef.value && props.showCheckbox) {
-    treeRef.value.setCheckedKeys(keys)
-  }
-}
-
-const getCheckedKeys = (): (string | number)[] => {
-  if (treeRef.value && props.showCheckbox) {
-    return treeRef.value.getCheckedKeys()
-  }
-  return []
-}
-
-const getCheckedNodes = (): any[] => {
-  if (treeRef.value && props.showCheckbox) {
-    return treeRef.value.getCheckedNodes()
-  }
-  return []
-}
-
-const clearSearch = (): void => {
-  searchKeyword.value = ""
-  if (treeRef.value) {
-    treeRef.value.filter("")
-  }
-}
-
-const filter = (value: string): void => {
-  searchKeyword.value = value
-}
-
-const startResize = (e: MouseEvent | TouchEvent): void => {
-  e.preventDefault()
-  e.stopPropagation()
-  isResizing.value = true
-  startX.value = e.type === 'mousedown' ? (e as MouseEvent).clientX : (e as TouchEvent).touches[0].clientX
-  startWidth.value = sidebarWidth.value
-  
-  if (e.type === 'mousedown') {
-    document.addEventListener('mousemove', handleResizeMove)
-    document.addEventListener('mouseup', stopResize)
-  } else {
-    document.addEventListener('touchmove', handleResizeMove, { passive: false })
-    document.addEventListener('touchend', stopResize)
-  }
-  disableUserSelect()
-}
-
-const handleResizeMove = (e: MouseEvent | TouchEvent): void => {
-  if (!isResizing.value) return
-  if (rafId.value) {
-    cancelAnimationFrame(rafId.value)
-  }
-  rafId.value = requestAnimationFrame(() => {
-    e.preventDefault()
-    e.stopPropagation()
-    const clientX = e.type === 'mousemove' ? (e as MouseEvent).clientX : (e as TouchEvent).touches[0].clientX
-    const deltaX = clientX - startX.value
-    const newWidth = startWidth.value + deltaX
-    const clampedWidth = Math.max(props.minWidth, Math.min(props.maxWidth, newWidth))
-    if (Math.abs(clampedWidth - sidebarWidth.value) >= 1) {
-      sidebarWidth.value = clampedWidth
-    }
-  })
-}
-
-const stopResize = (): void => {
-  if (!isResizing.value) return
-  isResizing.value = false
-  if (rafId.value) {
-    cancelAnimationFrame(rafId.value)
-    rafId.value = null
-  }
-  startX.value = 0
-  startWidth.value = 0
-  document.removeEventListener('mousemove', handleResizeMove)
-  document.removeEventListener('mouseup', stopResize)
-  document.removeEventListener('touchmove', handleResizeMove)
-  document.removeEventListener('touchend', stopResize)
-  enableUserSelect()
-  saveWidthToStorage()
-}
-
-const disableUserSelect = (): void => {
-  const bodyStyle: any = document.body.style
-  bodyStyle.userSelect = 'none'
-  bodyStyle.webkitUserSelect = 'none'
-  bodyStyle.mozUserSelect = 'none'
-  bodyStyle.msUserSelect = 'none'
-}
-
-const enableUserSelect = (): void => {
-  const bodyStyle: any = document.body.style
-  bodyStyle.userSelect = ''
-  bodyStyle.webkitUserSelect = ''
-  bodyStyle.mozUserSelect = ''
-  bodyStyle.msUserSelect = ''
-}
-
-const resetWidth = (): void => {
-  sidebarWidth.value = props.defaultWidth
-  saveWidthToStorage()
-}
-
-const getCurrentWidth = (): number => {
-  return sidebarWidth.value
-}
-
-const setWidth = (width: number): void => {
-  if (typeof width === 'number' && width >= props.minWidth && width <= props.maxWidth) {
-    sidebarWidth.value = width
-    if (!collapsed.value) {
-      saveWidthToStorage()
-    }
-  }
-}
-
-defineExpose({
-  setCurrentKey,
-  getCurrentNode,
-  getCurrentKey,
-  setCheckedKeys,
-  getCheckedKeys,
-  getCheckedNodes,
-  clearSearch,
-  filter,
-  resetWidth,
-  getCurrentWidth,
-  setWidth,
-  expandAllNodes,
-  collapseAllNodes,
-  toggleCollapsed,
-  treeRef
-})
-
-onMounted(() => {
-  isLoadingFromStorage.value = true
-  if (!collapsed.value && props.enableStorage) {
-    const savedWidth = getSavedWidth()
-    if (savedWidth !== null) {
-      sidebarWidth.value = savedWidth
-    }
-  }
-  nextTick(() => {
-    isLoadingFromStorage.value = false
-  })
-  if (expandedAll.value) {
-    nextTick(() => {
-      expandAllNodes()
-    })
-  }
-})
-
-onBeforeUnmount(() => {
-  cleanup()
-})
-</script>
-
 <style lang="scss" scoped>
 .tree-sidebar {
   flex-shrink: 0;
@@ -560,20 +574,20 @@ onBeforeUnmount(() => {
   overflow: hidden;
   position: relative;
   transition: width 0.25s ease;
-  
+
   &.collapsed {
     width: 42px;
   }
-  
+
   &.resizing {
     transition: none;
     will-change: width;
-    
+
     * {
       pointer-events: none !important;
     }
   }
-  
+
   &.no-initial-transition {
     transition: none;
   }
@@ -589,13 +603,13 @@ onBeforeUnmount(() => {
   z-index: 20;
   background: transparent;
   transition: background 0.2s;
-  
+
   &:hover {
-    background: rgba(64, 158, 255, 0.3);
+    background: rgb(64, 158, 255, 0.3);
   }
-  
+
   &.active {
-    background: rgba(64, 158, 255, 0.5);
+    background: rgb(64, 158, 255, 0.5);
   }
 }
 
@@ -612,15 +626,15 @@ onBeforeUnmount(() => {
   height: 20px;
   background: #fff;
   border-radius: 0 4px 4px 0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgb(0, 0, 0, 0.1);
   transition: all 0.2s ease;
-  
+
   .tree-sidebar.collapsed & {
     right: 0;
     background: #f7f8fa;
     border-radius: 0 4px 4px 0;
   }
-  
+
   .tree-sidebar.resizing & {
     pointer-events: none;
   }
@@ -633,7 +647,7 @@ onBeforeUnmount(() => {
   padding: 4px;
   border-radius: 4px;
   transition: all 0.2s;
-  
+
   &:hover {
     color: #409eff;
     background: #ecf5ff;
@@ -697,7 +711,7 @@ onBeforeUnmount(() => {
   flex: 1;
   overflow-y: auto;
   padding: 6px 6px 12px;
-  
+
   .tree-sidebar.resizing & {
     overflow: hidden;
   }
@@ -709,7 +723,7 @@ onBeforeUnmount(() => {
   &::-webkit-scrollbar-thumb {
     background: #dcdfe6;
     border-radius: 4px;
-    
+
     &:hover {
       background: #c0c4cc;
     }

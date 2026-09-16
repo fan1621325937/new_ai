@@ -40,7 +40,7 @@
           <img :src="codeUrl" @click="getCode" class="login-code-img"/>
         </div>
       </el-form-item>
-      <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
+      <el-checkbox v-model="loginForm.rememberMe" style="margin:0 0 25px 0;">记住密码</el-checkbox>
       <el-form-item style="width:100%;">
         <el-button
           :loading="loading"
@@ -177,14 +177,14 @@ getCookie()
   background-size: cover;
 }
 .title {
-  margin: 0px auto 30px auto;
+  margin: 0 auto 30px auto;
   text-align: center;
   color: #707070;
 }
 
 .login-form {
   border-radius: 6px;
-  background: #ffffff;
+  background: #fff;
   width: 400px;
   padding: 25px 25px 5px 25px;
   z-index: 1;
@@ -197,7 +197,7 @@ getCookie()
   .input-icon {
     height: 39px;
     width: 14px;
-    margin-left: 0px;
+    margin-left: 0;
   }
 }
 .login-tip {
@@ -232,10 +232,10 @@ getCookie()
 }
 
 html.dark .login {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url("../assets/images/login-background.jpg");
+  background-image: linear-gradient(rgb(0, 0, 0, 0.55), rgb(0, 0, 0, 0.55)), url("../assets/images/login-background.jpg");
   .login-form {
     background: var(--el-bg-color-overlay) !important;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 12px 40px rgb(0, 0, 0, 0.5);
   }
 }
 </style>

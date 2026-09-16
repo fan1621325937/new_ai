@@ -1,73 +1,73 @@
-import type { SysRole } from './role'
+import type { AjaxResult, BaseEntity, PageDomain } from '../common'
 import type { SysDept } from './dept'
 import type { SysPost } from './post'
-import type { PageDomain, AjaxResult, BaseEntity } from "../common";
+import type { SysRole } from './role'
 
 /** 用户分页查询参数 */
 export interface UserQueryParams extends PageDomain {
   /** 用户名称 */
-  userName?: string;
+  userName?: string
   /** 手机号码 */
-  phonenumber?: string;
+  phonenumber?: string
   /** 状态（0正常 1停用） */
-  status?: '0' | '1';
+  status?: '0' | '1'
   /** 部门编号 */
-  deptId?: number;
+  deptId?: number
   /** 创建时间 */
   params?: {
-    beginTime?: string;
-    endTime?: string;
-  };
+    beginTime?: string
+    endTime?: string
+  }
 }
 
 /** 角色授权用户分页查询参数 */
 export interface AuthUserQueryParams extends UserQueryParams {
   /** 角色编号 */
-  roleId?: number;
+  roleId?: number
 }
 
 /** 用户信息 */
 export interface SysUser extends BaseEntity {
   /** 用户ID */
-  userId?: number;
+  userId?: number
   /** 部门ID */
-  deptId?: number;
+  deptId?: number
   /** 用户账号 */
-  userName?: string;
+  userName?: string
   /** 用户昵称 */
-  nickName?: string;
+  nickName?: string
   /** 用户邮箱 */
-  email?: string;
+  email?: string
   /** 手机号码 */
-  phonenumber?: string;
+  phonenumber?: string
   /** 用户性别（0男 1女 2未知） */
-  sex?: '0' | '1' | '2';
+  sex?: '0' | '1' | '2'
   /** 用户头像 */
-  avatar?: string;
+  avatar?: string
   /** 密码 */
-  password?: string;
+  password?: string
   /** 账号状态（0正常 1停用） */
-  status?: '0' | '1';
+  status?: '0' | '1'
   /** 部门对象 */
-  dept?: SysDept;
+  dept?: SysDept
   /** 角色对象 */
-  roles?: SysRole[];
+  roles?: SysRole[]
   /** 角色组 */
-  roleIds?: number[];
+  roleIds?: number[]
   /** 岗位组 */
-  postIds?: number[];
+  postIds?: number[]
 }
 
 /** 注册信息 */
 export interface SysRegister {
   /** 用户账号 */
-  userName?: string;
+  userName?: string
   /** 密码 */
-  password?: string;
+  password?: string
   /** 验证码 */
-  code?: string;
+  code?: string
   /** 唯一标识 */
-  uuid?: string;
+  uuid?: string
 }
 
 /** 用户详情查询响应 */

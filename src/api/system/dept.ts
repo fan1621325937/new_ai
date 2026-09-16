@@ -1,28 +1,28 @@
+import type { AjaxResult, DeptQueryParams, DeptSortParams, SysDept } from '@/types'
 import request from '@/utils/request'
-import type { DeptQueryParams, SysDept, DeptSortParams, AjaxResult } from '@/types'
 
 // 查询部门列表
 export function listDept(query?: DeptQueryParams): Promise<AjaxResult<SysDept[]>> {
   return request({
     url: '/system/dept/list',
     method: 'get',
-    params: query
+    params: query,
   })
 }
 
 // 查询部门列表（排除节点）
 export function listDeptExcludeChild(deptId: number): Promise<AjaxResult<SysDept[]>> {
   return request({
-    url: '/system/dept/list/exclude/' + deptId,
-    method: 'get'
+    url: `/system/dept/list/exclude/${deptId}`,
+    method: 'get',
   })
 }
 
 // 查询部门详细
 export function getDept(deptId: number): Promise<AjaxResult<SysDept>> {
   return request({
-    url: '/system/dept/' + deptId,
-    method: 'get'
+    url: `/system/dept/${deptId}`,
+    method: 'get',
   })
 }
 
@@ -31,7 +31,7 @@ export function addDept(data: SysDept): Promise<AjaxResult> {
   return request({
     url: '/system/dept',
     method: 'post',
-    data: data
+    data,
   })
 }
 
@@ -40,7 +40,7 @@ export function updateDept(data: SysDept): Promise<AjaxResult> {
   return request({
     url: '/system/dept',
     method: 'put',
-    data: data
+    data,
   })
 }
 
@@ -49,14 +49,14 @@ export function updateDeptSort(data: DeptSortParams): Promise<AjaxResult> {
   return request({
     url: '/system/dept/updateSort',
     method: 'put',
-    data: data
+    data,
   })
 }
 
 // 删除部门
 export function delDept(deptId: number): Promise<AjaxResult> {
   return request({
-    url: '/system/dept/' + deptId,
-    method: 'delete'
+    url: `/system/dept/${deptId}`,
+    method: 'delete',
   })
 }

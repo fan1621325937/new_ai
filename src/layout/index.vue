@@ -1,24 +1,9 @@
-<template>
-  <div :class="classObj" class="app-wrapper" :style="{ '--current-color': theme, '--current-color-light': theme + '1a', '--current-color-dark-bg': theme + '33' }">
-    <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside"/>
-    <sidebar v-if="!sidebar.hide" class="sidebar-container" />
-    <div :class="{ hasTagsView: needTagsView, sidebarHide: sidebar.hide }" class="main-container">
-      <div :class="{ 'fixed-header': fixedHeader }">
-        <navbar @setLayout="setLayout" />
-        <tags-view v-if="needTagsView" />
-      </div>
-      <app-main />
-      <settings ref="settingRef" />
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { useWindowSize } from '@vueuse/core'
-import Sidebar from './components/Sidebar/index.vue'
-import { AppMain, Navbar, Settings, TagsView } from './components/index.js'
 import useAppStore from '@/store/modules/app'
 import useSettingsStore from '@/store/modules/settings'
+import { AppMain, Navbar, Settings, TagsView } from './components/index.js'
+import Sidebar from './components/Sidebar/index.vue'
 
 const settingsStore = useSettingsStore()
 const theme = computed(() => settingsStore.theme)
@@ -31,7 +16,7 @@ const classObj = computed(() => ({
   hideSidebar: !sidebar.value.opened,
   openSidebar: sidebar.value.opened,
   withoutAnimation: sidebar.value.withoutAnimation,
-  mobile: device.value === 'mobile'
+  mobile: device.value === 'mobile',
 }))
 
 const { width, height } = useWindowSize()
@@ -47,7 +32,8 @@ watchEffect(() => {
   if (width.value - 1 < WIDTH) {
     useAppStore().toggleDevice('mobile')
     useAppStore().closeSideBar({ withoutAnimation: true })
-  } else {
+  }
+  else {
     useAppStore().toggleDevice('desktop')
   }
 })
@@ -62,12 +48,28 @@ function setLayout() {
 }
 </script>
 
+<template>
+  <div :class="classObj" class="app-wrapper" :style="{ '--current-color': theme, '--current-color-light': `${theme}1a`, '--current-color-dark-bg': `${theme}33` }">
+    <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
+    <Sidebar v-if="!sidebar.hide" class="sidebar-container" />
+    <div :class="{ hasTagsView: needTagsView, sidebarHide: sidebar.hide }" class="main-container">
+      <div :class="{ 'fixed-header': fixedHeader }">
+        <Navbar @set-layout="setLayout" />
+        <TagsView v-if="needTagsView" />
+      </div>
+      <AppMain />
+      <Settings ref="settingRef" />
+    </div>
+  </div>
+</template>
+
 <style lang="scss" scoped>
 @use "@/assets/styles/mixin.scss" as mix;
 @use "@/assets/styles/variables.module.scss" as vars;
 
 .app-wrapper {
   @include mix.clearfix;
+
   position: relative;
   height: 100%;
   width: 100%;

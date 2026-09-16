@@ -1,5 +1,6 @@
+import path from 'node:path'
+import process from 'node:process'
 import { defineConfig, loadEnv } from 'vite'
-import path from 'path'
 import createVitePlugins from './vite/plugins'
 
 const baseUrl = 'http://172.16.41.201:8889' // 后端接口
@@ -20,10 +21,10 @@ export default defineConfig(({ mode, command }) => {
         // 设置路径
         '~': path.resolve(__dirname, './'),
         // 设置别名
-        '@': path.resolve(__dirname, './src')
+        '@': path.resolve(__dirname, './src'),
       },
       // https://cn.vitejs.dev/config/#resolve-extensions
-      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
+      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
     },
     // 打包配置
     build: {
@@ -36,9 +37,9 @@ export default defineConfig(({ mode, command }) => {
         output: {
           chunkFileNames: 'static/js/[name]-[hash].js',
           entryFileNames: 'static/js/[name]-[hash].js',
-          assetFileNames: 'static/[ext]/[name]-[hash].[ext]'
-        }
-      }
+          assetFileNames: 'static/[ext]/[name]-[hash].[ext]',
+        },
+      },
     },
     // vite 相关配置
     server: {
@@ -50,14 +51,14 @@ export default defineConfig(({ mode, command }) => {
         '/dev-api': {
           target: baseUrl,
           changeOrigin: true,
-          rewrite: (p) => p.replace(/^\/dev-api/, '')
+          rewrite: p => p.replace(/^\/dev-api/, ''),
         },
-         // springdoc proxy
-         '^/v3/api-docs/(.*)': {
+        // springdoc proxy
+        '^/v3/api-docs/(.*)': {
           target: baseUrl,
           changeOrigin: true,
-        }
-      }
+        },
+      },
     },
     css: {
       postcss: {
@@ -69,12 +70,11 @@ export default defineConfig(({ mode, command }) => {
                 if (atRule.name === 'charset') {
                   atRule.remove()
                 }
-              }
-            }
-          }
-        ]
-      }
-    }
+              },
+            },
+          },
+        ],
+      },
+    },
   }
 })
-
