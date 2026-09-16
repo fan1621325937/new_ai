@@ -99,6 +99,14 @@ request({ url: '/system/user/list', method: 'get' })
 - [ ] 页面在暗色模式下显示正常（切主题验证一次）
 - [ ] 已同步更新相关文档（新增组件/工具/接口时）
 
+## 动效（可选）
+
+页面需要入场/滚动/数字滚动等动效时使用 GSAP（已安装 `gsap@3.15.0`），规范见 `docs/guides/MOTION.md`：
+
+- 动画包在 `gsap.context(() => {...}, rootEl)` 内，`onBeforeUnmount` 调 `ctx.revert()`
+- 只动 `transform` / `opacity`；`hover/focus` 这类仍用 CSS transition
+- 已处理 `prefers-reduced-motion`
+
 ## 常见反模式（禁止）
 
 | 反模式 | 后果 |

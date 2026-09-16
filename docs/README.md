@@ -11,6 +11,7 @@
 | 不知道有哪些工具函数可用 | [utils/UTILS.md](./utils/UTILS.md)、`src/utils/README.md` |
 | 要调接口 / 写 api | [api/API_GUIDE.md](./api/API_GUIDE.md)、`src/api/README.md` |
 | 写样式 / 配色 / 用 Tailwind | [styles/STYLES.md](./styles/STYLES.md) |
+| 写页面动效 / 用 GSAP | [guides/MOTION.md](./guides/MOTION.md) |
 | 提交代码 / 规范流程 | [guides/WORKFLOW.md](./guides/WORKFLOW.md) |
 | 快速抄一个列表页骨架 | [templates/LIST_PAGE.md](./templates/LIST_PAGE.md) |
 | 快速抄一个表单页骨架 | [templates/FORM_PAGE.md](./templates/FORM_PAGE.md) |

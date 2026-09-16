@@ -47,9 +47,12 @@
 
 可直接复制的骨架：`docs/templates/LIST_PAGE.md`、`docs/templates/FORM_PAGE.md`
 
-## 4. 样式准则（摘要）
+## 4. 样式与动效准则（摘要）
 
-完整版见 `docs/styles/STYLES.md`。
+完整版见 `docs/styles/STYLES.md` 与 `docs/guides/MOTION.md`。
+
+- 动效：`hover/focus` 用 CSS transition；时间轴/滚动驱动/数字滚动用 GSAP（已装 `gsap@3.15.0`）
+- GSAP 动画必须包在 `gsap.context()` 内，`onBeforeUnmount` 调 `ctx.revert()`，只动 `transform/opacity`
 
 - 90/10 原则：中性色承担 90% 结构，主题色只用于强调（当前项、选中、链接、按钮）
 - 令牌唯一来源：`src/assets/styles/design-tokens.scss`（需要新颜色先加令牌再使用）
