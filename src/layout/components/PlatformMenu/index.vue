@@ -22,6 +22,21 @@ const mainPlatformTitle = computed(() => {
   return ''
 })
 
+/** 计算当前激活平台实体 */
+const currentPlatform = computed(() => {
+  for (const group of permissionStore.platformRouters) {
+    const found = (group.children || []).find(it => isCurrentPlatform(it))
+    if (found)
+      return found
+  }
+  return null
+})
+
+/** 当前激活平台名称 */
+const currentPlatformTitle = computed(() => {
+  return currentPlatform.value?.meta?.title || '融合主平台'
+})
+
 function isCurrentPlatform(item: PlatformItem): boolean {
   return String(item.path) === String(platformStore.dictValue) || String(item.name) === String(platformStore.dictValue)
 }
@@ -68,8 +83,19 @@ onMounted(() => {
       popper-class="platform-popover-box"
     >
       <template #reference>
-        <div class="menu-trigger-btn flex items-center justify-center cursor-pointer p-1.5 rounded-[var(--app-radius-sm)] hover:bg-[var(--app-bg-hover)] transition-colors" title="平台菜单">
-          <svg-icon icon-class="switch" class-name="w-5 h-5 text-[var(--app-text)]" />
+        <div
+          class="menu-trigger-capsule group flex items-center gap-2 px-3 py-1.5 rounded-[var(--app-radius-md)] border border-[var(--app-border)] bg-[var(--app-bg-subtle)] hover:border-[var(--app-accent-line)] hover:bg-[var(--app-accent-soft)] cursor-pointer transition-all duration-200 select-none shadow-[var(--app-shadow-sm)]"
+          title="点击切换平台系统"
+        >
+          <div class="flex items-center justify-center w-5 h-5 rounded bg-[var(--app-bg-plain)] text-[var(--app-accent)] shadow-xs">
+            <svg-icon :icon-class="currentPlatform?.meta?.icon || 'switch'" class-name="w-3.5 h-3.5" />
+          </div>
+          <span class="text-xs font-medium text-[var(--app-text)] group-hover:text-[var(--app-accent)] max-w-[130px] truncate transition-colors">
+            {{ currentPlatformTitle }}
+          </span>
+          <el-icon class="text-[10px] text-[var(--app-text-muted)] group-hover:text-[var(--app-accent)] transition-all duration-200" :class="{ 'rotate-180': popoverVisible }">
+            <ArrowDown />
+          </el-icon>
         </div>
       </template>
 
