@@ -1,0 +1,129 @@
+/* 监控系统工业科技主题弹窗样式（零颜色字面量，支持明暗模式） */
+.app-dialog {
+  --dialog-theme-color: var(--app-accent);
+  --dialog-glow-color: color-mix(in srgb, var(--dialog-theme-color) 18%, transparent);
+
+  &--primary {
+    --dialog-theme-color: var(--app-accent);
+    --dialog-glow-color: color-mix(in srgb, var(--app-accent) 18%, transparent);
+  }
+
+  &--success {
+    --dialog-theme-color: var(--app-success);
+    --dialog-glow-color: color-mix(in srgb, var(--app-success) 18%, transparent);
+  }
+
+  &--info {
+    --dialog-theme-color: var(--app-info);
+    --dialog-glow-color: color-mix(in srgb, var(--app-info) 18%, transparent);
+  }
+
+  &--warning {
+    --dialog-theme-color: var(--app-warning);
+    --dialog-glow-color: color-mix(in srgb, var(--app-warning) 18%, transparent);
+  }
+
+  &--danger {
+    --dialog-theme-color: var(--app-danger);
+    --dialog-glow-color: color-mix(in srgb, var(--app-danger) 18%, transparent);
+  }
+
+  position: relative;
+  background: var(--app-bg-surface) !important;
+  border-radius: var(--app-radius-lg) !important;
+  border: 1px solid var(--app-border) !important;
+  box-shadow: 0 16px 36px -8px var(--dialog-glow-color), var(--app-shadow-lg) !important;
+  overflow: hidden;
+  padding: 0 !important;
+
+  /* 顶部科技感主题发光线 */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, var(--dialog-theme-color) 35%, var(--dialog-theme-color) 65%, transparent 100%);
+    z-index: 10;
+  }
+
+  /* 表头布局与装饰 */
+  .el-dialog__header {
+    margin: 0 !important;
+    padding: 14px 18px !important;
+    border-bottom: 1px solid var(--app-border);
+    background: var(--app-bg-subtle);
+    display: flex;
+    align-items: center;
+    user-select: none;
+
+    .app-dialog__header-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+
+      .app-dialog__badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        border-radius: var(--app-radius-sm);
+        background: color-mix(in srgb, var(--dialog-theme-color) 12%, transparent);
+        border: 1px solid color-mix(in srgb, var(--dialog-theme-color) 28%, transparent);
+        color: var(--dialog-theme-color);
+        flex-shrink: 0;
+
+        .app-dialog__badge-icon {
+          width: 14px;
+          height: 14px;
+        }
+      }
+
+      .app-dialog__title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--app-text);
+        letter-spacing: 0.2px;
+      }
+    }
+
+    .el-dialog__headerbtn {
+      top: 14px;
+      right: 16px;
+      width: 28px;
+      height: 28px;
+      border-radius: var(--app-radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: var(--app-bg-hover);
+
+        .el-dialog__close {
+          color: var(--dialog-theme-color);
+        }
+      }
+    }
+  }
+
+  /* 主体内容区 */
+  .el-dialog__body {
+    padding: 20px 22px !important;
+    color: var(--app-text-secondary);
+    font-size: 14px;
+    line-height: 1.6;
+    background: var(--app-bg-surface);
+  }
+
+  /* 底部操作区 */
+  .el-dialog__footer {
+    padding: 12px 20px !important;
+    border-top: 1px solid var(--app-border);
+    background: var(--app-bg-subtle);
+  }
+}

@@ -6,6 +6,15 @@
 
 注册入口：`src/components/index.ts`。
 
+### AppDialog（监控主题弹窗）
+
+| 项 | 内容 |
+|---|---|
+| props | `v-model`(是否显示) / `theme`或`type`(`'primary' \| 'success' \| 'info' \| 'warning' \| 'danger'`，默认 `primary`) / `title`(标题文本) / `width`(默认 `560px`) / `drag`(是否可拖拽，默认 `true`) / `showIcon`(是否显示表头状态图标，默认 `true`) / `icon`(自定义状态图标) 以及**所有 `el-dialog` 原生属性全量透传** |
+| 插槽 | `#header`(表头定制) / `#default`(内容主体) / `#footer`(底部操作区) |
+| 特性 | **不过度封装**：无缝支持全部原生属性与事件；**工业科技质感**：顶部流光色条与状态徽标；**视口防逃逸拖拽**：按住表头拖拽，具备严格视口边界夹逼保护，杜绝拖出屏幕丢失。 |
+| 用法 | `<AppDialog v-model="visible" title="预警详情" type="warning" width="600px"><div>内容</div><template #footer><el-button @click="visible = false">关闭</el-button></template></AppDialog>` |
+
 ### Pagination（分页）
 
 | 项 | 内容 |

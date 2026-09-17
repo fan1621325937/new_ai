@@ -8,6 +8,7 @@
 
 | 模板标签 | 组件 | 用途 |
 |---|---|---|
+| `<AppDialog />` | AppDialog | 监控科技主题弹窗（支持 5 大信息态主题与视口防逃逸拖拽） |
 | `<Pagination />` | Pagination | 分页（配合列表页使用） |
 | `<RightToolbar />` | RightToolbar | 表格右侧工具栏（搜索/刷新/列显隐） |
 | `<DictTag />` | DictTag | 字典标签渲染 |

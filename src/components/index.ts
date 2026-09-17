@@ -9,6 +9,7 @@
  */
 import type { App, Component } from 'vue'
 
+import AppDialog from './AppDialog/index.vue'
 import DictTag from './DictTag/index.vue'
 import Editor from './Editor/index.vue'
 import FileUpload from './FileUpload/index.vue'
@@ -20,6 +21,8 @@ import SvgIcon from './SvgIcon/index.vue'
 
 /** 全局组件登记表：key 为模板中使用的标签名 */
 export const GLOBAL_COMPONENTS: Record<string, Component> = {
+  // 监控科技主题弹窗（支持5大信息主题与防逃逸拖拽）
+  AppDialog,
   // 字典标签
   DictTag,
   // 富文本编辑器
