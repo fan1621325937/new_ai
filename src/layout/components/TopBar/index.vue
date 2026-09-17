@@ -32,35 +32,84 @@ const topMenus = computed(() => {
 </template>
 
 <style lang="scss">
-/* menu item */
-.topbar-menu.el-menu--horizontal .el-submenu__title, .topbar-menu.el-menu--horizontal .el-menu-item {
-  padding: 0 10px !important;
-}
+/* 顶部菜单（TopBar）水平菜单容器与项样式重构 */
+.topbar-menu.el-menu--horizontal {
+  height: 52px;
+  border-bottom: none !important;
+  background: transparent !important;
 
-.topbar-menu.el-menu--horizontal > .el-menu-item {
-  float: left;
-  height: 46px !important;
-  line-height: 46px !important;
-  color: var(--el-text-color-primary) !important;
-  padding: 0 5px !important;
-  margin: 0 10px !important;
-}
+  > .el-menu-item {
+    height: 52px !important;
+    line-height: 52px !important;
+    color: var(--app-text) !important;
+    padding: 0 12px !important;
+    margin: 0 4px !important;
+    border-radius: var(--app-radius-sm);
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent !important;
 
-.el-sub-menu.is-active .svg-icon, .el-menu-item.is-active .svg-icon + span, .el-sub-menu.is-active .svg-icon + span, .el-sub-menu.is-active .el-sub-menu__title span {
-  color: v-bind(theme);
-}
+    &:hover {
+      background-color: var(--app-bg-hover) !important;
+      color: var(--app-accent) !important;
+    }
 
-/* sub-menu item */
-.topbar-menu.el-menu--horizontal > .el-sub-menu .el-sub-menu__title {
-  float: left;
-  height: 46px !important;
-  line-height: 46px !important;
-  color: var(--el-text-color-primary) !important;
-  margin: 0 15px -3px!important;
-}
+    &.is-active {
+      color: var(--app-accent) !important;
+      font-weight: 600;
+      border-bottom-color: var(--app-accent) !important;
+    }
+  }
 
-/* menu__title el-menu-item */
-.topbar-menu.el-menu--horizontal .el-sub-menu__title, .topbar-menu.el-menu--horizontal .el-menu-item {
-  height: 46px;
+  > .el-sub-menu {
+    margin: 0 4px !important;
+
+    > .el-sub-menu__title {
+      height: 52px !important;
+      line-height: 52px !important;
+      color: var(--app-text) !important;
+      padding: 0 12px !important;
+      margin: 0 !important;
+      border-radius: var(--app-radius-sm);
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-bottom: 2px solid transparent !important;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: var(--app-bg-hover) !important;
+        color: var(--app-accent) !important;
+      }
+
+      /* 弹性跟随在文字右侧，无论文字长短永远处于文本后面，物理杜绝重叠 */
+      .el-sub-menu__icon-arrow {
+        position: static !important;
+        margin-left: 6px !important;
+        margin-top: 0 !important;
+        margin-right: 0 !important;
+        inset: auto !important;
+        font-size: 12px !important;
+        display: inline-block !important;
+        color: var(--app-text-muted) !important;
+        transition: transform 0.2s ease, color 0.2s ease !important;
+      }
+    }
+
+    &:hover > .el-sub-menu__title .el-sub-menu__icon-arrow,
+    &.is-opened > .el-sub-menu__title .el-sub-menu__icon-arrow {
+      color: var(--app-accent) !important;
+      transform: rotate(180deg) !important;
+    }
+
+    &.is-active > .el-sub-menu__title {
+      color: var(--app-accent) !important;
+      font-weight: 600;
+      border-bottom-color: var(--app-accent) !important;
+
+      .el-sub-menu__icon-arrow {
+        color: var(--app-accent) !important;
+      }
+    }
+  }
 }
 </style>
