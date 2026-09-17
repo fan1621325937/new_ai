@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30" fill="none">
+<rect x="0" y="0" width="30" height="30"   fill="#FFFFFF" fill-opacity="0.4">
+</rect>
+<rect  x="2" y="2" width="26" height="26"    fill="#FFFFFF" fill-opacity="0.4">
+</rect>
+<path fill-rule="evenodd"  fill="rgba(3, 10, 18, 0.9)"  d="M29 1L1 1L1 29L29 29L29 1ZM28 2L2 2L2 28L28 28L28 2Z">
+</path>
+<path    stroke="rgba(3, 10, 18, 0.9)" stroke-width="1"    d="M15 2L15 28">
+</path>
+<path    stroke="rgba(3, 10, 18, 0.9)" stroke-width="1"    d="M2 15.0005L28 15.0005">
+</path>
+</svg>

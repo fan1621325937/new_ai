@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20"
+  viewBox="0 0 20 20" fill="none">
+  <g opacity="1" transform="translate(0 0)  rotate(0)">
+    <mask id="bg-mask-0" fill="white">
+      <use transform="translate(0 0)   " xlink:href="#path_0"></use>
+    </mask>
+    <g mask="url(#bg-mask-0)">
+      <path id="路径 1" fill-rule="evenodd"
+        d="M10.0031,18.8331c-4.88001,0 -8.84001,-3.95 -8.84001,-8.83c0,-4.88001 3.96,-8.84001 8.84001,-8.84001c4.88,0 8.83,3.96 8.83,8.84001c0,4.88 -3.95,8.83 -8.83,8.83zM10.7331,6.31309c0,-0.4 -0.33,-0.73 -0.73,-0.73c-0.41001,0 -0.74001,0.33 -0.74001,0.73v4.43001c0,0.19 0.08,0.37 0.21,0.51l2.09001,2.09c0.14,0.14 0.33,0.22 0.52,0.22c0.2,0 0.38,-0.08 0.52,-0.22c0.29,-0.29 0.29,-0.75 0.01,-1.04l-1.88,-1.87z">
+      </path>
+    </g>
+  </g>
+  <defs>
+    <rect id="path_0" x="0" y="0" width="20" height="20" />
+  </defs>
+</svg>

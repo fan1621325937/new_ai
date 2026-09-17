@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30" fill="none">
+<rect x="0" y="0" width="30" height="30"   fill="#FFFFFF" fill-opacity="0.4">
+</rect>
+<path d="M2 2L2 28L28 28L28 2L15 2L2 2Z"   fill="#FFFFFF" fill-opacity="0.4">
+</path>
+<path    stroke="rgba(3, 10, 18, 0.9)" stroke-width="1"    d="M12.2979 2L12.2979 28">
+</path>
+<path    stroke="rgba(3, 10, 18, 0.9)" stroke-width="1"    d="M17.6987 2L17.6987 28">
+</path>
+<path    stroke="rgba(3, 10, 18, 0.9)" stroke-width="1"    d="M23.0991 2L23.0991 28">
+</path>
+<path    stroke="rgba(3, 10, 18, 0.9)" stroke-width="1"    d="M6.89746 2L6.89746 28">
+</path>
+<path    stroke="rgba(3, 10, 18, 0.9)" stroke-width="1"    d="M2 15.0005L28 15.0005">
+</path>
+<path    stroke="rgba(3, 10, 18, 0.9)" stroke-width="1"    d="M2 21.7508L28 21.7508">
+</path>
+<path    stroke="rgba(3, 10, 18, 0.9)" stroke-width="1"    d="M2 8.25034L28 8.25034">
+</path>
+<path    stroke="rgba(3, 10, 18, 1)" stroke-width="1"    d="M1 1.5L29 1.5">
+</path>
+<path    stroke="rgba(3, 10, 18, 1)" stroke-width="1"    d="M1 28.5L29 28.5">
+</path>
+<path    stroke="rgba(3, 10, 18, 1)" stroke-width="1"    d="M1.49756 1L1.49756 29">
+</path>
+<path    stroke="rgba(3, 10, 18, 1)" stroke-width="1"    d="M28.5 1L28.5 29">
+</path>
+</svg>

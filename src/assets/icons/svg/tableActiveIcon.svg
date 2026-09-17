@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="29" height="29" viewBox="0 0 29 29" fill="none">
+<path   fill="rgba(50, 161, 252, 1)"  d="M2.5 0L26.5 0C27.8807 0 29 1.11929 29 2.5L29 26.5C29 27.8807 27.8807 29 26.5 29L2.5 29C1.11929 29 0 27.8807 0 26.5L0 2.5C0 1.11929 1.11929 0 2.5 0ZM2.5 1C1.67157 1 1 1.67157 1 2.5L1 26.5C1 27.3284 1.67157 28 2.5 28L26.5 28C27.3284 28 28 27.3284 28 26.5L28 2.5C28 1.67157 27.3284 1 26.5 1L2.5 1Z">
+</path>
+<path d="M12.6667 6.25L6.25 6.25L6.25 11.2917L12.6667 11.2917L12.6667 6.25Z" stroke="rgba(50, 161, 252, 1)" stroke-width="1.5" stroke-linejoin="round"     fill="#32A1FC" >
+</path>
+<path d="M22.7507 17.7083L16.334 17.7083L16.334 22.7499L22.7507 22.7499L22.7507 17.7083Z" stroke="rgba(50, 161, 252, 1)" stroke-width="1.5" stroke-linejoin="round"     fill="#32A1FC" >
+</path>
+<path d="M22.7507 6.25L16.334 6.25L16.334 14.0417L22.7507 14.0417L22.7507 6.25Z" stroke="rgba(50, 161, 252, 1)" stroke-width="1.5" stroke-linejoin="round"     fill="#32A1FC" >
+</path>
+<path d="M12.6667 14.9583L6.25 14.9583L6.25 22.7499L12.6667 22.7499L12.6667 14.9583Z" stroke="rgba(50, 161, 252, 1)" stroke-width="1.5" stroke-linejoin="round"     fill="#32A1FC" >
+</path>
+</svg>

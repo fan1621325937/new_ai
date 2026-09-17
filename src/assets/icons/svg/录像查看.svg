@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="24"
+  viewBox="0 0 30 24" fill="none">
+  <g opacity="1" transform="translate(0 0)  rotate(0)">
+    <path id="矩形" fill-rule="evenodd"
+      d="M3 24L27 24C28.66 24 30 22.66 30 21L30 3C30 1.34 28.66 0 27 0L3 0C1.34 0 0 1.34 0 3L0 21C0 22.66 1.34 24 3 24Z">
+    </path>
+    <g opacity="1" transform="translate(7 4)  rotate(0)">
+      <mask id="bg-mask-0" >
+        <use xlink:href="#path_0"></use>
+      </mask>
+      <g mask="url(#bg-mask-0)">
+        <path id="路径 1" fill-rule="evenodd"
+          d="M11.6158 7.37015L6.66582 4.06015C6.14582 3.71015 5.71582 3.94015 5.71582 4.57015L5.71582 11.4301C5.71582 12.0601 6.14582 12.2801 6.66582 11.9401L11.6158 8.63015C12.1458 8.29015 12.1458 7.71015 11.6158 7.37015Z">
+        </path>
+      </g>
+    </g>
+  </g>
+  <defs>
+    <rect id="path_0" x="0" y="0" width="16" height="16" />
+  </defs>
+</svg>

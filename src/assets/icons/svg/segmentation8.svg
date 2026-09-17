@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30" fill="none">
+<rect x="0" y="0" width="30" height="30"   fill="#FFFFFF" fill-opacity="0.4">
+</rect>
+<path     fill="#FFFFFF" fill-opacity="0.4" d="M2 28L28 28L28 2L15 2L2 2L2 28Z">
+</path>
+<path fill-rule="evenodd"  fill="rgba(3, 10, 18, 0.9)"  d="M1 29L1 1L29 1L29 29L1 29ZM28 2L28 28L2 28L2 2L28 2Z">
+</path>
+<path    stroke="rgba(3, 10, 18, 0.9)" stroke-width="1"    d="M14.9985 2L14.9985 28">
+</path>
+<path    stroke="rgba(3, 10, 18, 0.9)" stroke-width="1"    d="M21.9995 2L21.9995 28">
+</path>
+<path    stroke="rgba(3, 10, 18, 0.9)" stroke-width="1"    d="M7.99951 2L7.99951 28">
+</path>
+<path    stroke="rgba(3, 10, 18, 0.9)" stroke-width="1"    d="M2 15.001L28 15.001">
+</path>
+</svg>
