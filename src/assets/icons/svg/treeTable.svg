@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="13" height="11" viewBox="0 0 13 11" fill="none">
-<path d="M0.5 10.5L12.5 10.5L12.5 0.5L0.5 0.5L0.5 10.5Z" stroke="rgba(51, 163, 255, 1)" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" >
+<path d="M0.5 10.5L12.5 10.5L12.5 0.5L0.5 0.5L0.5 10.5Z" stroke="currentColor" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" >
 </path>
-<path    stroke="rgba(51, 163, 255, 1)" stroke-width="1"    d="M0 4.00098L12 4">
+<path    stroke="currentColor" stroke-width="1"    d="M0 4.00098L12 4">
 </path>
-<path    stroke="rgba(51, 163, 255, 1)" stroke-width="1"    d="M4.5 0.5L4.5 10.5">
+<path    stroke="currentColor" stroke-width="1"    d="M4.5 0.5L4.5 10.5">
 </path>
 </svg>

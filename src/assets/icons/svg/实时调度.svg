@@ -1,16 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20"
   viewBox="0 0 20 20" fill="none">
   <g opacity="1" transform="translate(0 0)  rotate(0)">
-    <mask id="bg-mask-0" fill="white">
-      <use transform="translate(0 0)   " xlink:href="#path_0"></use>
-    </mask>
-    <g mask="url(#bg-mask-0)">
+    
+    
       <path id="路径 1" fill-rule="evenodd"
         d="M14.1576,18.4169h-10.39l-0.01,-1.29h10.4v1.29zM16.7776,15.1969h-5.36l-2.68,-4.57l2.68,-4.57999h5.36l2.68,4.57999l-2.68,4.57zM12.1276,10.6469c0.01,1.13 0.92,2.03 2.03,2.03c1.11,-0.01 2.01,-0.93 2.01,-2.05c-0.02,-1.14999 -0.94,-2.06999 -2.07,-2.05999v0c-1.11,0.03 -1.99,0.96 -1.97,2.07999zM10.1976,15.0869h-8.66c-0.55,0 -1,-0.45 -1,-1v-11.49999c0,-0.55 0.45,-1 1,-1h14.4c0.55,0 1,0.45 1,1v2.28h-6.03l-0.71,0.94h-5.67v-0.99h-1.01v0.99h-1.26v1.24h1.26v1h1.01v-1h5.04l-2.14,3.47999l0.28,0.45h-1.17v-0.99999h-1.01v0.99999h-3.27v1.27h3.27v0.99h1.01v-0.99h1.79l1.87,2.84z">
       </path>
     </g>
-  </g>
-  <defs>
-    <rect id="path_0" x="0" y="0" width="20" height="20" />
-  </defs>
+  
+  
 </svg>

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16" fill="none">
-<path d="M8 7.99992L8 6.33325L13 1.33325L14.6667 2.99992L9.66667 7.99992L8 7.99992Z" stroke="rgba(51, 163, 255, 1)" stroke-width="1.3333333333333333" stroke-linejoin="round" stroke-linecap="round"  fill-rule="evenodd"  fill="#33A3FF" >
+<path d="M8 7.99992L8 6.33325L13 1.33325L14.6667 2.99992L9.66667 7.99992L8 7.99992Z" stroke="currentColor" stroke-width="1.3333333333333333" stroke-linejoin="round" stroke-linecap="round"  fill-rule="evenodd"  fill="currentColor" >
 </path>
-<path    stroke="rgba(51, 163, 255, 1)" stroke-width="1.3333333333333333" stroke-linejoin="round" stroke-linecap="round"  d="M5.33301 8L2.99967 8C2.0792 8 1.33301 8.7462 1.33301 9.66667C1.33301 10.5871 2.0792 11.3333 2.99967 11.3333L12.9997 11.3333C13.9201 11.3333 14.6663 12.0795 14.6663 13C14.6663 13.9205 13.9201 14.6667 12.9997 14.6667L5.99967 14.6667">
+<path    stroke="currentColor" stroke-width="1.3333333333333333" stroke-linejoin="round" stroke-linecap="round"  d="M5.33301 8L2.99967 8C2.0792 8 1.33301 8.7462 1.33301 9.66667C1.33301 10.5871 2.0792 11.3333 2.99967 11.3333L12.9997 11.3333C13.9201 11.3333 14.6663 12.0795 14.6663 13C14.6663 13.9205 13.9201 14.6667 12.9997 14.6667L5.99967 14.6667">
 </path>
 </svg>
