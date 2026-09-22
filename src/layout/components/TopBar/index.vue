@@ -73,6 +73,7 @@ const topMenus = computed<RouteItem[]>(() => {
     }
 
     &.is-active {
+      background-color: var(--app-accent-soft) !important;
       color: var(--app-accent) !important;
       font-weight: 600;
       border-bottom-color: var(--app-accent) !important;
@@ -126,6 +127,7 @@ const topMenus = computed<RouteItem[]>(() => {
     }
 
     &.is-active > .el-sub-menu__title {
+      background-color: var(--app-accent-soft) !important;
       color: var(--app-accent) !important;
       font-weight: 600;
       border-bottom-color: var(--app-accent) !important;

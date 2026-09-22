@@ -18,6 +18,18 @@
 
 **唯一来源**：`src/assets/styles/design-tokens.scss`（唯一允许出现颜色字面量的样式文件之一）
 
+### 主题引擎与预设体系 (`src/theme/`)
+
+系统内置 **AI 视频监控体系专用的 6 套现代科技配色预设**，由 `src/theme/` 引擎统一计算并动态注入 CSS 变量（含 `--app-accent-gradient` 科技流光渐变）：
+1. `vision-blue`（深瞳科技蓝 - 默认）：机器视觉标准色，沉稳可靠
+2. `aurora-glow`（极光深瞳流光 - 深色渐变）：深邃极夜黑青底色，青蓝至电光流光的未来极光渐变
+3. `quantum-gold`（深渊量子黑金 - 深色渐变）：深邃星舰暗金夜底色，尊荣耀目鎏金流光的黑金大屏
+4. `cyber-cyan`（赛博矩阵青）：全栈高科技安防感，强烈的数据大屏与算法流转质感
+5. `safe-emerald`（天眼翡翠绿）：设备在线、布控正常、通信通畅的健康安全基色
+6. `alert-amber`（警戒炽炎橙）：高警觉性事件调度、违规检测预警与动态轨迹跟踪
+
+组件覆盖层 `src/assets/styles/element-plus-modern.scss` 为 Element Plus 基础组件（Button, Table, Card, Input, Dialog 等）赋予了 Linear / Shadcn 级别的精密微边框与现代微质感。
+
 ### 语义令牌清单
 
 | 分类 | 令牌 | 用途 |

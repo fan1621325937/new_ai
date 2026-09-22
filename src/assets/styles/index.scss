@@ -2,6 +2,7 @@
 @use './mixin';
 @use './transition';
 @use './element-ui';
+@use './element-plus-modern';
 @use './sidebar';
 @use './btn';
 @use './ruoyi';
@@ -13,6 +14,12 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+  background-color: var(--app-bg-page);
+  background-image: var(--app-bg-page-gradient);
+  background-attachment: fixed;
+  background-size: cover;
+  color: var(--app-text);
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 label {
@@ -22,10 +29,14 @@ label {
 html {
   height: 100%;
   box-sizing: border-box;
+  background-color: var(--app-bg-page);
+  background-image: var(--app-bg-page-gradient);
+  background-attachment: fixed;
 }
 
 #app {
   height: 100%;
+  background-color: transparent;
 }
 
 *,

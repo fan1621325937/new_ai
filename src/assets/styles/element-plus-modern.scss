@@ -1,0 +1,394 @@
+/**
+ * Element Plus 全局组件现代微质感覆盖规范 (Modern UI Enhancement)
+ * 遵循红线规则：严格使用 var(--el-*) 与 var(--app-*) 令牌，禁止颜色字面量
+ */
+
+/* ==================== 1. 按钮 (ElButton) ==================== */
+.el-button {
+  border-radius: var(--app-radius-md);
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:not(.is-disabled):active {
+    transform: scale(0.98);
+  }
+
+  /* 默认无类型常规按钮 */
+  &:not([class*="el-button--primary"], [class*="el-button--success"], [class*="el-button--warning"], [class*="el-button--danger"], [class*="el-button--info"]) {
+    background-color: var(--app-bg-subtle) !important;
+    border-color: var(--app-border) !important;
+    color: var(--app-text) !important;
+
+    &:hover,
+    &:focus {
+      background-color: var(--app-bg-hover) !important;
+      border-color: var(--el-color-primary) !important;
+      color: var(--el-color-primary) !important;
+    }
+  }
+
+  /* 实心主要按钮（带科技流光） */
+  &--primary:not(.is-link, .is-text, .is-plain) {
+    background: var(--app-accent-gradient, var(--el-color-primary));
+    border-color: transparent;
+    color: var(--el-color-white);
+    font-weight: 600;
+    box-shadow: var(--app-shadow-sm);
+
+    &:hover,
+    &:focus {
+      opacity: 0.92;
+      color: var(--el-color-white);
+      box-shadow: var(--app-shadow-md);
+    }
+  }
+
+  /* 业务状态实心按钮 */
+  &--success:not(.is-link, .is-text, .is-plain) {
+    background-color: var(--el-color-success);
+    border-color: var(--el-color-success);
+    color: var(--el-color-white);
+    font-weight: 600;
+  }
+
+  &--warning:not(.is-link, .is-text, .is-plain) {
+    background-color: var(--el-color-warning);
+    border-color: var(--el-color-warning);
+    color: var(--el-color-white);
+    font-weight: 600;
+  }
+
+  &--danger:not(.is-link, .is-text, .is-plain) {
+    background-color: var(--el-color-danger);
+    border-color: var(--el-color-danger);
+    color: var(--el-color-white);
+    font-weight: 600;
+  }
+
+  &--info:not(.is-link, .is-text, .is-plain) {
+    background-color: var(--el-color-info);
+    border-color: var(--el-color-info);
+    color: var(--el-color-white);
+    font-weight: 600;
+  }
+
+  /* 朴素按钮 (is-plain) 现代微光高质感覆盖 */
+  &--primary.is-plain {
+    background-color: var(--app-accent-soft) !important;
+    border-color: var(--el-color-primary) !important;
+    color: var(--el-color-primary) !important;
+    font-weight: 500;
+
+    &:hover, &:focus {
+      background-color: var(--el-color-primary) !important;
+      color: var(--el-color-white) !important;
+    }
+  }
+
+  &--success.is-plain {
+    background-color: var(--app-success-soft) !important;
+    border-color: var(--el-color-success) !important;
+    color: var(--el-color-success) !important;
+    font-weight: 500;
+
+    &:hover, &:focus {
+      background-color: var(--el-color-success) !important;
+      color: var(--el-color-white) !important;
+    }
+  }
+
+  &--warning.is-plain {
+    background-color: var(--app-warning-soft) !important;
+    border-color: var(--el-color-warning) !important;
+    color: var(--el-color-warning) !important;
+    font-weight: 500;
+
+    &:hover, &:focus {
+      background-color: var(--el-color-warning) !important;
+      color: var(--el-color-white) !important;
+    }
+  }
+
+  &--danger.is-plain {
+    background-color: var(--app-danger-soft) !important;
+    border-color: var(--el-color-danger) !important;
+    color: var(--el-color-danger) !important;
+    font-weight: 500;
+
+    &:hover, &:focus {
+      background-color: var(--el-color-danger) !important;
+      color: var(--el-color-white) !important;
+    }
+  }
+
+  &--info.is-plain {
+    background-color: var(--app-info-soft) !important;
+    border-color: var(--el-color-info) !important;
+    color: var(--el-color-info) !important;
+    font-weight: 500;
+
+    &:hover, &:focus {
+      background-color: var(--el-color-info) !important;
+      color: var(--el-color-white) !important;
+    }
+  }
+}
+
+/* ==================== 2. 表单控件 (ElInput, ElSelect, ElTextarea) ==================== */
+.el-input__wrapper,
+.el-select__wrapper,
+.el-textarea__inner {
+  border-radius: var(--app-radius-md) !important;
+  background-color: var(--app-bg-subtle) !important;
+  box-shadow: 0 0 0 1px var(--app-border) inset !important;
+  color: var(--app-text) !important;
+  transition: box-shadow 0.2s ease, background-color 0.2s ease !important;
+
+  .el-input__inner,
+  .el-select__placeholder,
+  .el-select__selected-item {
+    color: var(--app-text) !important;
+  }
+
+  .el-input__inner::placeholder,
+  .el-select__placeholder.is-transparent {
+    color: var(--app-text-muted) !important;
+  }
+
+  &:hover {
+    box-shadow: 0 0 0 1px var(--el-color-primary) inset !important;
+  }
+
+  &.is-focused,
+  &.is-focus {
+    box-shadow: 0 0 0 1px var(--el-color-primary) inset, 0 0 0 3px var(--app-accent-soft) !important;
+  }
+}
+
+.el-range-editor {
+  .el-range-input {
+    color: var(--app-text) !important;
+    background-color: transparent !important;
+  }
+
+  .el-range-separator {
+    color: var(--app-text-muted) !important;
+  }
+}
+
+.el-form-item__label {
+  color: var(--app-text) !important;
+  font-weight: 500;
+}
+
+/* ==================== 3. 单选与多选 (ElRadio, ElCheckbox) ==================== */
+.el-radio {
+  color: var(--app-text) !important;
+
+  .el-radio__inner {
+    background-color: var(--app-bg-subtle) !important;
+    border-color: var(--app-border-strong) !important;
+  }
+
+  &.is-checked {
+    .el-radio__inner {
+      background-color: var(--el-color-primary) !important;
+      border-color: var(--el-color-primary) !important;
+    }
+
+    .el-radio__label {
+      color: var(--el-color-primary) !important;
+    }
+  }
+}
+
+.el-checkbox {
+  color: var(--app-text) !important;
+
+  .el-checkbox__inner {
+    background-color: var(--app-bg-subtle) !important;
+    border-color: var(--app-border-strong) !important;
+  }
+
+  &.is-checked {
+    .el-checkbox__inner {
+      background-color: var(--el-color-primary) !important;
+      border-color: var(--el-color-primary) !important;
+    }
+
+    .el-checkbox__label {
+      color: var(--el-color-primary) !important;
+    }
+  }
+}
+
+/* ==================== 4. 弹窗与抽屉 (ElDialog, ElDrawer) ==================== */
+.el-dialog {
+  border-radius: var(--app-radius-lg) !important;
+  background-color: var(--app-bg-card) !important;
+  box-shadow: var(--app-shadow-lg) !important;
+  border: 1px solid var(--app-border) !important;
+  overflow: hidden;
+
+  .el-dialog__header {
+    padding: 16px 20px !important;
+    margin-right: 0 !important;
+    border-bottom: 1px solid var(--app-border) !important;
+    background-color: var(--app-bg-card) !important;
+
+    .el-dialog__title {
+      font-size: 16px !important;
+      font-weight: 600 !important;
+      color: var(--app-text) !important;
+    }
+
+    .el-dialog__headerbtn .el-dialog__close {
+      color: var(--app-text-muted) !important;
+      transition: color 0.15s ease;
+
+      &:hover {
+        color: var(--app-text) !important;
+      }
+    }
+  }
+
+  .el-dialog__body {
+    padding: 24px 20px !important;
+    color: var(--app-text) !important;
+    background-color: var(--app-bg-card) !important;
+  }
+
+  .el-dialog__footer {
+    padding: 14px 20px !important;
+    border-top: 1px solid var(--app-border) !important;
+    background-color: var(--app-bg-subtle) !important;
+  }
+}
+
+.el-drawer {
+  background-color: var(--app-bg-card) !important;
+
+  .el-drawer__header {
+    margin-bottom: 0 !important;
+    padding: 16px 20px !important;
+    border-bottom: 1px solid var(--app-border) !important;
+    color: var(--app-text) !important;
+    font-weight: 600 !important;
+  }
+}
+
+/* ==================== 5. 下拉菜单与浮层 (ElMenuPopup, ElDropdown, ElSelectDropdown) ==================== */
+.el-menu--popup,
+.el-dropdown-menu,
+.el-select-dropdown__wrap,
+.el-picker__popper,
+.el-popper.is-light {
+  background-color: var(--app-bg-card) !important;
+  border: 1px solid var(--app-border) !important;
+  border-radius: var(--app-radius-md) !important;
+  box-shadow: var(--app-shadow-lg) !important;
+}
+
+.el-menu--popup {
+  padding: 4px !important;
+
+  .el-menu-item,
+  .el-sub-menu__title {
+    height: 38px !important;
+    line-height: 38px !important;
+    color: var(--app-text) !important;
+    padding: 0 14px !important;
+    margin: 2px 0 !important;
+    border-radius: var(--app-radius-sm);
+    font-size: 13px !important;
+
+    &:hover {
+      background-color: var(--app-bg-hover) !important;
+      color: var(--app-accent) !important;
+    }
+
+    &.is-active {
+      background-color: var(--app-accent-soft) !important;
+      color: var(--app-accent) !important;
+      font-weight: 500;
+    }
+  }
+}
+
+.el-dropdown-menu__item,
+.el-select-dropdown__item {
+  color: var(--app-text) !important;
+  border-radius: var(--app-radius-sm) !important;
+  margin: 2px 4px !important;
+
+  &:hover,
+  &.hover,
+  &:focus {
+    background-color: var(--app-bg-hover) !important;
+    color: var(--el-color-primary) !important;
+  }
+
+  &.is-selected {
+    background-color: var(--app-accent-soft) !important;
+    color: var(--el-color-primary) !important;
+    font-weight: 600;
+  }
+}
+
+/* ==================== 6. 表格 (ElTable) ==================== */
+.el-table {
+  border-radius: var(--app-radius-md);
+  background-color: var(--app-bg-plain) !important;
+  color: var(--app-text);
+  border: 1px solid var(--app-border);
+
+  th.el-table__cell {
+    background-color: var(--app-bg-subtle) !important;
+    color: var(--app-text) !important;
+    font-weight: 600;
+    border-bottom: 1px solid var(--app-border) !important;
+  }
+
+  td.el-table__cell {
+    background-color: transparent !important;
+    border-bottom: 1px solid var(--app-border) !important;
+    color: var(--app-text);
+  }
+
+  tr.el-table__row {
+    background-color: transparent;
+    transition: background-color 0.15s ease;
+
+    &:hover > td.el-table__cell {
+      background-color: var(--app-bg-hover) !important;
+    }
+
+    &.current-row > td.el-table__cell {
+      background-color: var(--app-accent-soft) !important;
+    }
+  }
+
+  .el-table__empty-block {
+    background-color: transparent !important;
+    min-height: 120px;
+  }
+
+  .el-table__empty-text {
+    color: var(--app-text-muted) !important;
+  }
+}
+
+/* ==================== 7. 卡片 (ElCard) ==================== */
+.el-card {
+  border-radius: var(--app-radius-lg);
+  border-color: var(--app-border);
+  background-color: var(--app-bg-plain);
+  box-shadow: var(--app-shadow-sm);
+
+  .el-card__header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--app-border);
+    color: var(--app-text);
+    font-weight: 600;
+  }
+}

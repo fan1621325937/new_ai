@@ -16,22 +16,22 @@ const sideTheme = computed(() => settingsStore.sideTheme)
 
 // 获取Logo背景色
 const getLogoBackground = computed(() => {
+  if (settingsStore.navType === 3) {
+    return 'transparent'
+  }
   if (settingsStore.isDark) {
     return 'var(--sidebar-bg)'
   }
-  if (settingsStore.navType == 3) {
-    return variables.menuLightBg
-  }
-  return sideTheme.value === 'theme-dark' ? variables.menuBg : variables.menuLightBg
+  return sideTheme.value === 'theme-dark' ? 'var(--sidebar-bg)' : variables.menuLightBg
 })
 
 // 获取Logo文字颜色
 const getLogoTextColor = computed(() => {
+  if (settingsStore.navType === 3) {
+    return 'var(--app-text)'
+  }
   if (settingsStore.isDark) {
     return 'var(--sidebar-logo-text)'
-  }
-  if (settingsStore.navType == 3) {
-    return variables.menuLightText
   }
   return sideTheme.value === 'theme-dark' ? '#fff' : variables.menuLightText
 })

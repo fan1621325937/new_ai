@@ -22,7 +22,7 @@ const getMenuBackground = computed(() => {
   if (settingsStore.isDark) {
     return 'var(--sidebar-bg)'
   }
-  return sideTheme.value === 'theme-dark' ? variables.menuBg : variables.menuLightBg
+  return sideTheme.value === 'theme-dark' ? 'var(--sidebar-bg)' : variables.menuLightBg
 })
 
 // 获取菜单文字颜色

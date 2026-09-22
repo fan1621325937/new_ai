@@ -13,8 +13,10 @@
 :root {
   /* ==================== 表面 ==================== */
   --app-bg-page: var(--el-bg-color-page); // 页面底色
+  --app-bg-page-gradient: var(--el-bg-color-page); // 页面渐变大背景（由主题引擎注入）
   --app-bg-plain: var(--el-bg-color); // 页面内分区/卡片底
   --app-bg-card: var(--el-bg-color-overlay); // 浮层：弹窗/抽屉/下拉
+  --app-bg-surface: var(--el-bg-color-overlay); // 浮层/卡片表面
   --app-bg-subtle: var(--el-fill-color-light); // 次级表面：搜索区/表头/页脚
   --app-bg-hover: var(--el-fill-color); // 中性 hover 底
   --app-bg-active: var(--el-fill-color-dark); // 中性选中底
@@ -32,7 +34,9 @@
 
   /* ==================== 强调（仅此四项使用主题色） ==================== */
   --app-accent: var(--el-color-primary);
+  --app-accent-gradient: var(--el-color-primary); // 科技流光渐变（由主题引擎驱动）
   --app-accent-soft: var(--el-color-primary-light-9); // 极淡底：当前行/选中
+  --app-accent-subtle: var(--el-color-primary-light-9); // 极淡强调底
   --app-accent-line: var(--el-color-primary-light-7); // 淡边框
   --app-accent-text: var(--el-color-primary-light-5); // 淡文字
 
@@ -45,6 +49,7 @@
   --app-danger-strong: #c0392b; // 历史深红（报警类强调）
   --app-danger-soft: var(--el-color-danger-light-9);
   --app-info: var(--el-color-info);
+  --app-info-soft: var(--el-color-info-light-9);
 
   /* ==================== 品牌扩展色（历史遗留强调色，集中管理便于后续收敛） ==================== */
   --app-brand-teal: #20b2aa;
@@ -107,6 +112,11 @@ html.dark {
   --app-sidebar-bg: #131d31;
   --app-sidebar-bg-deep: #1f2b38;
   --app-mask: rgb(0 0 0 / 0.7);
+  --app-accent-soft: color-mix(in srgb, var(--el-color-primary) 18%, transparent);
+  --app-success-soft: color-mix(in srgb, var(--el-color-success) 18%, transparent);
+  --app-warning-soft: color-mix(in srgb, var(--el-color-warning) 18%, transparent);
+  --app-danger-soft: color-mix(in srgb, var(--el-color-danger) 18%, transparent);
+  --app-info-soft: color-mix(in srgb, var(--el-color-info) 18%, transparent);
   --app-overlay-black-02: rgb(255 255 255 / 0.03);
   --app-overlay-black-04: rgb(255 255 255 / 0.05);
   --app-overlay-black-06: rgb(255 255 255 / 0.07);

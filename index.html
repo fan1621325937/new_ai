@@ -8,6 +8,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <link rel="icon" href="/favicon.ico">
   <title>%VITE_APP_TITLE%</title>
+  <script>
+    (function () {
+      try {
+        var raw = localStorage.getItem('layout-setting');
+        var setting = raw ? JSON.parse(raw) : null;
+        var presetKey = setting && setting.themePreset ? setting.themePreset : 'sentinel-cyber';
+
+        // 历史别名快速平滑兼容
+        var aliasMap = {
+          'cool-theme': 'sentinel-navy',
+          'warm-theme': 'sentinel-warm',
+          'dark-contrast': 'sentinel-cyber',
+          'muted-earth': 'sentinel-taupe',
+          'pure-light-blue': 'sentinel-navy',
+          'warm-amber': 'sentinel-warm',
+          'quantum-gold': 'sentinel-warm',
+          'vision-blue': 'sentinel-navy',
+          'aurora-glow': 'sentinel-cyber',
+          'cyber-cyan': 'sentinel-cyber',
+          'frost-emerald': 'sentinel-taupe',
+          'safe-emerald': 'sentinel-taupe',
+          'alert-amber': 'sentinel-warm'
+        };
+        var resolvedKey = aliasMap[presetKey] || presetKey;
+        var isLight = resolvedKey === 'sentinel-warm';
+
+        if (isLight) {
+          document.documentElement.classList.remove('dark');
+        } else {
+          document.documentElement.classList.add('dark');
+        }
+
+        var bgMap = {
+          'sentinel-warm': '#faf5ed',
+          'sentinel-taupe': '#3f352e',
+          'sentinel-cyber': '#090e17',
+          'sentinel-navy': '#0a1838'
+        };
+        var bgGradientMap = {
+          'sentinel-warm': 'linear-gradient(180deg, #faf5ed 0%, #f3ebdd 100%)',
+          'sentinel-taupe': 'radial-gradient(ellipse 120% 80% at 50% -10%, #4a3e35 0%, #3f352e 60%, #2e2621 100%)',
+          'sentinel-cyber': 'radial-gradient(ellipse 120% 80% at 50% -10%, #101a28 0%, #090e17 60%, #05080e 100%)',
+          'sentinel-navy': 'radial-gradient(ellipse 120% 80% at 50% -10%, #132545 0%, #0a1838 60%, #061026 100%)'
+        };
+        var primaryMap = {
+          'sentinel-warm': '#d96b27',
+          'sentinel-taupe': '#24d85c',
+          'sentinel-cyber': '#00e5ff',
+          'sentinel-navy': '#38bdf8'
+        };
+
+        var bg = bgMap[resolvedKey] || '#090e17';
+        var bgGrad = bgGradientMap[resolvedKey] || bg;
+        var primary = setting && setting.theme ? setting.theme : (primaryMap[resolvedKey] || '#00e5ff');
+
+        document.documentElement.style.setProperty('--el-bg-color-page', bg);
+        document.documentElement.style.setProperty('--app-bg-page', bg);
+        document.documentElement.style.setProperty('--app-bg-page-gradient', bgGrad);
+        document.documentElement.style.backgroundColor = bg;
+        document.documentElement.style.backgroundImage = bgGrad;
+        document.documentElement.style.setProperty('--el-color-primary', primary);
+        document.documentElement.dataset.themePreset = resolvedKey;
+      } catch (e) {}
+    })();
+  </script>
   <!--[if lt IE 11]><script>window.location.href='/html/ie.html';</script><![endif]-->
   <style>
     html,

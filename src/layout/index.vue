@@ -80,6 +80,11 @@ function setLayout() {
   }
 }
 
+.main-container {
+  background-color: var(--app-bg-page);
+  transition: background-color 0.25s ease;
+}
+
 .main-container:has(.fixed-header) {
   height: 100vh;
   overflow: hidden;
