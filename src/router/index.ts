@@ -84,6 +84,19 @@ export const constantRoutes = [
       },
     ],
   },
+  {
+    path: '/demo',
+    component: Layout,
+    hidden: false,
+    children: [
+      {
+        path: 'form-layout',
+        component: () => import('@/views/demo/form-layout/index.vue'),
+        name: 'DemoFormLayout',
+        meta: { title: '表单多模态布局', icon: 'form' },
+      },
+    ],
+  },
 ]
 
 // 动态路由，基于用户权限动态去加载

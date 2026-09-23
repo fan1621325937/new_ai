@@ -13,6 +13,7 @@ import AppDialog from './AppDialog/index.vue'
 import DictTag from './DictTag/index.vue'
 import Editor from './Editor/index.vue'
 import FileUpload from './FileUpload/index.vue'
+import FormLayout from './FormLayout/index.vue'
 import ImagePreview from './ImagePreview/index.vue'
 import ImageUpload from './ImageUpload/index.vue'
 import Pagination from './Pagination/index.vue'
@@ -29,6 +30,8 @@ export const GLOBAL_COMPONENTS: Record<string, Component> = {
   Editor,
   // 文件上传
   FileUpload,
+  // 多模态表单页面布局组件（支持上下收缩、左右收缩与复合嵌套布局）
+  FormLayout,
   // 图片上传
   ImageUpload,
   // 图片预览
