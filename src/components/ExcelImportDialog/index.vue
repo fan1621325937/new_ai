@@ -1,47 +1,33 @@
 <script setup lang="ts">
+import type { UploadFile, UploadInstance } from 'element-plus'
 import type { AjaxResult } from '@/types/api/common'
+import { computed, getCurrentInstance, nextTick, ref } from 'vue'
 import { getToken } from '@/utils/auth'
 
-const props = defineProps({
-  // 对话框标题
-  title: {
-    type: String,
-    default: '数据导入',
-  },
-  // 对话框宽度
-  width: {
-    type: String,
-    default: '400px',
-  },
-  // 上传接口地址（必传）
-  action: {
-    type: String,
-    required: true,
-  },
-  // 模板下载接口地址，不传则不显示下载模板链接
-  templateAction: {
-    type: String,
-    default: '',
-  },
-  // 模板文件名前缀
-  templateFileName: {
-    type: String,
-    default: 'template',
-  },
-  // 覆盖更新勾选框的说明文字
-  updateSupportLabel: {
-    type: String,
-    default: '是否更新已经存在的数据',
-  },
+const props = withDefaults(defineProps<{
+  title?: string
+  width?: string
+  action: string
+  templateAction?: string
+  templateFileName?: string
+  updateSupportLabel?: string
+}>(), {
+  title: '数据导入',
+  width: '460px',
+  templateAction: '',
+  templateFileName: 'template',
+  updateSupportLabel: '是否更新已经存在的数据',
 })
 
-const emit = defineEmits(['success'])
+const emit = defineEmits<{
+  (e: 'success'): void
+}>()
 
-const { proxy } = getCurrentInstance()
+const { proxy } = getCurrentInstance()!
 
-const uploadRef = ref<any>()
+const uploadRef = ref<UploadInstance>()
 const visible = ref<boolean>(false)
-const selectedFile = ref<any>(null)
+const selectedFile = ref<UploadFile | null>(null)
 const isUploading = ref<boolean>(false)
 const updateSupport = ref<boolean>(false)
 const headers = { Authorization: `Bearer ${getToken()}` }
@@ -50,9 +36,8 @@ const uploadUrl = computed(() => {
   return `${import.meta.env.VITE_APP_BASE_API + props.action}?updateSupport=${updateSupport.value ? 1 : 0}`
 })
 
-const templateUrl = computed(() => !!props.templateAction)
+const templateUrl = computed(() => Boolean(props.templateAction))
 
-// 打开对话框（供父组件通过 ref 调用）
 function open(): void {
   updateSupport.value = false
   isUploading.value = false
@@ -63,59 +48,77 @@ function open(): void {
   })
 }
 
-// 关闭时清理
 function handleClose(): void {
   isUploading.value = false
   selectedFile.value = null
   uploadRef.value?.clearFiles()
 }
 
-// 下载模板
 function handleDownloadTemplate(): void {
   proxy.download(props.templateAction, {}, `${props.templateFileName}_${Date.now()}.xlsx`)
 }
 
-// 上传进度
 function handleProgress(): void {
   isUploading.value = true
 }
 
-/** 文件选择处理 */
-function handleFileChange(file: any): void {
+function handleFileChange(file: UploadFile): void {
   selectedFile.value = file
 }
 
-/** 文件删除处理 */
-function handleFileRemove(file: any) {
+function handleFileRemove(): void {
   selectedFile.value = null
 }
 
-// 上传成功
-function handleSuccess(response: AjaxResult) {
+function handleSuccess(response: AjaxResult): void {
   visible.value = false
   isUploading.value = false
   selectedFile.value = null
   uploadRef.value?.clearFiles()
-  proxy.$alert(`<div style='overflow:auto;overflow-x:hidden;max-height:70vh;padding:10px 20px 0;'>${response.msg}</div>`, '导入结果', { dangerouslyUseHTMLString: true })
+  proxy.$alert(
+    `<div style='overflow:auto;overflow-x:hidden;max-height:70vh;padding:10px 20px 0;'>${response.msg}</div>`,
+    '导入结果',
+    { dangerouslyUseHTMLString: true },
+  )
   emit('success')
 }
 
-// 提交上传
-function handleSubmit() {
+function handleSubmit(): void {
   const file = selectedFile.value
-  if (!file || file.length === 0 || (!file.name.toLowerCase().endsWith('.xls') && !file.name.toLowerCase().endsWith('.xlsx'))) {
+  if (!file || (!file.name.toLowerCase().endsWith('.xls') && !file.name.toLowerCase().endsWith('.xlsx'))) {
     proxy.$modal.msgError('请选择后缀为 “xls”或“xlsx”的文件。')
     return
   }
-  uploadRef.value.submit()
+  uploadRef.value?.submit()
 }
 
 defineExpose({ open })
 </script>
 
 <template>
-  <el-dialog v-model="visible" :title="title" :width="width" append-to-body @close="handleClose">
-    <el-upload ref="uploadRef" :limit="1" accept=".xlsx, .xls" :headers="headers" :action="uploadUrl" :disabled="isUploading" :on-progress="handleProgress" :on-change="handleFileChange" :on-remove="handleFileRemove" :on-success="handleSuccess" :auto-upload="false" drag>
+  <AppDialog
+    v-model="visible"
+    :title="title"
+    :width="width"
+    theme="primary"
+    :drag="true"
+    append-to-body
+    @close="handleClose"
+  >
+    <el-upload
+      ref="uploadRef"
+      :limit="1"
+      accept=".xlsx, .xls"
+      :headers="headers"
+      :action="uploadUrl"
+      :disabled="isUploading"
+      :on-progress="handleProgress"
+      :on-change="handleFileChange"
+      :on-remove="handleFileRemove"
+      :on-success="handleSuccess"
+      :auto-upload="false"
+      drag
+    >
       <el-icon class="el-icon--upload">
         <upload-filled />
       </el-icon>
@@ -123,28 +126,34 @@ defineExpose({ open })
         将文件拖到此处，或<em>点击上传</em>
       </div>
       <template #tip>
-        <div class="el-upload__tip text-center">
-          <div class="el-upload__tip">
+        <div class="el-upload__tip text-center space-y-2 mt-2">
+          <div>
             <el-checkbox v-model="updateSupport">
               {{ updateSupportLabel }}
             </el-checkbox>
           </div>
-          <span>仅允许导入xls、xlsx格式文件。</span>
-          <el-link v-if="templateUrl" type="primary" underline="never" style="font-size: 12px; vertical-align: baseline" @click="handleDownloadTemplate">
+          <span class="text-xs text-[var(--app-text-muted)]">仅允许导入 xls、xlsx 格式文件。</span>
+          <el-link
+            v-if="templateUrl"
+            type="primary"
+            underline="never"
+            class="text-xs inline-block align-baseline ml-2"
+            @click="handleDownloadTemplate"
+          >
             下载模板
           </el-link>
         </div>
       </template>
     </el-upload>
     <template #footer>
-      <div class="dialog-footer">
-        <el-button type="primary" @click="handleSubmit">
-          确 定
-        </el-button>
+      <div class="flex justify-end gap-3">
         <el-button @click="visible = false">
           取 消
         </el-button>
+        <el-button type="primary" @click="handleSubmit">
+          确 定
+        </el-button>
       </div>
     </template>
-  </el-dialog>
+  </AppDialog>
 </template>

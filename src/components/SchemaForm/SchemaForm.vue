@@ -59,14 +59,19 @@ function onFieldChange(payload: { form: Record<string, unknown>, prop: string, v
   emit('change', payload)
 }
 
-async function validate(): Promise<boolean> {
-  if (!formRef.value)
+async function validate(callback?: (valid: boolean) => void): Promise<boolean> {
+  if (!formRef.value) {
+    callback?.(false)
     return false
+  }
   try {
     const valid = await formRef.value.validate()
-    return Boolean(valid)
+    const ok = Boolean(valid)
+    callback?.(ok)
+    return ok
   }
   catch {
+    callback?.(false)
     return false
   }
 }

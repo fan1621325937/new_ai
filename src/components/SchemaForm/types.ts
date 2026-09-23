@@ -117,8 +117,8 @@ export interface FormItemComponentProps {
 export interface SchemaFormInstance {
   /** 原始 Element Plus 表单实例 */
   formRef: FormInstance | undefined
-  /** 触发表单校验，返回 Promise<boolean> */
-  validate: () => Promise<boolean>
+  /** 触发表单校验，支持 Promise 与可选回调 */
+  validate: (callback?: (valid: boolean) => void) => Promise<boolean>
   /** 重置表单字段 */
   resetFields: () => void
   /** 清除校验信息 */
