@@ -70,7 +70,7 @@ function onLeave(el: Element, done: () => void): void {
             <slot name="left-extra" />
           </div>
         </header>
-        <div class="left-content-wrapper flex-1 min-h-0 overflow-auto p-3">
+        <div class="left-content-wrapper flex-1 min-h-0 flex flex-col p-3 overflow-hidden">
           <slot name="left" />
         </div>
       </aside>

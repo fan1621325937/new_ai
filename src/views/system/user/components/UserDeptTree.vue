@@ -51,7 +51,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="user-dept-tree h-full flex flex-col gap-2">
+  <div class="user-dept-tree flex-1 min-h-0 flex flex-col gap-2">
     <div class="dept-search-box flex items-center gap-1.5 shrink-0">
       <el-input
         v-model="deptName"
