@@ -76,13 +76,26 @@ service.interceptors.request.use((config: any) => {
 
 // 响应拦截器
 service.interceptors.response.use((res: any) => {
+  let responseData = res.data
+
+  // 兼容微服务/网关在外层包裹 { code: 0, msg: '成功~', data: { code: 200, ... } } 的情况
+  if (
+    responseData
+    && responseData.code === 0
+    && responseData.data
+    && typeof responseData.data === 'object'
+    && ('code' in responseData.data || 'rows' in responseData.data)
+  ) {
+    responseData = responseData.data
+  }
+
   // 未设置状态码则默认成功状态
-  const code = res.data.code || 200
+  const code = responseData.code ?? 200
   // 获取错误信息
-  const msg = errorCode[code] || res.data.msg || errorCode.default
+  const msg = errorCode[code] || responseData.msg || errorCode.default
   // 二进制数据则直接返回
   if (res.request.responseType === 'blob' || res.request.responseType === 'arraybuffer') {
-    return res.data
+    return responseData
   }
   if (code === 401) {
     if (!isRelogin.show) {
@@ -111,7 +124,7 @@ service.interceptors.response.use((res: any) => {
     return Promise.reject(new Error(msg))
   }
   else {
-    return Promise.resolve(res.data)
+    return Promise.resolve(responseData)
   }
 }, (error: any) => {
   console.warn(`err${error}`)

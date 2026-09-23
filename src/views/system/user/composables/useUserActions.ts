@@ -28,8 +28,11 @@ export function useUserActions() {
     listUser(proxy.addDateRange(queryParams, dateRange.value))
       .then((res) => {
         loading.value = false
-        userList.value = res.rows || []
-        total.value = res.total ?? 0
+        const payload = (res && typeof res === 'object' && 'rows' in res)
+          ? (res as { rows?: SysUser[], total?: number })
+          : ((res as { data?: { rows?: SysUser[], total?: number } })?.data || {})
+        userList.value = payload.rows || []
+        total.value = payload.total ?? 0
       })
       .catch(() => {
         loading.value = false
