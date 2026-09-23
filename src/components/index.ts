@@ -18,6 +18,7 @@ import ImagePreview from './ImagePreview/index.vue'
 import ImageUpload from './ImageUpload/index.vue'
 import Pagination from './Pagination/index.vue'
 import RightToolbar from './RightToolbar/index.vue'
+import SchemaForm from './SchemaForm/SchemaForm.vue'
 import SvgIcon from './SvgIcon/index.vue'
 
 /** 全局组件登记表：key 为模板中使用的标签名 */
@@ -32,6 +33,8 @@ export const GLOBAL_COMPONENTS: Record<string, Component> = {
   FileUpload,
   // 多模态表单页面布局组件（支持上下收缩、左右收缩与复合嵌套布局）
   FormLayout,
+  // 配置驱动动态表单组件（支持CSS Grid响应式网格、声明式联动与插件化控件）
+  SchemaForm,
   // 图片上传
   ImageUpload,
   // 图片预览

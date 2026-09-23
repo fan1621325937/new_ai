@@ -10,6 +10,7 @@
 |---|---|---|
 | `<AppDialog />` | AppDialog | 监控科技主题弹窗（支持 5 大信息态主题与视口防逃逸拖拽） |
 | `<FormLayout />` | FormLayout | 多模态表单页面布局（支持上下收缩、左右收缩与复合嵌套收缩布局） |
+| `<SchemaForm />` | SchemaForm | 配置驱动动态表单（支持 CSS Grid 响应式、声明式联动与插件化控件） |
 | `<Pagination />` | Pagination | 分页（配合列表页使用） |
 | `<RightToolbar />` | RightToolbar | 表格右侧工具栏（搜索/刷新/列显隐） |
 | `<DictTag />` | DictTag | 字典标签渲染 |
