@@ -4,13 +4,22 @@ import type { SysUser } from '@/types/api/system/user'
 import { computed, ref } from 'vue'
 import { parseTime } from '@/utils/ruoyi'
 
-defineProps<{
-  userList: SysUser[]
-  loading: boolean
-  total: number
-  pageNum: number
-  pageSize: number
-}>()
+withDefaults(
+  defineProps<{
+    userList?: SysUser[]
+    loading?: boolean
+    total?: number
+    pageNum?: number
+    pageSize?: number
+  }>(),
+  {
+    userList: () => [],
+    loading: false,
+    total: 0,
+    pageNum: 1,
+    pageSize: 10,
+  },
+)
 
 const emit = defineEmits<{
   (e: 'update:pageNum', val: number): void

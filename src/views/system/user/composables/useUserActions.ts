@@ -25,11 +25,17 @@ export function useUserActions() {
 
   function getList(): void {
     loading.value = true
-    listUser(proxy.addDateRange(queryParams, dateRange.value)).then((res) => {
-      loading.value = false
-      userList.value = res.rows
-      total.value = res.total
-    })
+    listUser(proxy.addDateRange(queryParams, dateRange.value))
+      .then((res) => {
+        loading.value = false
+        userList.value = res.rows || []
+        total.value = res.total ?? 0
+      })
+      .catch(() => {
+        loading.value = false
+        userList.value = []
+        total.value = 0
+      })
   }
 
   function handleDelete(row?: SysUser): void {

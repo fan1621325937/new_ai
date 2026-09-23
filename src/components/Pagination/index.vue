@@ -3,8 +3,8 @@ import { scrollTo } from '@/utils/scroll-to'
 
 const props = defineProps({
   total: {
-    required: true,
     type: Number,
+    default: 0,
   },
   page: {
     type: Number,
@@ -88,7 +88,7 @@ function handleCurrentChange(val: number) {
       :layout="layout"
       :page-sizes="pageSizes"
       :pager-count="pagerCount"
-      :total="total"
+      :total="total || 0"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
