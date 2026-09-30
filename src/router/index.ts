@@ -88,12 +88,31 @@ export const constantRoutes = [
     path: '/demo',
     component: Layout,
     hidden: false,
+    meta: { title: '组件演示', icon: 'component' },
     children: [
       {
         path: 'form-layout',
         component: () => import('@/views/demo/form-layout/index.vue'),
         name: 'DemoFormLayout',
         meta: { title: '表单多模态布局', icon: 'form' },
+      },
+      {
+        path: 'auto-scroll',
+        component: () => import('@/views/demo/auto-scroll/index.vue'),
+        name: 'DemoAutoScroll',
+        meta: { title: '自动滚动列表', icon: 'chart' },
+      },
+      {
+        path: 'charts',
+        component: () => import('@/views/demo/charts/index.vue'),
+        name: 'DemoCharts',
+        meta: { title: '图表外壳', icon: 'chart-donut' },
+      },
+      {
+        path: 'app-table',
+        component: () => import('@/views/demo/app-table/index.vue'),
+        name: 'DemoAppTable',
+        meta: { title: '通用表格', icon: 'build' },
       },
     ],
   },

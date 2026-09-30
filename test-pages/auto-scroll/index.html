@@ -1,0 +1,98 @@
+<!-- AI生成 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoScroll 测试页 · 智能管理系统</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<p data-aigc-mark="1" style="margin:0 0 8px;font-size:10px;line-height:1.3;color:#6b6560;font-weight:400;">AI生成</p>
+
+  <h1>AutoScroll 自动滚动列表 · 测试页</h1>
+  <p class="sub">
+    与 <code>src/components/auto-scroll</code> 行为对齐的独立测试台：拖动参数即时重建，
+    悬停 / 滚轮 / 触摸接管，右侧日志实时回放事件。浏览器直接打开本文件即可，无需启动 Vue 工程。
+  </p>
+
+  <div class="layout">
+    <!-- 左侧：参数控制 -->
+    <section class="panel">
+      <h2>参数面板</h2>
+
+      <div class="field">
+        <label>stepTime 步进间隔 <output id="stepTimeVal">2500</output> ms</label>
+        <input type="range" id="stepTime" min="800" max="6000" step="100" value="2500">
+      </div>
+
+      <div class="field">
+        <label>stepHeight 垂直步进 <output id="stepHeightVal">40</output> px</label>
+        <input type="range" id="stepHeight" min="24" max="200" step="4" value="40">
+      </div>
+
+      <div class="field">
+        <label>stepWidth 水平步进 <output id="stepWidthVal">260</output> px</label>
+        <input type="range" id="stepWidth" min="120" max="480" step="10" value="260">
+      </div>
+
+      <div class="field">
+        <label>threshold 启动阈值 <output id="thresholdVal">3</output> 条</label>
+        <input type="range" id="threshold" min="1" max="8" step="1" value="3">
+      </div>
+
+      <div class="field">
+        <label>autoRestartDelay 手动后重启 <output id="autoRestartDelayVal">3000</output> ms</label>
+        <input type="range" id="autoRestartDelay" min="0" max="8000" step="200" value="3000">
+      </div>
+
+      <div class="checks">
+        <label><input type="checkbox" id="scroll" checked> scroll 启用自动滚动</label>
+        <label><input type="checkbox" id="horizontalMode" checked> 启用水平滚动示例</label>
+        <label><input type="checkbox" id="fadeInOut" checked> fadeInOut 悬停淡入</label>
+        <label><input type="checkbox" id="scrollbarShowOnHover" checked> scrollbarShowOnHover 悬停显滚动条</label>
+      </div>
+
+      <div class="btns">
+        <button class="primary" id="apply">应用参数</button>
+        <button id="reset">恢复默认</button>
+        <button id="clearLog">清空日志</button>
+      </div>
+
+      <p class="hint">
+        验证要点：<br>
+        1. 列表超高后按 <code>stepTime</code> 步进<br>
+        2. 鼠标悬停暂停，移出后 <code>mouseLeaveRestartDelay</code> 续滚<br>
+        3. 滚轮/触摸接管，<code>autoRestartDelay</code> 后自动重启<br>
+        4. 滚到底平滑回绕到顶<br>
+        5. <code>prefers-reduced-motion</code> 时直接跳转、不做动画
+      </p>
+    </section>
+
+    <!-- 中间：可视化 -->
+    <section class="stack">
+      <div class="card">
+        <h3>垂直滚动（stepHeight 行高，超出后逐行滚）</h3>
+        <div class="box-vert">
+          <div id="vertical" class="auto-scroll-host"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>水平滚动（stepWidth 步进，fadeInOut 悬停淡入）</h3>
+        <div class="box-horz">
+          <div id="horizontal" class="auto-scroll-host"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 右侧：事件日志 -->
+    <section class="panel">
+      <h2>事件日志</h2>
+      <div id="log" class="log-wrap"></div>
+    </section>
+  </div>
+
+  <script src="./auto-scroll.js"></script>
+  <script src="./demo.js"></script>
+</body>
+</html>

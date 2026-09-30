@@ -9,6 +9,10 @@
 | 模板标签 | 组件 | 用途 |
 |---|---|---|
 | `<AppDialog />` | AppDialog | 监控科技主题弹窗（支持 5 大信息态主题与视口防逃逸拖拽） |
+| `<AutoScroll />` | AutoScroll | 自动滚动列表（纵向/横向步进、悬停暂停、手动后自动重启） |
+| `<ChartBox />` | ChartBox | 图表外壳（标题栏 + 时间维度切换 + 内容插槽） |
+| `<AppTable />` | AppTable | 通用表格（配置驱动列、表头拖拽换列、列显隐、分页） |
+| `<ECharts />` | ECharts | ECharts 自适应画布（容器 ResizeObserver 自适应） |
 | `<FormLayout />` | FormLayout | 多模态表单页面布局（支持上下收缩、左右收缩与复合嵌套收缩布局） |
 | `<SchemaForm />` | SchemaForm | 配置驱动动态表单（支持 CSS Grid 响应式、声明式联动与插件化控件） |
 | `<Pagination />` | Pagination | 分页（配合列表页使用） |

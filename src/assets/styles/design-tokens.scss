@@ -100,6 +100,23 @@
   --app-shadow-sm: var(--el-box-shadow-light);
   --app-shadow-md: var(--el-box-shadow);
   --app-shadow-lg: var(--el-box-shadow-dark);
+
+  /* ==================== 图表容器（ChartBox / 监控卡片） ====================
+     由语义令牌派生，保证亮/暗主题一致；大屏主题可在主题引擎覆盖本组变量 */
+  --app-chart-bg: var(--app-bg-plain);
+  --app-chart-border: var(--app-border);
+  --app-chart-border-hover: var(--app-accent-line);
+  --app-chart-radius: var(--app-radius-lg);
+  --app-chart-header-h: 40px;
+  --app-chart-title-bg: linear-gradient(90deg, var(--app-accent-a20) 0%, transparent 100%);
+  --app-chart-text: var(--app-text);
+  --app-chart-text-2: var(--app-text-secondary);
+  --app-chart-text-3: var(--app-text-muted);
+  --app-chart-accent: var(--app-accent);
+  --app-chart-accent-deep: var(--el-color-primary);
+  --app-chart-danger: var(--app-danger);
+  --app-chart-title-glow: 0 0 10px var(--app-accent-a30);
+  --app-chart-box-glow: 0 0 18px var(--app-accent-a20);
 }
 
 /* 暗色模式下含字面量的令牌需要覆盖 */

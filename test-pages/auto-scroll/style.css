@@ -1,0 +1,336 @@
+/* AutoScroll 测试页样式 —— 模拟暗色监控主题，零颜色字面量外的令牌用 CSS 变量模拟 */
+:root {
+  --app-bg-page: #0b1526;
+  --app-bg-plain: #12203a;
+  --app-bg-subtle: #1a2b48;
+  --app-border: #243656;
+  --app-border-strong: #2e4568;
+  --app-text: #e8eef8;
+  --app-text-secondary: #a8b8d0;
+  --app-text-muted: #6e82a0;
+  --app-accent: #35bdfa;
+  --app-accent-a30: rgb(53 189 250 / 0.3);
+  --app-accent-soft: rgb(53 189 250 / 0.14);
+  --app-accent-line: rgb(53 189 250 / 0.35);
+  --app-success: #2cc7bf;
+  --app-warning: #e6a23c;
+  --app-danger: #e04b3a;
+  --app-radius: 8px;
+  --font: 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 20px 24px 32px;
+  background: var(--app-bg-page);
+  color: var(--app-text);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+h1 {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.sub {
+  margin: 0 0 18px;
+  color: var(--app-text-secondary);
+  font-size: 13px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr) 280px;
+  gap: 16px;
+  align-items: start;
+}
+
+.layout > * {
+  min-width: 0;
+}
+
+@media (max-width: 1100px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel {
+  background: var(--app-bg-plain);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  padding: 14px 16px;
+}
+
+.panel h2 {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--app-text);
+}
+
+.field {
+  margin-bottom: 12px;
+}
+
+.field label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  color: var(--app-text-secondary);
+  font-size: 12px;
+}
+
+.field label output {
+  color: var(--app-accent);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.field input[type='range'] {
+  width: 100%;
+  accent-color: var(--app-accent);
+}
+
+.checks {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.checks label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--app-text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.checks input {
+  accent-color: var(--app-accent);
+}
+
+.btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+button {
+  border: 1px solid var(--app-border-strong);
+  background: var(--app-bg-subtle);
+  color: var(--app-text);
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+button:hover {
+  background: var(--app-accent-soft);
+  border-color: var(--app-accent-line);
+}
+
+button.primary {
+  background: var(--app-accent);
+  border-color: var(--app-accent);
+  color: var(--app-bg-page);
+  font-weight: 600;
+}
+
+button.primary:hover {
+  filter: brightness(1.08);
+}
+
+.stack {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.card {
+  background: var(--app-bg-plain);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  padding: 14px 16px;
+}
+
+.card h3 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--app-text-secondary);
+}
+
+/* 外层定高，内部 AutoScroll 撑满 100%（与 Vue 用法一致：父级约束高度） */
+.box-vert {
+  height: 280px;
+  overflow: hidden;
+}
+
+.box-horz {
+  height: 120px;
+  overflow: hidden;
+}
+
+.box-vert > .auto-scroll-host,
+.box-horz > .auto-scroll-host {
+  height: 100%;
+  width: 100%;
+}
+
+/* ---- AutoScroll 期望样式（与组件 style.scss 对齐）---- */
+.as-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+.as-item {
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.as-hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.as-hide-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.auto-scroll-host {
+  position: relative;
+  border-radius: 4px;
+}
+
+.auto-scroll-host::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.auto-scroll-host::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.auto-scroll-host::-webkit-scrollbar-thumb {
+  background-color: var(--app-accent-a30);
+  border-radius: 3px;
+}
+
+.auto-scroll-host::-webkit-scrollbar-thumb:hover {
+  background-color: var(--app-accent);
+}
+
+/* 列表行 */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--app-border);
+  font-size: 12px;
+  color: var(--app-text-secondary);
+}
+
+.row .c-index {
+  width: 28px;
+  color: var(--app-text-muted);
+}
+
+.row .c-name {
+  flex: 1;
+}
+
+.row .c-value {
+  width: 64px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.row .c-status {
+  width: 48px;
+  text-align: right;
+}
+
+.st-success {
+  color: var(--app-success);
+}
+
+.st-warning {
+  color: var(--app-warning);
+}
+
+.st-danger {
+  color: var(--app-danger);
+}
+
+.banner {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 6px;
+  padding: 0 18px;
+  border: 1px solid var(--app-accent-line);
+  background: var(--app-accent-soft);
+  border-radius: 6px;
+  color: var(--app-accent);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* 日志 */
+.log-wrap {
+  max-height: 320px;
+  overflow: auto;
+  font-family: var(--mono);
+  font-size: 12px;
+  background: var(--app-bg-page);
+  border: 1px solid var(--app-border);
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.log-line {
+  padding: 2px 0;
+  color: var(--app-text-muted);
+  border-bottom: 1px dashed var(--app-border);
+}
+
+.log-ok {
+  color: var(--app-success);
+}
+
+.log-warn {
+  color: var(--app-warning);
+}
+
+.hint {
+  margin-top: 10px;
+  color: var(--app-text-muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.hint code {
+  background: var(--app-bg-subtle);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--app-accent);
+}

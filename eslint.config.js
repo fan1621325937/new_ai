@@ -30,6 +30,8 @@ export default antfu(
       'node_modules/**',
       'public/**',
       'html/**',
+      // 独立浏览器测试页（自带主题令牌，非 Vue 工程源码）
+      'test-pages/**',
       'auto-imports.d.ts',
       'src/views/**',
     ],

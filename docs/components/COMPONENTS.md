@@ -15,6 +15,85 @@
 | 特性 | **不过度封装**：无缝支持全部原生属性与事件；**工业科技质感**：顶部流光色条与状态徽标；**视口防逃逸拖拽**：按住表头拖拽，具备严格视口边界夹逼保护，杜绝拖出屏幕丢失。 |
 | 用法 | `<AppDialog v-model="visible" title="预警详情" type="warning" width="600px"><div>内容</div><template #footer><el-button @click="visible = false">关闭</el-button></template></AppDialog>` |
 
+### AutoScroll（自动滚动列表）
+
+自 aivideo 重构迁移，适配大屏/监控面板列表自动轮播。
+
+| 项 | 内容 |
+|---|---|
+| props | `items`(必填，数据源数组) / `scroll`(true) / `stepTime`(2000，步进间隔 ms) / `stepHeight`/`stepWidth`(步进像素；不传默认一屏) / `threshold`(1，超过该条数才滚) / `containerHeight`/`containerWidth`(不传自动测量) / `horizontal`(false) / `fadeInOut`(false，悬停淡入) / `autoRestartDelay`(3000，手动交互后自动重启；0 不重启) / `mouseLeaveRestartDelay`(50) / `scrollbarShowOnHover`(false) |
+| 插槽 | `#default="{ item, index }"`（泛型强类型 item） |
+| 特性 | 悬停暂停；滚轮/触摸接管后按 `autoRestartDelay` 重启；RAF 平滑步进（`prefers-reduced-motion` 时直接跳转）；页面隐藏暂停、恢复后继续；ResizeObserver 自适应容器尺寸。 |
+| 用法 | `<AutoScroll :items="list" :step-time="3000" :step-height="40" :threshold="1"><template #default="{ item }"><div>{{ item.name }}</div></template></AutoScroll>` |
+| 演示 | 路由 `/demo/auto-scroll` |
+
+### ChartBox（图表外壳）
+
+自 aivideo `dazuan/chartBox` 重构迁移。大屏/监控面板的图表卡片容器。
+
+| 项 | 内容 |
+|---|---|
+| props | `title`(标题，默认「标题」) / `showTitle`(true) / `decPad`(true，内容区内边距) / `showDate`(false，时间维度切换) / `dateInfo`(默认 日/月/年，项为 `{ title, api? }`) |
+| 插槽 | `#default`(内容主体) / `#selectBox`(标题右侧筛选区) / `#othertitle`(标题与内容之间的额外条) |
+| 事件 | `handleDate(item)` —— 点击时间维度回传该项 |
+| 令牌 | 样式全部走 `--app-chart-*`（`design-tokens.scss`，由语义令牌派生，可被主题引擎覆盖） |
+| 用法 | `<ChartBox title="产量统计" show-date @handle-date="onDate"><ECharts :option="opt" /></ChartBox>` |
+| 演示 | 路由 `/demo/charts` |
+
+### ECharts（自适应画布）
+
+自 aivideo `dazuan/charts/chart.vue + resize.js` 重构迁移。封装 `echarts.init`，容器尺寸变化自动 `resize()`。
+
+| 项 | 内容 |
+|---|---|
+| props | `option`(`EChartsOption`，深度监听自动 `setOption`) / `width`/`height`(默认 `100%`) / `className` / `id` / `autoResize`(true) |
+| 暴露 | `chart`(实例 ref) / `ready` / `updateOption(next)`(命令式更新，适合高频) / `resize()` |
+| 自适应 | `ResizeObserver` 观察画布容器（侧边栏折叠、栅格重排等布局变化天然覆盖）+ 窗口 `resize`，100ms 防抖 |
+| 生命周期 | 挂载自动 `init`，卸载自动 `dispose` |
+| 用法 | `<ECharts :option="option" />`；高频更新用 `chartRef.value?.updateOption(opt)` |
+| 主题 | **echarts 在 canvas 上绘图，不能写 `var(--app-*)`**。用 `useChartColors()` 取真实色值，并随主题自动刷新：<br>`const { colors } = useChartColors()` → `axisLabel: { color: colors.value.text3 }` |
+| 演示 | 路由 `/demo/charts`（含主题预设切换） |
+
+### AppTable（通用表格）
+
+自 aivideo `newTable/universalTable` 的**能力**重构（不照抄实现）。配置驱动列 + 表头拖拽换列 + 列显隐 + 分页一体化。
+
+| 项 | 内容 |
+|---|---|
+| props | `columns`(必填，列配置) / `data`(数据) / `loading` / `showPagination`(true) / `total` / `page` / `limit` / `pageSizes` / `columnDraggable`(true) / `columnSetting`(true) / `height` 以及**所有 `el-table` 原生属性透传**（`border`/`stripe`/`highlight-current-row` 等） |
+| 列配置 | `{ prop, label, type?, width?, minWidth?, fixed?, sortable?, showOverflowTooltip?, align?, show?, slot?, headerSlot?, formatter? }`；未知字段经 `attrs` 透传给 `el-table-column` |
+| 插槽 | 列自定义单元格：`#[col.slot \|\| col.prop]="{ row, column, $index }"`；`#toolbar`（工具栏左侧）；`#empty` |
+| 事件 | `update:columns`(拖拽换序回写) / `update:page` / `update:limit` / `pagination` / `selectionChange` / `sortChange` / `rowClick` |
+| 表头拖拽 | **原生 HTML5 DnD**（`th[draggable]`，与 visibleColumns 下标一一对应）；selection/index/expand/fixed 列不可拖；拖完抛 `update:columns` |
+| 拖拽动画 | 拖起列淡出缩放（`as-dragging`），目标列左/右侧主题色插入线（`as-drop-left/right`），带 0.18s 过渡 |
+| 列设置 | 右上角「列设置」勾选显隐 + 「重置列布局」；隐藏列不渲染（非仅 CSS 隐藏，减少 DOM） |
+| 导出/打印 | 工具栏「导出」下载 UTF-8 BOM 的 CSV（只含可见业务列）；「打印」用隐藏 iframe 生成简洁表格并调起打印。`exportFileName` / `printTitle` 可定制 |
+| 列布局记忆 | 自动写 `localStorage`，key = `app-table:colstate:${route.path}`（同路由多表请传 `storageKey` 区分）。存 `{ order: prop[], hidden: prop[] }`，刷新后自动恢复 |
+| 主题 | 样式全走 `--app-*` 令牌（表头/悬浮/当前行），亮暗主题与主题引擎预设自动适配 |
+| 用法 | 见下方示例 |
+| 演示 | 路由 `/demo/app-table`；独立测试页 `test-pages/app-table/index.html` |
+
+```vue
+<AppTable
+  :columns="columns"
+  :data="list"
+  :loading="loading"
+  :total="total"
+  v-model:page="queryParams.pageNum"
+  v-model:limit="queryParams.pageSize"
+  border
+  @pagination="getList"
+  @sort-change="onSort"
+>
+  <template #status="{ row }">
+    <el-tag>{{ row.status }}</el-tag>
+  </template>
+  <template #action="{ row }">
+    <el-button link type="primary">编辑</el-button>
+  </template>
+</AppTable>
+```
+
 ### Pagination（分页）
 
 | 项 | 内容 |

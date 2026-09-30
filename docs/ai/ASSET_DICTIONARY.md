@@ -69,6 +69,36 @@
 <svg-icon icon-class="user" class-name="mr-2 h-4 w-4" />
 ```
 
+### 8. `<AutoScroll />` 自动滚动列表
+大屏/监控面板列表自动轮播（悬停暂停、手动后自动重启、横向/纵向）：
+```vue
+<auto-scroll :items="list" :step-time="3000" :step-height="40" :threshold="1">
+  <template #default="{ item, index }">
+    <div class="row">{{ index + 1 }}. {{ item.name }}</div>
+  </template>
+</auto-scroll>
+```
+
+### 9. `<ChartBox />` + `<ECharts />` 图表外壳与自适应画布
+监控卡片外壳 + 自动 resize 的 echarts 画布：
+```vue
+<chart-box title="产量统计" show-date @handle-date="onDate">
+  <e-charts :option="option" />
+</chart-box>
+```
+
+### 10. `<AppTable />` 通用表格
+配置驱动列表（表头拖拽换列、列显隐、分页一体）：
+```vue
+<app-table
+  :columns="columns" :data="list" :loading="loading" :total="total"
+  v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize"
+  border @pagination="getList"
+>
+  <template #status="{ row }"><el-tag>{{ row.status }}</el-tag></template>
+</app-table>
+```
+
 ---
 
 ## 二、 常用公共按需组件（需显式 import）

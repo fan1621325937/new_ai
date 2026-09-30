@@ -17,6 +17,8 @@ export default {
     'node_modules/**',
     'public/**',
     'html/**',
+    // 独立测试页自带主题令牌（同 design-tokens 豁免），不走应用层禁色规则
+    'test-pages/**',
   ],
   rules: {
     // 禁止颜色字面量（存量已清理完成，硬约束生效）

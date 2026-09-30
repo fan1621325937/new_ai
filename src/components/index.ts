@@ -9,8 +9,12 @@
  */
 import type { App, Component } from 'vue'
 
+import AppTable from './app-table/index.vue'
 import AppDialog from './AppDialog/index.vue'
+import AutoScroll from './auto-scroll/index.vue'
+import ChartBox from './chart-box/index.vue'
 import DictTag from './DictTag/index.vue'
+import ECharts from './echarts-view/index.vue'
 import Editor from './Editor/index.vue'
 import FileUpload from './FileUpload/index.vue'
 import FormLayout from './FormLayout/index.vue'
@@ -25,6 +29,14 @@ import SvgIcon from './SvgIcon/index.vue'
 export const GLOBAL_COMPONENTS: Record<string, Component> = {
   // 监控科技主题弹窗（支持5大信息主题与防逃逸拖拽）
   AppDialog,
+  // 自动滚动列表（纵向/横向、步进滚动、悬停暂停、手动后自动重启）
+  AutoScroll,
+  // 通用表格（配置驱动列、表头拖拽换列、列显隐、分页一体化）
+  AppTable,
+  // 图表外壳（标题栏 + 时间维度切换 + 内容插槽）
+  ChartBox,
+  // ECharts 自适应画布（ResizeObserver 容器自适应 + option 深度同步）
+  ECharts,
   // 字典标签
   DictTag,
   // 富文本编辑器

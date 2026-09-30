@@ -1,0 +1,75 @@
+<!-- AI生成 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AppTable 测试页 · 通用表格</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<p data-aigc-mark="1" style="margin:0 0 8px;font-size:10px;line-height:1.3;color:#6b6560;font-weight:400;">AI生成</p>
+
+  <h1>AppTable 通用表格 · 测试页</h1>
+  <p class="sub">
+    与 <code>src/components/app-table</code> 行为对齐的独立测试台：表头拖拽换列、列显隐、本地排序、分页。
+    切换主题验证配色跟随。浏览器直接打开本文件即可，无需启动 Vue 工程。
+  </p>
+
+  <div class="toolbar">
+    <div class="theme-group">
+      <span class="label">主题：</span>
+      <button class="theme-btn active" data-theme="dark-cyber">暗色-青</button>
+      <button class="theme-btn" data-theme="light-warm">亮色-橙</button>
+      <button class="theme-btn" data-theme="dark-navy">暗色-蓝</button>
+    </div>
+    <div class="actions">
+      <button id="toggleLoading">模拟加载</button>
+      <button id="resetCols">重置列序</button>
+      <button id="toggleEmpty">空数据</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="table-toolbar">
+      <div class="selected-info">已选 <b id="selectedCount">0</b> 条 · 排序 <span id="sortInfo">无</span></div>
+      <div class="col-setting">
+        <button id="colSettingBtn">列设置</button>
+        <div id="colSettingPanel" class="col-panel hidden"></div>
+      </div>
+    </div>
+
+    <div class="table-wrap" id="tableWrap">
+      <table class="app-table" id="table">
+        <thead id="thead"></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="empty hidden" id="empty">暂无数据</div>
+      <div class="loading hidden" id="loading">
+        <div class="spinner"></div>
+        <span>加载中…</span>
+      </div>
+    </div>
+
+    <div class="pager">
+      <span>共 <b id="total">0</b> 条</span>
+      <select id="pageSize">
+        <option value="10">10 条/页</option>
+        <option value="20" selected>20 条/页</option>
+        <option value="50">50 条/页</option>
+      </select>
+      <button id="prevPage">上一页</button>
+      <span>第 <b id="pageNum">1</b> / <b id="pageCount">1</b> 页</span>
+      <button id="nextPage">下一页</button>
+    </div>
+  </div>
+
+  <section class="log-wrap">
+    <h2>事件日志</h2>
+    <div id="log" class="log"></div>
+  </section>
+
+  <script src="./app-table.js"></script>
+  <script src="./demo.js"></script>
+</body>
+</html>

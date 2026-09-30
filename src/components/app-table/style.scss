@@ -1,0 +1,148 @@
+/**
+ * AppTable 样式：骨架/交互态/拖拽动画
+ * 颜色一律 var(--app-*) 令牌；本文件为全局样式（el-table 内部节点需要穿透）
+ *
+ * 光标约定（区分「拖表头」与「调列宽」）：
+ *   - 表头文字区 .cell → grab / grabbing（拖动换列）
+ *   - 列右缘 8px 热区   → col-resize（调列宽）
+ *   - 其余区域         → default
+ */
+
+.app-table {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+
+  &__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+  }
+
+  &__toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  &__body {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+  }
+
+  &__empty {
+    padding: 32px 0;
+    color: var(--app-text-muted);
+    font-size: 13px;
+  }
+
+  &__setting {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 280px;
+    overflow: auto;
+  }
+
+  &__setting-title {
+    font-size: 12px;
+    color: var(--app-text-muted);
+  }
+
+  &__setting-item {
+    margin-right: 0;
+  }
+
+  // ---------- 表头基础 ----------
+  .el-table__header-wrapper th.el-table__cell {
+    background-color: var(--app-bg-subtle);
+    color: var(--app-text-secondary);
+    font-weight: 600;
+    user-select: none;
+    position: relative;
+
+    // 默认给调宽光标（EP 可拖列右缘）
+    cursor: col-resize;
+  }
+
+  // 标题文字区 = 拖拽把手（与调宽光标区分）
+  .el-table__header-wrapper th.el-table__cell > .cell {
+    cursor: grab;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  // 特殊列（多选/序号/固定操作）不提供拖拽
+  .el-table__header-wrapper th.el-table__cell.is-sortable > .cell {
+    cursor: grab;
+  }
+
+  // ---------- 拖拽动画 ----------
+  // 拖起的列：淡化 + 轻微缩小 + 主题色底
+  .el-table__header-wrapper th.el-table__cell.as-dragging {
+    opacity: 0.32;
+    transform: scale(0.97);
+    background-color: var(--app-accent-soft) !important;
+    transition: opacity 0.18s ease, transform 0.18s ease, background-color 0.18s ease;
+  }
+
+  // 落点插入线（左/右）
+  .el-table__header-wrapper th.el-table__cell.as-drop-left,
+  .el-table__header-wrapper th.el-table__cell.as-drop-right {
+    transition: background-color 0.18s ease, box-shadow 0.18s ease;
+    background-color: var(--app-accent-soft);
+  }
+
+  .el-table__header-wrapper th.el-table__cell.as-drop-left {
+    box-shadow: inset 3px 0 0 0 var(--app-accent);
+  }
+
+  .el-table__header-wrapper th.el-table__cell.as-drop-right {
+    box-shadow: inset -3px 0 0 0 var(--app-accent);
+  }
+
+  // 拖拽结束后闪烁，提示新位置
+  .el-table__header-wrapper th.el-table__cell.as-drop-flash {
+    animation: app-table-flash 0.55s ease;
+  }
+
+  // 拖拽中：表头容器 cursor
+  &--dragging .el-table__header-wrapper {
+    cursor: grabbing;
+  }
+
+  // ---------- 行状态（主题联动） ----------
+  .el-table__row:hover > td.el-table__cell {
+    background-color: var(--app-bg-hover);
+  }
+
+  .el-table__body tr.current-row > td.el-table__cell {
+    background-color: var(--app-accent-soft);
+  }
+}
+
+@keyframes app-table-flash {
+  0% {
+    background-color: var(--app-accent-a30);
+  }
+  100% {
+    background-color: var(--app-bg-subtle);
+  }
+}
