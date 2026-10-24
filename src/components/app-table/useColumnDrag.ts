@@ -195,10 +195,16 @@ export function useColumnDrag(
       delegated = true
     }
     syncDraggable()
-    // 表头节点被 Vue 替换/搬移后自动补 draggable
+    // 表头节点被 Vue 替换/搬移后自动补 draggable（rAF 合帧，避免行刷新时高频同步）
     observer?.disconnect()
+    let raf = 0
     observer = new MutationObserver(() => {
-      syncDraggable()
+      if (raf)
+        return
+      raf = requestAnimationFrame(() => {
+        raf = 0
+        syncDraggable()
+      })
     })
     observer.observe(container, { childList: true, subtree: true })
   }

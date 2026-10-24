@@ -67,7 +67,9 @@
 | 表头拖拽 | **原生 HTML5 DnD**（`th[draggable]`，与 visibleColumns 下标一一对应）；selection/index/expand/fixed 列不可拖；拖完抛 `update:columns` |
 | 拖拽动画 | 拖起列淡出缩放（`as-dragging`），目标列左/右侧主题色插入线（`as-drop-left/right`），带 0.18s 过渡 |
 | 列设置 | 右上角「列设置」勾选显隐 + 「重置列布局」；隐藏列不渲染（非仅 CSS 隐藏，减少 DOM） |
-| 导出/打印 | 工具栏「导出」下载 UTF-8 BOM 的 CSV（只含可见业务列）；「打印」用隐藏 iframe 生成简洁表格并调起打印。`exportFileName` / `printTitle` 可定制 |
+| 导出 | **仅当配置 `export-url` 时显示**导出▾（当前页/全部）。查询条件 `exportParams` 支持对象或函数（点击时求值，可带最新筛选）；分页 `pageNum/pageSize` 自动注入并覆盖同名字段（导出全部 `pageSize=total`）；文件名 `exportFileName_YYYYMMDD.xlsx` |
+| 打印 | 打印▾（直接打印/打印设置）。设置含字体三档、纸张边距、打印列、签名栏，localStorage 按路由记忆 |
+| 打印能力 | 标题 + 打印时间 + 时间范围（`printDateRange`）；表头每页重复（`table-header-group`）；行内不断页（`break-inside: avoid`）；签名栏防截断；`printData` 传全量数据可多页打印（不传则打 `data` 当前页） |
 | 列布局记忆 | 自动写 `localStorage`，key = `app-table:colstate:${route.path}`（同路由多表请传 `storageKey` 区分）。存 `{ order: prop[], hidden: prop[] }`，刷新后自动恢复 |
 | 主题 | 样式全走 `--app-*` 令牌（表头/悬浮/当前行），亮暗主题与主题引擎预设自动适配 |
 | 用法 | 见下方示例 |

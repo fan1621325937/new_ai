@@ -11,8 +11,9 @@ interface Row {
   name: string
   dept: string
   role: string
-  status: '启用' | '停用'
+  status: string
   updateTime: string
+  [key: string]: unknown
 }
 
 const allRows = ref<Row[]>(
@@ -26,6 +27,7 @@ const allRows = ref<Row[]>(
   })),
 )
 
+/** 含 10 个扩展列，用于压测打印设置/打印输出在多列下的表现 */
 const columns = ref<AppTableColumn[]>([
   { type: 'selection', width: 48, label: '' },
   { type: 'index', label: '序号', width: 64, align: 'center' },
@@ -35,6 +37,16 @@ const columns = ref<AppTableColumn[]>([
   { prop: 'role', label: '角色', minWidth: 110 },
   { prop: 'status', label: '状态', width: 100 },
   { prop: 'updateTime', label: '更新时间', width: 170, sortable: true },
+  { prop: 'ext1', label: '扩展字段01', minWidth: 100 },
+  { prop: 'ext2', label: '扩展字段02', minWidth: 100 },
+  { prop: 'ext3', label: '扩展字段03', minWidth: 100 },
+  { prop: 'ext4', label: '扩展字段04', minWidth: 100 },
+  { prop: 'ext5', label: '扩展字段05', minWidth: 100 },
+  { prop: 'ext6', label: '扩展字段06', minWidth: 100 },
+  { prop: 'ext7', label: '扩展字段07', minWidth: 100 },
+  { prop: 'ext8', label: '扩展字段08', minWidth: 100 },
+  { prop: 'ext9', label: '扩展字段09', minWidth: 100 },
+  { prop: 'ext10', label: '扩展字段10', minWidth: 100 },
   { prop: 'action', label: '操作', width: 150, fixed: 'right' },
 ])
 
@@ -50,6 +62,10 @@ const pagedRows = computed(() => {
 
 const selected = ref<Record<string, unknown>[]>([])
 const sortState = reactive({ prop: '', order: '' as string })
+
+function getExportParams(): Record<string, unknown> {
+  return { deptId: 1 }
+}
 
 function handlePagination({ page: p, limit: l }: { page: number, limit: number }): void {
   page.value = p
@@ -85,7 +101,7 @@ function toggleLoading(): void {
 <template>
   <div class="app-container flex flex-col gap-3">
     <el-alert type="info" :closable="false" show-icon>
-      AppTable 演示：拖动表头换列序；点右上「列设置」切换列显隐；状态列用插槽自定义；点表头排序走本地排序。
+      AppTable 演示：含 10 个扩展列压测多列表头；导出▾ 有 export-url 时走后端接口；打印设置支持多列滚动与自适应列宽。
     </el-alert>
 
     <div class="flex items-center gap-2">
@@ -104,12 +120,15 @@ function toggleLoading(): void {
       <AppTable
         :columns="columns"
         :data="pagedRows"
+        :all-data="allRows"
         :loading="loading"
         :total="total"
         :page="page"
         :limit="limit"
         export-file-name="用户列表"
         print-title="用户列表"
+        export-url="/system/user/export"
+        :export-params="getExportParams"
         border
         stripe
         @update:columns="handleColumnsChange"

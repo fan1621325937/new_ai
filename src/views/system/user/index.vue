@@ -36,7 +36,6 @@ const {
   handleDelete,
   handleStatusChange,
   handleResetPwd,
-  handleExport,
 } = useUserActions()
 
 function handleDeptNodeClick(deptId?: number): void {
@@ -83,20 +82,28 @@ onMounted(() => {
       </template>
 
       <template #default>
-        <UserTable v-model:page-num="queryParams.pageNum" v-model:page-size="queryParams.pageSize" :user-list="userList"
-          :loading="loading" :total="total" @pagination="getList" @add="userFormDialogRef?.open()"
+        <UserTable
+          v-model:page-num="queryParams.pageNum" v-model:page-size="queryParams.pageSize"
+          :user-list="userList" :loading="loading" :total="total"
+          :export-params="proxy.addDateRange(queryParams, dateRange)"
+          @pagination="getList" @add="userFormDialogRef?.open()"
           @update="userFormDialogRef?.open($event?.userId || selectedUserIds[0])" @delete="handleDelete"
-          @import="importUserRef?.open()" @export="handleExport" @view="userViewRef?.open($event.userId)"
+          @import="importUserRef?.open()" @view="userViewRef?.open($event.userId)"
           @reset-pwd="handleResetPwd" @auth-role="router.push(`/system/user-auth/role/${$event.userId}`)"
-          @status-change="handleStatusChange" @selection-change="selectedUserIds = $event.map((it) => it.userId!)" />
+          @status-change="handleStatusChange" @selection-change="selectedUserIds = $event.map((it) => it.userId!)"
+        />
       </template>
     </FormLayout>
 
-    <UserFormDialog ref="userFormDialogRef" :dept-options="deptOptions" :sex-dict-options="sys_user_sex"
-      :status-dict-options="sys_normal_disable" :init-password="initPassword" @success="getList" />
+    <UserFormDialog
+      ref="userFormDialogRef" :dept-options="deptOptions" :sex-dict-options="sys_user_sex"
+      :status-dict-options="sys_normal_disable" :init-password="initPassword" @success="getList"
+    />
     <UserViewDrawer ref="userViewRef" />
-    <ExcelImportDialog ref="importUserRef" title="用户导入" action="/system/user/importData"
+    <ExcelImportDialog
+      ref="importUserRef" title="用户导入" action="/system/user/importData"
       template-action="/system/user/importTemplate" template-file-name="user_template"
-      update-support-label="是否更新已经存在的用户数据" @success="getList" />
+      update-support-label="是否更新已经存在的用户数据" @success="getList"
+    />
   </div>
 </template>

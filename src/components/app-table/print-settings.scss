@@ -1,0 +1,234 @@
+/* PrintSettings dialog layout
+   结构：页面+字体（自然高度）→ 打印列（限高内滚）→ 签名栏（钉底） */
+.print-set {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  // 弹窗加大后内容区用更高上限，减少内部滚动
+  max-height: calc(86vh - 120px);
+  overflow: hidden;
+  padding-right: 4px;
+
+  // 页面 + 字体：等宽两栏，卡片按内容高度（不再互相比高）
+  &__top {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+
+  &__card {
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-radius-md);
+    background: var(--app-bg-plain);
+    padding: 12px 14px;
+    flex-shrink: 0;
+    min-width: 0;
+  }
+
+  &__card-hd {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--app-text);
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+
+  &__card-extra {
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--app-text-muted);
+  }
+
+  &__dot {
+    width: 4px;
+    height: 12px;
+    border-radius: 2px;
+    background: var(--app-accent);
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  // ---- 页面卡 ----
+  &__page-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &--bottom {
+      align-items: center;
+    }
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+
+    label {
+      font-size: 12px;
+      color: var(--app-text-secondary);
+    }
+
+    &--grow {
+      flex: 1;
+    }
+
+    :deep(.el-input-number) {
+      width: 100%;
+    }
+  }
+
+  // 小尺寸纸张预览（不抢高度）
+  &__paper-mini {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  &__paper-sheet {
+    position: relative;
+    background: var(--app-bg-subtle);
+    border: 1px solid var(--app-border-strong);
+    border-radius: 2px;
+    transition: width 0.2s ease, height 0.2s ease;
+  }
+
+  &__paper-margin {
+    position: absolute;
+    border: 1px dashed var(--app-accent-line);
+    background: var(--app-accent-soft);
+    border-radius: 1px;
+    transition: all 0.2s ease;
+  }
+
+  &__paper-meta {
+    font-size: 11px;
+    color: var(--app-text-muted);
+    line-height: 1;
+  }
+
+  &__margins {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 8px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__margin-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    label {
+      font-size: 12px;
+      color: var(--app-text-secondary);
+      width: 14px;
+      flex-shrink: 0;
+    }
+
+    .print-set__unit {
+      font-size: 11px;
+      color: var(--app-text-muted);
+      flex-shrink: 0;
+    }
+
+    :deep(.el-input-number) {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  // ---- 字体卡：自然高度，不拉伸 ----
+  &__card--fit {
+    align-self: start;
+  }
+
+  &__font-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__font-head,
+  &__font-row {
+    display: grid;
+    grid-template-columns: 32px 1fr 88px 80px;
+    gap: 8px;
+    align-items: center;
+  }
+
+  &__font-head {
+    font-size: 12px;
+    color: var(--app-text-muted);
+  }
+
+  &__font-row b {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--app-text-secondary);
+    line-height: 1;
+  }
+
+  // ---- 打印列：限高内滚，长表头省略 ----
+  &__checks {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+    gap: 8px;
+    max-height: 160px;
+    overflow: auto;
+    padding: 2px;
+
+    :deep(.el-checkbox.is-bordered) {
+      margin-right: 0;
+      max-width: 100%;
+    }
+
+    :deep(.el-checkbox__label) {
+      display: inline-block;
+      max-width: 88px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+  }
+
+  // 签名栏钉底可见
+  & > .print-set__card:last-child {
+    margin-top: auto;
+  }
+
+  &__signs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    min-height: 32px;
+  }
+
+  &__sign-input {
+    width: 180px;
+  }
+}
+
+// 窄屏两栏改单栏，避免挤爆
+@media (width < 720px) {
+  .print-set__top {
+    grid-template-columns: 1fr;
+  }
+}

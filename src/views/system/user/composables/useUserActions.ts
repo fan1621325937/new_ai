@@ -51,13 +51,24 @@ export function useUserActions() {
       })
   }
 
+  /** 防止 switch 回写 status 再次触发 change 造成弹窗连环 */
+  let statusChanging = false
+
   function handleStatusChange(row: SysUser): void {
+    if (!row?.userId || statusChanging)
+      return
+    statusChanging = true
     const text = row.status === '0' ? '启用' : '停用'
-    ElMessageBox.confirm(`确认要"${text}""${row.userName}"用户吗?`, '系统提示', { type: 'warning' })
+    ElMessageBox.confirm(`确认要"${text}""${row.userName || row.nickName || row.userId}"用户吗?`, '系统提示', { type: 'warning' })
       .then(() => changeUserStatus(row.userId!, row.status!))
-      .then(() => ElMessage.success(`${text}成功`))
+      .then(() => {
+        ElMessage.success(`${text}成功`)
+        statusChanging = false
+      })
       .catch(() => {
+        // 失败/取消：回滚开关，但加锁避免再次弹窗
         row.status = row.status === '0' ? '1' : '0'
+        statusChanging = false
       })
   }
 

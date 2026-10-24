@@ -70,6 +70,16 @@ export function useColumnState(
       return
     }
 
+    // 存档与当前列无交集（换过表/脏数据）时忽略，避免整表被藏光
+    const currentProps = new Set(
+      cols.filter(isPersistable).map(c => c.prop!),
+    )
+    const overlap = state.order.some(p => currentProps.has(p))
+    if (!overlap && state.order.length > 0) {
+      applyState(cols)
+      return
+    }
+
     const hiddenSet = new Set(state.hidden)
     const orderList = state.order
 

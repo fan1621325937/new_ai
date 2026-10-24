@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import type { AppTableColumn, AppTableEmits } from './types'
-import { ref } from 'vue'
+import type { AppTableEmits, AppTableProps } from './types'
+import { useResizeObserver } from '@vueuse/core'
+import { computed, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import TableActions from './TableActions.vue'
 import { useAppTable } from './useAppTable'
 
@@ -9,40 +11,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<{
-  /** 列配置（支持拖拽换序，用 update:columns 回写） */
-  columns: AppTableColumn[]
-  /** 表格数据 */
-  data?: Record<string, unknown>[]
-  /** 加载中 */
-  loading?: boolean
-  /** 是否显示分页 */
-  showPagination?: boolean
-  /** 总条数 */
-  total?: number
-  /** 当前页 */
-  page?: number
-  /** 每页条数 */
-  limit?: number
-  /** 分页尺寸选项 */
-  pageSizes?: number[]
-  /** 启用表头拖拽换列 */
-  columnDraggable?: boolean
-  /** 显示列设置面板 */
-  columnSetting?: boolean
-  /** 表格高度（不传由外层容器撑满） */
-  height?: string | number
-  /** 列布局 localStorage key 后缀；不传则用 `app-table:colstate:${route.path}` */
-  storageKey?: string
-  /** 显示导出 CSV 按钮（默认 true） */
-  showExport?: boolean
-  /** 显示打印按钮（默认 true） */
-  showPrint?: boolean
-  /** 导出文件名（不含扩展名） */
-  exportFileName?: string
-  /** 打印页标题 */
-  printTitle?: string
-}>(), {
+const props = withDefaults(defineProps<AppTableProps>(), {
   data: () => [],
   loading: false,
   showPagination: true,
@@ -52,18 +21,34 @@ const props = withDefaults(defineProps<{
   pageSizes: () => [10, 20, 30, 50],
   columnDraggable: true,
   columnSetting: true,
-  height: undefined,
+  height: '100%',
   storageKey: undefined,
   showExport: true,
   showPrint: true,
   exportFileName: '',
   printTitle: '',
+  printDateRange: '',
+  allData: undefined,
+  exportUrl: '',
+  exportParams: undefined,
+  exportTotal: undefined,
 })
 
 const emits = defineEmits<AppTableEmits>()
 
 // script setup 中 ref="tableWrapRef" 自动绑定到同名 ref
 const tableWrapRef = ref<HTMLElement | null>(null)
+/** el-table 像素高：比 height="100%" 稳，保证表头固定、表体内滚 */
+const tableBodyHeight = ref(0)
+
+/** 显式 height 优先；否则用测量像素，测到前先 100% 占位 */
+const tableHeight = computed(() => {
+  if (props.height && props.height !== '100%')
+    return props.height
+  return tableBodyHeight.value > 0 ? tableBodyHeight.value : '100%'
+})
+const route = useRoute()
+const printKey = props.storageKey || route.path
 
 const {
   innerColumns,
@@ -82,6 +67,13 @@ function handleReset(): void {
   emits('resetLayout')
 }
 
+// 容器高度变化时同步给 el-table（分页切换、侧栏折叠、窗口缩放）
+useResizeObserver(tableWrapRef, (entries) => {
+  const h = entries[0]?.contentRect.height ?? 0
+  if (h > 0)
+    tableBodyHeight.value = Math.floor(h)
+})
+
 defineExpose({ dragging, columns: innerColumns, resetColumnLayout })
 </script>
 
@@ -98,7 +90,16 @@ defineExpose({ dragging, columns: innerColumns, resetColumnLayout })
         :show-print="showPrint"
         :show-setting="columnSetting"
         :export-file-name="exportFileName"
+        :export-url="exportUrl"
+        :export-params="exportParams"
+        :export-total="exportTotal ?? total"
+        :page="page"
+        :limit="limit"
         :print-title="printTitle"
+        :storage-key="printKey"
+        :print-date-range="printDateRange"
+        :all-rows="allData ?? data"
+        :page-rows="data"
         @visible-change="handleVisibleChange"
         @reset="handleReset"
       />
@@ -108,7 +109,7 @@ defineExpose({ dragging, columns: innerColumns, resetColumnLayout })
       <el-table
         v-bind="$attrs"
         :data="data"
-        :height="height"
+        :height="tableHeight"
         @selection-change="handleSelectionChange"
         @sort-change="handleSortChange"
         @row-click="handleRowClick"

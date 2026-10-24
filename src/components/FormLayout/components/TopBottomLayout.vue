@@ -102,7 +102,8 @@ function onLeave(el: Element, done: () => void): void {
       class="main-section flex-1 min-h-0 flex flex-col overflow-auto"
       :class="[card ? 'layout-card' : 'layout-plain']"
     >
-      <div class="main-content flex-1 p-4">
+      <!-- min-h-0 + flex 列：让 AppTable 等子级 height:100% 可解析，表头固定、表体内滚 -->
+      <div class="main-content flex-1 min-h-0 flex flex-col p-4">
         <slot />
       </div>
 

@@ -41,7 +41,10 @@
 
   &__body {
     flex: 1;
+
+    // 高度由 flex 约束，el-table height:100% 内部滚动；不要 min-height，否则 10/100 条视觉不一致
     min-height: 0;
+    overflow: hidden;
     position: relative;
   }
 

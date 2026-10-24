@@ -25,7 +25,12 @@ export function useAppTable(
   emits: AppTableEmits,
   tableWrapRef: Ref<HTMLElement | null>,
 ) {
-  const innerColumns = ref<AppTableColumn[]>([...props.columns])
+  /** 深拷贝列对象，避免 show/顺序 变更污染父级传入的引用 */
+  function cloneCols(cols: AppTableColumn[]): AppTableColumn[] {
+    return cols.map(c => ({ ...c }))
+  }
+
+  const innerColumns = ref<AppTableColumn[]>(cloneCols(props.columns))
 
   // 父组件传入的 columns 变化时同步（深比较靠 ref 赋值，避免拖拽回写循环）
   let lastExternalCols = props.columns
@@ -33,7 +38,7 @@ export function useAppTable(
     if (val === lastExternalCols)
       return
     lastExternalCols = val
-    innerColumns.value = [...val]
+    innerColumns.value = cloneCols(val)
   }, { deep: true })
 
   /** 可见列（隐藏列不渲染） */
@@ -123,11 +128,14 @@ export function useAppTable(
     emits('pagination', { page, limit })
   }
 
-  /** 清除本地列布局记忆，恢复 props 默认顺序 */
+  /** 组件创建时的列快照（顺序 + 默认显隐），用于一键恢复 */
+  const initialColumns: AppTableColumn[] = props.columns.map(col => ({ ...col, show: col.show !== false }))
+
+  /** 清除本地列布局记忆，恢复初始列序与全部显示 */
   function resetColumnLayout(): void {
-    // 直接用父级原始 columns 覆盖，不走 restore（restore 会读到旧记忆）
-    innerColumns.value = props.columns.map(col => ({ ...col, show: col.show !== false ? true : col.show }))
-    lastExternalCols = props.columns
+    // 不读 restore/父级当前值（可能已被隐藏/换序污染），始终回到 initialColumns
+    innerColumns.value = initialColumns.map(col => ({ ...col, show: true }))
+    lastExternalCols = innerColumns.value
     emits('update:columns', [...innerColumns.value])
     saveState()
   }
