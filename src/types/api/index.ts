@@ -27,3 +27,6 @@ export * from './system/user'
 
 // 代码生成模块
 export * from './tool/gen'
+
+// 大屏排版布局模块
+export * from './viscenter/layout'

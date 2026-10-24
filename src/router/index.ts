@@ -85,6 +85,19 @@ export const constantRoutes = [
     ],
   },
   {
+    path: '/layout-editor',
+    component: Layout,
+    hidden: false,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/layout-editor/index.vue'),
+        name: 'LayoutEditor',
+        meta: { title: '自定义排版', icon: 'build' },
+      },
+    ],
+  },
+  {
     path: '/demo',
     component: Layout,
     hidden: false,

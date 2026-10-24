@@ -10,10 +10,11 @@
 ```
 src/api/
 ├── login.ts            # 登录、登出、验证码、用户信息
-├── menu.ts             # 路由菜单
+├── menu.ts             # 路由菜单 / 平台切换（setType、getRefresh 等）
 ├── system/             # 系统管理：user/role/menu/dept/post/dict/config/notice
 ├── monitor/            # 监控：cache/job/jobLog/logininfor/online/operlog/server
-└── tool/               # 工具：gen（代码生成）
+├── tool/               # 工具：gen（代码生成）
+└── viscenter/          # 大屏业务：layout（排版布局）
 ```
 
 ## 二、写法规范

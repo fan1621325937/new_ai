@@ -12,6 +12,7 @@
 | 不知道有哪些组件可用 | [components/COMPONENTS.md](./components/COMPONENTS.md)、`src/components/README.md` |
 | 不知道有哪些工具函数可用 | [utils/UTILS.md](./utils/UTILS.md)、`src/utils/README.md` |
 | 要调接口 / 写 api | [api/API_GUIDE.md](./api/API_GUIDE.md)、`src/api/README.md` |
+| 大屏排版布局接口契约 | [api/layout-api.md](./api/layout-api.md) |
 | 写样式 / 配色 / 用 Tailwind | [styles/STYLES.md](./styles/STYLES.md) |
 | 写页面动效 / 用 GSAP | [guides/MOTION.md](./guides/MOTION.md) |
 | 提交代码 / 规范流程 | [guides/WORKFLOW.md](./guides/WORKFLOW.md) |

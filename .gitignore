@@ -22,5 +22,9 @@ selenium-debug.log
 package-lock.json
 yarn.lock
 
-# Playwright ���Բ���
+# Playwright 测试产物
 .playwright-cli/
+
+# 可视化布局编辑器验证截图产物
+output/
+shot04.png

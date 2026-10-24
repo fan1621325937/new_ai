@@ -19,6 +19,8 @@
 | `jsencrypt.ts` | 密码加解密 |
 | `passwordRule.ts` | 密码强度规则 |
 | `scroll-to.ts` | 平滑滚动 |
+| `layout-grid.ts` | 大屏自定义排版 100×100 格几何：chartsKey 编解码、重叠检测、矩形规范化 |
+| `layout-store.ts` | 本地布局存取（localStorage）：预设+用户布局新建/保存/删除 |
 | `generator/` | 表单构建器（tool/build 使用）的历史代码，非通用工具 |
 
 ## 二、已挂载为全局方法（无需 import）
