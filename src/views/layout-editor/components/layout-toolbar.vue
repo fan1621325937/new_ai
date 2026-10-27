@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { LocalLayout } from '../types'
+import { GRID_SIZE } from '@/utils/layout-grid'
 
 defineProps<{
   layouts: LocalLayout[]
@@ -11,11 +12,11 @@ defineProps<{
 const emit = defineEmits<{
   'update:layoutName': [value: string]
   'update:previewMode': [value: boolean]
-  layoutChange: [id: string]
-  create: []
-  remove: []
-  clear: []
-  save: []
+  'layoutChange': [id: string]
+  'create': []
+  'remove': []
+  'clear': []
+  'save': []
 }>()
 </script>
 
@@ -23,7 +24,7 @@ const emit = defineEmits<{
   <div class="toolbar">
     <div class="toolbar-title">
       自定义排版
-      <span class="toolbar-sub">本地布局 · 20×20 格 · 框选吸附</span>
+      <span class="toolbar-sub">本地布局 · {{ GRID_SIZE }}×{{ GRID_SIZE }} 格 · 框选吸附</span>
     </div>
     <div class="toolbar-actions">
       <el-select

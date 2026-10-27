@@ -17,6 +17,8 @@ export interface LocalLayout {
   id: string
   name: string
   cards: SlotCard[]
+  /** 几何所用栅格尺寸；旧本地数据缺省按 20 处理 */
+  gridSize?: number
   /** 内置预设不可删 */
   builtin: boolean
   updatedAt: number

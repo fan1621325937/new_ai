@@ -1,16 +1,25 @@
 <script setup lang="ts">
 import type { SlotCard } from '../types'
-import { rectToGridArea } from '@/utils/layout-grid'
+import { computed } from 'vue'
+import { GRID_SIZE, rectToGridArea } from '@/utils/layout-grid'
 
 defineProps<{
   cards: SlotCard[]
   labels: Record<string, string>
 }>()
+
+const gridStyle = computed(() => {
+  const template = `repeat(${GRID_SIZE}, 1fr)`
+  return {
+    gridTemplateColumns: template,
+    gridTemplateRows: template,
+  }
+})
 </script>
 
 <template>
   <div class="dashboard-preview">
-    <div class="dashboard-grid">
+    <div class="dashboard-grid" :style="gridStyle">
       <div
         v-for="card in cards"
         :key="card.id"
@@ -45,8 +54,6 @@ defineProps<{
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-columns: repeat(20, 1fr);
-  grid-template-rows: repeat(20, 1fr);
   gap: 0;
   padding: 5px;
   box-sizing: border-box;

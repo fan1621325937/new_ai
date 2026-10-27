@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { GridRect } from '@/types/api/viscenter/layout'
 import type { ResizeHandle, SlotCard } from '../types'
+import type { GridRect } from '@/types/api/viscenter/layout'
 import { computed } from 'vue'
-import { pointerToCell, rectToGridArea } from '@/utils/layout-grid'
+import { GRID_SIZE, pointerToCell, rectToGridArea } from '@/utils/layout-grid'
 import GridCard from './grid-card.vue'
 
 const props = defineProps<{
@@ -28,6 +28,22 @@ const emit = defineEmits<{
 const marqueeStyle = computed(() =>
   props.marquee ? { gridArea: rectToGridArea(props.marquee) } : null,
 )
+
+const canvasStyle = computed(() => {
+  const template = `repeat(${GRID_SIZE}, 1fr)`
+  return {
+    gridTemplateColumns: template,
+    gridTemplateRows: template,
+  }
+})
+
+// 主网格线每 1/4 画布一条，细网格线一格一条
+const gridLinesStyle = computed(() => {
+  const cell = `${100 / GRID_SIZE}% ${100 / GRID_SIZE}%`
+  return {
+    backgroundSize: `25% 25%, 25% 25%, ${cell}, ${cell}`,
+  }
+})
 
 function onDown(e: PointerEvent): void {
   const el = e.currentTarget as HTMLElement
@@ -73,12 +89,13 @@ function onResizeStart(id: string, handle: ResizeHandle, col: number, row: numbe
     class="grid-canvas"
     data-grid-canvas
     :class="{ 'is-picking': picking }"
+    :style="canvasStyle"
     @pointerdown="onDown"
     @pointermove="onMove"
     @pointerup="onUp"
     @pointercancel="onUp"
   >
-    <div class="grid-lines" aria-hidden="true" />
+    <div class="grid-lines" aria-hidden="true" :style="gridLinesStyle" />
     <div
       v-if="marqueeStyle"
       class="marquee"
@@ -105,8 +122,6 @@ function onResizeStart(id: string, handle: ResizeHandle, col: number, row: numbe
   height: 100%;
   min-height: 0;
   display: grid;
-  grid-template-columns: repeat(20, 1fr);
-  grid-template-rows: repeat(20, 1fr);
   gap: 0;
   border: 1px solid var(--app-border-strong);
   border-radius: var(--app-radius-md);
@@ -124,7 +139,7 @@ function onResizeStart(id: string, handle: ResizeHandle, col: number, row: numbe
   }
 }
 
-/* 主网格线：每格 5% + 每 5 格 25% */
+/* 主网格线每 1/4 画布一条，细网格线每格一条（尺寸由 GRID_SIZE 计算） */
 .grid-lines {
   position: absolute;
   inset: 0;
@@ -134,11 +149,6 @@ function onResizeStart(id: string, handle: ResizeHandle, col: number, row: numbe
     linear-gradient(to bottom, var(--app-accent-line) 1px, transparent 1px),
     linear-gradient(to right, var(--app-border-strong) 1px, transparent 1px),
     linear-gradient(to bottom, var(--app-border-strong) 1px, transparent 1px);
-  background-size:
-    25% 25%,
-    25% 25%,
-    5% 5%,
-    5% 5%;
   opacity: 1;
 }
 
