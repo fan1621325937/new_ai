@@ -72,6 +72,15 @@ function handlePagination({ page: p, limit: l }: { page: number, limit: number }
   limit.value = l
 }
 
+/** 列值可能是任意类型，统一归一化后比较，避免 unknown 直接参与运算 */
+function compareCell(a: unknown, b: unknown): number {
+  if (a === b)
+    return 0
+  if (typeof a === 'number' && typeof b === 'number')
+    return a - b
+  return String(a ?? '').localeCompare(String(b ?? ''), 'zh-CN')
+}
+
 function handleSortChange({ prop, order }: { prop: string, order: string | null }): void {
   sortState.prop = prop
   sortState.order = order ?? ''
@@ -82,8 +91,12 @@ function handleSortChange({ prop, order }: { prop: string, order: string | null 
   allRows.value = [...allRows.value].sort((a, b) => {
     const av = a[prop as keyof Row]
     const bv = b[prop as keyof Row]
-    return av > bv ? dir : av < bv ? -dir : 0
+    return dir * compareCell(av, bv)
   })
+}
+
+function handleSelectionChange(rows: Array<Record<string, unknown>>): void {
+  selected.value = rows
 }
 
 function handleColumnsChange(cols: AppTableColumn[]): void {
@@ -132,7 +145,7 @@ function toggleLoading(): void {
         border
         stripe
         @update:columns="handleColumnsChange"
-        @selection-change="rows => selected = rows"
+        @selection-change="handleSelectionChange"
         @sort-change="handleSortChange"
         @pagination="handlePagination"
       >
@@ -141,7 +154,7 @@ function toggleLoading(): void {
             {{ row.status }}
           </el-tag>
         </template>
-        <template #action="{ row }">
+        <template #action>
           <el-button link type="primary" size="small">
             编辑
           </el-button>

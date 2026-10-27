@@ -4,7 +4,7 @@
 
 ```bash
 npm install            # 安装依赖（本项目统一使用 npm）
-npm run dev            # 开发服务：http://localhost（80 端口），代理 /dev-api → http://172.16.41.201:8889
+npm run dev            # 开发服务：http://localhost:86（86 端口），代理 /dev-api → http://172.16.41.201:8889
 npm run build:prod     # 生产构建（产物 dist/，含 gzip）
 npm run build:stage    # 预发布构建
 ```
@@ -20,24 +20,45 @@ Node 版本：本地开发使用 Node 24，CI 使用 Node 22（LTS）。
 | `pre-commit` | 对暂存文件执行 `eslint --fix` + `stylelint --fix` | `.husky/pre-commit`、`lint-staged.config.js` |
 | `commit-msg` | 校验提交信息格式 | `commitlint.config.js` |
 
-注意：`src/views` 未纳入 ESLint 治理范围，lint-staged 已自动过滤，不需要为它做额外处理。
+注意：ESLint 治理范围由 `eslint.config.js` 的 `ignores` 统一决定（当前仅排除`views/system`、`views/monitor`、`views/tool`、`views/redirect`、`views/index.vue` 等若依存量页），lint-staged 不再重复过滤。
 
 ### 手动检查（提交前建议执行）
 
 ```bash
 npm run lint           # ESLint（目标：0 error）
 npm run lint:style     # stylelint（目标：0 问题）
+npm run type-check     # vue-tsc 全量类型检查（目标：0 error，已阻断）
 ```
 
 ### 规则现状
 
 - ESLint 使用 `@antfu/eslint-config`，**不引入 Prettier**（ESLint 统一管格式）
 - 公共层（api/components/layout/utils/store/router/types/directive/plugins）为严格治理范围
+- 新页面（`views/demo`、`views/layout-editor`、`views/error`、`login.vue`、`register.vue`）已纳入严格治理
 - 架构红线为 error：禁止页面直连 `@/utils/request`、禁止裸 `axios`
 - 存量历史写法（`prefer-const`、`eqeqeq`、`no-labels` 等）降级为 warn，属技术债，逐步收敛
 - stylelint 使用 `stylelint-config-standard-scss` + `stylelint-config-recommended-vue`，
   核心红线：**禁止颜色字面量**（`color-no-hex`、`function-disallowed-list`）
   唯一豁免：`design-tokens.scss`、`variables.module.scss`（令牌定义文件）
+
+### 类型声明红线（踩过坑）
+
+`src/types/global.d.ts` 是**全局脚本**（无顶层 import/export）。在这种文件里写
+`declare module 'vue' { ... }` 或 `declare module 'element-plus'` 属于**环境模块声明**，
+会直接覆盖真实包的类型，导致全项目 `Module '"vue"' has no exported member 'ref'`。
+
+- 需要给第三方模块做类型增强时，新开**模块化** `.d.ts`（文件内带 `export {}` 或顶层 import），
+  参见 `src/types/vue-globals.d.ts`（声明 `ComponentCustomProperties` 上的 `$modal` 等全局属性）
+- 不要再用 `declare module 'element-plus'` 这种「整包抹成 any」的写法
+
+### 技术债基线
+
+| 项 | 现状 | 收敛方式 |
+|---|---|---|
+| ESLint | 0 error / 236 warning | 存量 warn 规则随页面改造逐个升回 error |
+| stylelint | 0 问题 | — |
+| 类型检查 | **0 error**（2026-10 已全部收敛） | CI 已改为强制门禁，新增错误直接阻断 |
+| R10（单文件 ≤ 150 行） | 新代码 100% 达标；存量热点：`views/tool/build/RightPanel`（863）、`components/TreePanel`（696）、`layout/TagsView`（665）、`components/Crontab/result`（579） | 随功能改造拆分；新文件不得再超 150 行 |
 
 ## 三、提交规范
 
@@ -72,7 +93,7 @@ chore(tooling): 升级 ESLint 配置
 
 `.github/workflows/ci.yml`，触发时机：push / PR 到 `main`。
 
-步骤：`npm ci` → `npm run lint` → `npm run lint:style` → `npm run build:prod`
+步骤：`npm ci` → `npm run lint` → `npm run lint:style` → `npm run type-check`（非阻断基线）→ `npm run build:prod`
 
 **本地必须通过 lint 与构建再提交**，CI 只是最后一道防线。
 

@@ -4,8 +4,9 @@ import antfu from '@antfu/eslint-config'
  * 项目代码规范（flat config）
  *
  * 治理范围说明：
- * - 严格治理：src 下公共层（api / components / directive / layout / plugins / router / store / types / utils）
- * - 暂不治理：src/views（若依存量页面），后续随页面改造逐个收敛
+ * - 严格治理：src 下公共层（api / components / directive / layout / plugins / router / store / types / utils）+ 新页面
+ * - 已纳入新页面：src/views/demo、src/views/layout-editor、src/views/error、login.vue、register.vue
+ * - 暂不治理：若依存量页面（system / monitor / tool / redirect / 首页）
  *
  * 架构红线（error 级，防止生成代码污染工程）：
  * - 禁止直连 @/utils/request（必须先在 src/api 下封装接口）
@@ -24,7 +25,7 @@ export default antfu(
     toml: false,
     test: false,
     formatters: false,
-    // 存量若依页面暂不纳入治理范围
+    // 若依存量页面暂不纳入治理范围（改造完成的页面会逐个移出此列表）
     ignores: [
       'dist/**',
       'node_modules/**',
@@ -33,7 +34,11 @@ export default antfu(
       // 独立浏览器测试页（自带主题令牌，非 Vue 工程源码）
       'test-pages/**',
       'auto-imports.d.ts',
-      'src/views/**',
+      'src/views/system/**',
+      'src/views/monitor/**',
+      'src/views/tool/**',
+      'src/views/redirect/**',
+      'src/views/index.vue',
     ],
     stylistic: {
       indent: 2,

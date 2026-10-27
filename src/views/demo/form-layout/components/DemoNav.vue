@@ -22,7 +22,9 @@ const query = reactive({
         </el-select>
       </el-form-item>
       <el-form-item class="!mb-0">
-        <el-button type="primary">筛选</el-button>
+        <el-button type="primary">
+          筛选
+        </el-button>
         <el-button>重置</el-button>
       </el-form-item>
     </el-form>

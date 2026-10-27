@@ -1,3 +1,22 @@
+<script setup lang="ts">
+import errImage from '@/assets/401_images/401.gif'
+
+// 直接用组合式 API 获取路由/路由实例，无需经由组件实例 proxy
+const route = useRoute()
+const router = useRouter()
+
+const errGif = ref<string>(`${errImage}?${Date.now()}`)
+
+function back(): void {
+  if (route.query.noGoBack) {
+    router.push({ path: '/' })
+  }
+  else {
+    router.go(-1)
+  }
+}
+</script>
+
 <template>
   <div class="errPage-container">
     <el-button icon="arrow-left" class="pan-back-btn" @click="back">
@@ -24,22 +43,6 @@
     </el-row>
   </div>
 </template>
-
-<script setup lang="ts">
-import errImage from "@/assets/401_images/401.gif"
-
-const { proxy } = getCurrentInstance()
-
-const errGif = ref<string>(errImage + "?" + +new Date())
-
-function back(): void {
-  if (proxy.$route.query.noGoBack) {
-    proxy.$router.push({ path: "/" })
-  } else {
-    proxy.$router.go(-1)
-  }
-}
-</script>
 
 <style lang="scss" scoped>
 .errPage-container {

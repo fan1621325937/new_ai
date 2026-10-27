@@ -11,6 +11,7 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "type-check": "vue-tsc --noEmit",
     "lint:style": "stylelint \"src/**/*.{vue,scss,css}\"",
     "lint:style:fix": "stylelint \"src/**/*.{vue,scss,css}\" --fix",
     "prepare": "husky"

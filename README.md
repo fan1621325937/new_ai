@@ -5,7 +5,7 @@
 ## 环境要求
 
 - Node.js >= 18
-- 后端服务（默认 `http://localhost:8080`，代理配置见 `vite.config.ts`）
+- 后端服务 `http://172.16.41.201:8889`（`/dev-api` 代理，配置见 `vite.config.ts`）
 
 ## 快速开始
 
@@ -13,8 +13,11 @@
 # 安装依赖
 npm install
 
-# 启动开发服务
+# 启动开发服务（http://localhost:86）
 npm run dev
+
+# 类型检查（存量基线非 0）
+npm run type-check
 
 # 生产构建
 npm run build:prod

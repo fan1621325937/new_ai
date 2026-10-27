@@ -46,7 +46,7 @@
 3. 技术选型：布局用 **Tailwind 工具类**；颜色/圆角/阴影用**令牌**；控件用 **Element Plus**
 4. 必备：Loading / 空数据 / 错误 / 成功四态；按钮加 `v-hasPermi`；全量 TS 类型
 5. 请求一律 `import { xxx } from '@/api/...'`；`code !== 200` 已由请求层 reject，**不要写 else 分支**
-6. 自检：`npm run lint`、`npm run lint:style` 通过，暗色模式正常
+6. 自检：`npm run lint`、`npm run lint:style`、`npm run type-check` 全部通过，暗色模式正常
 
 可直接复制的骨架：`docs/templates/LIST_PAGE.md`、`docs/templates/FORM_PAGE.md`
 
@@ -71,18 +71,20 @@
 
 ## 6. 治理范围说明
 
-- ESLint **严格治理**：`src/api`、`src/components`、`src/directive`、`src/layout`、`src/plugins`、`src/router`、`src/store`、`src/types`、`src/utils`、`vite`
-- ESLint **暂不治理**：`src/views`（若依存量页面），后续随页面改造逐个收敛
+- ESLint **严格治理**：`src/api`、`src/components`、`src/directive`、`src/layout`、`src/plugins`、`src/router`、`src/store`、`src/types`、`src/utils`、`vite`，以及新页面（`views/demo`、`views/layout-editor`、`views/error`、`login.vue`、`register.vue`）
+- ESLint **暂不治理**：若依存量页面 `views/system`、`views/monitor`、`views/tool`、`views/redirect`、`views/index.vue`（后续随页面改造逐个收敛）
+- 类型检查：`npm run type-check` 已**全量 0 error**，CI 为**强制门禁**，新增错误直接阻断
 - 存量降级为 warn 的规则见 `eslint.config.js` 注释；新代码不得依赖这些放宽
 
 ## 7. 命令速查
 
 ```bash
-npm run dev            # 启动开发（80 端口）
+npm run dev            # 启动开发（86 端口）
 npm run lint           # ESLint 检查
 npm run lint:fix       # ESLint 自动修复
 npm run lint:style     # stylelint 检查（禁颜色字面量）
 npm run lint:style:fix # stylelint 自动修复
+npm run type-check     # vue-tsc 类型检查（强制门禁，0 error）
 npm run build:prod     # 生产构建
 ```
 

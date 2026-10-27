@@ -32,9 +32,15 @@ function handleReset(): void {
       <div class="flex items-center gap-3">
         <span class="text-sm font-semibold text-fg">布局模式切换：</span>
         <el-radio-group v-model="currentLayout" size="default">
-          <el-radio-button value="top-bottom">1. 上下收缩布局</el-radio-button>
-          <el-radio-button value="left-right">2. 左右收缩布局</el-radio-button>
-          <el-radio-button value="nested">3. 复合嵌套布局</el-radio-button>
+          <el-radio-button value="top-bottom">
+            1. 上下收缩布局
+          </el-radio-button>
+          <el-radio-button value="left-right">
+            2. 左右收缩布局
+          </el-radio-button>
+          <el-radio-button value="nested">
+            3. 复合嵌套布局
+          </el-radio-button>
         </el-radio-group>
       </div>
 
@@ -79,15 +85,21 @@ function handleReset(): void {
         <!-- 主体表单区域 -->
         <template #default>
           <div class="form-body">
-            <h3 class="text-base font-semibold text-fg mb-4">设备布控与基本信息配置</h3>
+            <h3 class="text-base font-semibold text-fg mb-4">
+              设备布控与基本信息配置
+            </h3>
             <DemoForm />
           </div>
         </template>
 
         <!-- 底部固定操作栏 -->
         <template #footer>
-          <el-button @click="handleReset">重置数据</el-button>
-          <el-button type="primary" @click="handleSubmit">保存提交</el-button>
+          <el-button @click="handleReset">
+            重置数据
+          </el-button>
+          <el-button type="primary" @click="handleSubmit">
+            保存提交
+          </el-button>
         </template>
       </FormLayout>
     </div>

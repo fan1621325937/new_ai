@@ -11,7 +11,7 @@
 
 | 能力 | 是否 HTTP | 说明 |
 |---|---|---|
-| 布局模板（7 套 12×12 栅格） | 否 | 前端静态配置，`layoutInfoId` 必须为 1~7 |
+| 布局模板（固定栅格） | 否 | 旧项目为 7 套 12×12 模板；新项目暂未启用固定模板表，`layoutInfoId` 仍保留 1~7 作为后端维度 |
 | 用户当前布局 + 槽位图表 | 是 | `/viscenter/layout/*` |
 | 平台可选图表列表 | 否（现状） | 旧项目 localStorage；可自定存储或扩展服务端 |
 | userId / systemId 上下文 | 是 | `/getInfo`、`/intellect/plat/*`（已有封装） |
@@ -51,7 +51,7 @@ slot[chartsKey] = `charts${chartOrder}`   // chart2, 15 → 'charts15'
 chartOrder = componentNameToChartOrder('charts15') // 15
 ```
 
-### 2.4 自定义排版（100×100 格）· 本地布局 + 接口放图
+### 2.4 自定义排版（24×24 格）· 本地布局 + 接口放图
 
 **两层职责拆分：**
 
@@ -64,13 +64,17 @@ chartOrder = componentNameToChartOrder('charts15') // 15
 
 ```
 chartsKey = `k-{col}-{row}-{colSpan}-{rowSpan}`
-例：k-1-1-75-67  →  贴旧 chart1（约 75% 宽 × 67% 高）
+例：k-7-1-12-18  →  默认卡片1（左右各空 6 格，上起第 1 行，高 18 行）
 ```
 
-- 画布：CSS Grid `repeat(100, 1fr)`，整格吸附（角点所在格并入选区）
-- 预设：`src/config/layout-presets.ts`（含「贴旧布局」）
+- 画布：CSS Grid `repeat(24, 1fr)` × 24 行，坐标 **1-based**，整格吸附
+- 为什么是 24：可被 2/3/4 整除，二分、三等分、四分排列都能整除
+- 旧数据迁移：本地布局若 `gridSize` 缺失按 20×20 处理，读取时等比换算到 24×24（`scaleRectToGrid`）
+- 预设：`src/config/layout-presets.ts`，内置 3 套（贴旧布局 / 主区+右侧双槽 / 上中下三槽）
 - 编辑器：`src/views/layout-editor/`（路由 `/layout-editor/index`）
 - 放图时用 `slotRectsToDetails`（`src/utils/layout-grid.ts`）生成 overwrite 入参
+
+> 现状：编辑器只做本地几何编辑，`slotRectsToDetails` 与 3.4 的 overwrite 尚未接线到页面。
 
 ---
 
@@ -279,20 +283,19 @@ getLayoutDetail({ userId, layoutInfoId, systemId })
 
 ## 六、本地配置骨架（无接口）
 
-类型已定义在 `src/types/api/viscenter/layout.ts`：
+类型分布如下：
 
-| 类型 | 用途 |
-|---|---|
-| `LayoutTemplateConfig` / `LayoutCellConfig` | 7 套模板与 12×12 槽位 |
-| `ChartOption` | 图表列表项 `{ value: 'charts15' }` |
-| `PlatformChartsConfig` | 平台 → 可选图表 |
-| `SlotChartMap` | 槽位 → 组件名 |
+| 类型 | 位置 | 用途 |
+|---|---|---|
+| `GridRect` | `src/types/api/viscenter/layout.ts` | 24×24 格子矩形（1-based） |
+| `SlotChartMap` | `src/types/api/viscenter/layout.ts` | 槽位 → 组件名映射 `{ chart2: 'charts15' }` |
+| `SlotCard` / `LocalLayout` | `src/views/layout-editor/types.ts` | 编辑器卡槽与本地布局（含 `gridSize`、`builtin`） |
 
-**模板约束**
+**约束**
 
-- `value`（layoutInfoId）必须仍是 1~7，否则历史后端数据对不上  
-- `chartsKey` 与后端存的字符串一致  
-- `isShowtabulation` 控制竖长大图槽；旧项目列表图白名单：`charts15` / `charts38` / `charts42`
+- `layoutInfoId` 仍按后端历史数据取 1~7，新增模板需后端配合
+- `chartsKey` 必须与后端存的字符串一致（固定槽 `chart1~chart9` 或几何编码 `k-*`）
+- 落地布局模板表（7 套固定栅格）时需复用上述 `GridRect` 坐标系
 
 ---
 

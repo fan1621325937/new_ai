@@ -69,6 +69,12 @@
 <svg-icon icon-class="user" class-name="mr-2 h-4 w-4" />
 ```
 
+图标源：`src/assets/icons/svg/*.svg`，文件名即 `icon-class`（构建期由 `vite-plugin-svg-icons` 内联为精灵图）。
+
+- 收纳红线：单文件 ≤ 20KB 且纯矢量（不得含 `<image>` 内嵌位图）；所有图标都会进入口 chunk，体积需守住
+- 插画/大图：放 `src/assets/illustrations/svg/`，需要时用 `import` 显式引入，不要丢进图标目录
+- 菜单图标由后端 `sys_menu.icon` 下发，删除/重命名图标前先确认后端配置
+
 ### 8. `<AutoScroll />` 自动滚动列表
 大屏/监控面板列表自动轮播（悬停暂停、手动后自动重启、横向/纵向）：
 ```vue

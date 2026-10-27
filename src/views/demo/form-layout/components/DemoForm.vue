@@ -37,8 +37,12 @@ const formData = reactive({
         <el-col :span="12">
           <el-form-item label="布控级别">
             <el-radio-group v-model="formData.level">
-              <el-radio value="high">核心重保</el-radio>
-              <el-radio value="medium">标准日常</el-radio>
+              <el-radio value="high">
+                核心重保
+              </el-radio>
+              <el-radio value="medium">
+                标准日常
+              </el-radio>
             </el-radio-group>
           </el-form-item>
         </el-col>

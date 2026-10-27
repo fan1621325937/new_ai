@@ -43,5 +43,6 @@
 | 代码规范 | `@antfu/eslint-config`（严格治理公共层，`src/views` 存量页面暂排除） |
 | 样式规范 | stylelint 硬约束（禁颜色字面量）+ 语义令牌 `--app-*` |
 | 提交门禁 | husky + lint-staged + commitlint（`type(scope): description`） |
-| CI | GitHub Actions：`npm ci` → `lint` → `lint:style` → `build:prod` |
-| 运行 | `npm run dev`（80 端口，代理 `/dev-api` → `http://172.16.41.201:8889`） |
+| 类型门禁 | `npm run type-check`（vue-tsc）；存量若依页面仍有基线错误，CI 暂非阻断 |
+| CI | GitHub Actions：`npm ci` → `lint` → `lint:style` → `type-check` → `build:prod` |
+| 运行 | `npm run dev`（86 端口，代理 `/dev-api` → `http://172.16.41.201:8889`） |

@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import type { EChartsOption } from 'echarts'
 import type { ChartDateItem } from '@/components/chart-box/types'
 import type { ThemePresetKey } from '@/theme/types'
-import type { EChartsOption } from 'echarts'
-import { useChartColors } from '@/components/echarts-view/useChartColors'
-import { THEME_PRESETS, applyTheme } from '@/theme'
 import { computed, onMounted, ref } from 'vue'
+import { useChartColors } from '@/components/echarts-view/useChartColors'
+import { applyTheme, THEME_PRESETS } from '@/theme'
 
 defineOptions({
   name: 'DemoCharts',
@@ -115,9 +115,11 @@ function handleDate(item: ChartDateItem): void {
   dateRange.value = item.title
 }
 
-function handleTheme(val: string): void {
-  themeKey.value = val
-  applyTheme(val as ThemePresetKey)
+/** el-radio-group 的 change 参数是联合类型，此处只处理字符串形态的主题 key */
+function handleTheme(val: string | number | boolean | undefined): void {
+  const key = String(val)
+  themeKey.value = key
+  applyTheme(key as ThemePresetKey)
 }
 </script>
 
