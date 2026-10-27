@@ -19,6 +19,8 @@ export interface UserInfoResult extends AjaxResult {
   isDefaultModifyPwd?: boolean
   /** 密码是否过期 */
   isPasswordExpired?: boolean
+  /** 密码限制类型（后台字典，用于前端校验规则） */
+  pwdChrtype?: string
 }
 
 /** 验证码响应 */

@@ -17,14 +17,6 @@ interface ImportMeta {
   readonly env: ImportMetaEnv
 }
 
-// element-plus
-declare module 'element-plus'
-
-// vue
-declare module 'vue' {
-  interface ComponentInternalInstance { proxy: any }
-}
-
 // nprogress
 declare module 'nprogress' {
   export interface NProgressOptions {

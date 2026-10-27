@@ -112,11 +112,12 @@ import { ElNotification } from 'element-plus'
 import DraggableItem from './DraggableItem.vue'
 import RightPanel from './RightPanel.vue'
 import CodeTypeDialog from './CodeTypeDialog.vue'
+import type { FormWidget } from './types'
 
 initDrawingDefaultValue()
 
 const drawingList = ref<any[]>(drawingDefaultValue)
-const { proxy } = getCurrentInstance()
+const proxy = useGlobalProxy()
 const dialogVisible = ref<boolean>(false)
 const showFileName = ref<boolean>(false)
 const operationType = ref<string>('')
@@ -185,10 +186,10 @@ function cloneComponent(origin: any): any {
   return tempActiveData
 }
 
-function drawingItemCopy(item: any, parent: any[]): void {
+function drawingItemCopy(item: FormWidget, parent?: FormWidget[]): void {
   let clone = JSON.parse(JSON.stringify(item))
   clone = createIdAndKey(clone)
-  parent.push(clone)
+  parent?.push(clone)
   activeFormItem(clone)
 }
 
@@ -206,8 +207,10 @@ function createIdAndKey(item: any): any {
   return item
 }
 
-function drawingItemDelete(index: number, parent: any[]): void {
-  parent.splice(index, 1)
+function drawingItemDelete(index?: number, parent?: FormWidget[]): void {
+  if (parent && typeof index === 'number') {
+    parent.splice(index, 1)
+  }
   nextTick(() => {
     const len = drawingList.value.length
     if (len) {

@@ -79,7 +79,7 @@ const schemas = computed<SchemaItem<SysUser>[]>(() => [
     item: 'input',
     colSpan: 1,
     visibleWhen: f => !f.userId,
-    rules: pwdValidator,
+    rules: pwdValidator.value,
     bind: {
       placeholder: '请输入用户密码',
       type: 'password',

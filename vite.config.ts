@@ -44,6 +44,29 @@ export default defineConfig(({ mode, command }) => {
           chunkFileNames: 'static/js/[name]-[hash].js',
           entryFileNames: 'static/js/[name]-[hash].js',
           assetFileNames: 'static/[ext]/[name]-[hash].[ext]',
+          /**
+           * 三方库按体积拆分：原先 element-plus / echarts / quill 全被吸进入口 chunk，
+           * 单文件 6.8MB（gzip 3.6MB）拖慢首屏；拆分后各自可被浏览器并行加载与长期缓存。
+           * 其余依赖保持 Rollup 默认拆包策略。
+           */
+          manualChunks(id: string) {
+            if (!id.includes('node_modules')) {
+              return
+            }
+            const path = id.replace(/\\/g, '/')
+            if (path.includes('/node_modules/element-plus/') || path.includes('/node_modules/@element-plus/')) {
+              return 'element-plus'
+            }
+            if (path.includes('/node_modules/echarts/') || path.includes('/node_modules/zrender/')) {
+              return 'echarts'
+            }
+            if (path.includes('/node_modules/quill/') || path.includes('/node_modules/@vueup/')) {
+              return 'quill'
+            }
+            if (/\/node_modules\/(?:@vue|vue|vue-router|pinia|@vueuse)\//.test(path)) {
+              return 'vue-vendor'
+            }
+          },
         },
       },
     },

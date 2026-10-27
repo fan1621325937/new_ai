@@ -87,8 +87,8 @@ function handleSelect(key: string, keyPath: string[]): void {
     window.open(key, '_blank')
   }
   else if (!route || !route.children) {
-    // 没有子路由路径内部打开
-    const routeMenu = childrenMenus.value.find((item: any) => item.path === key)
+    // 没有子路由路径内部打开（动态菜单会带 query 字段，静态路由不带）
+    const routeMenu = childrenMenus.value.find((item: any) => item.path === key) as { path?: string, query?: string } | undefined
     if (routeMenu && routeMenu.query) {
       const query = JSON.parse(routeMenu.query)
       router.push({ path: key, query })

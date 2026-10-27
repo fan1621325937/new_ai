@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { CascaderOption } from 'element-plus'
 import type { FormItemComponentProps, OptionItem } from '../types'
 import { computed, unref } from 'vue'
 
@@ -9,12 +10,22 @@ const emit = defineEmits<{
   (e: 'change', val: unknown): void
 }>()
 
-const cascaderOptions = computed(() => {
+/** OptionItem → Element Plus CascaderOption（label/value 为必填，children 递归转换） */
+function toCascaderOptions(list: OptionItem[]): CascaderOption[] {
+  return list.map(row => ({
+    ...row,
+    label: String(row.label ?? row.value ?? ''),
+    value: (row.value ?? row.label ?? '') as string | number,
+    children: Array.isArray(row.children) ? toCascaderOptions(row.children) : undefined,
+  }))
+}
+
+const cascaderOptions = computed<CascaderOption[]>(() => {
   if (props.options && props.options.length > 0) {
-    return props.options
+    return toCascaderOptions(props.options)
   }
   const raw = unref(props.item.options)
-  return Array.isArray(raw) ? raw : []
+  return Array.isArray(raw) ? toCascaderOptions(raw) : []
 })
 
 const currentValue = computed(() => {

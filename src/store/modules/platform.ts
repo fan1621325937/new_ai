@@ -43,16 +43,23 @@ export const usePlatformStore = defineStore('platform', () => {
     if (isSwitching.value)
       return false
     isSwitching.value = true
+    const previousId = dictValue.value
     try {
-      setDictValue(targetId)
       const res = await setType(targetId)
       if (res && res.code === 200) {
+        // 后端上下文切换成功后才落本地，避免切换失败时本地平台与后端不一致
+        setDictValue(targetId)
         const permissionStore = usePermissionStore()
         await permissionStore.generateRoutes()
-        // 导航到该系统的主页
-        await router.push('/')
+        // 导航到该系统的主页（已在首页时会抛重复导航，忽略即可）
+        await router.push('/').catch(() => {})
         return true
       }
+      return false
+    }
+    catch (err) {
+      setDictValue(previousId)
+      console.warn('切换平台失败:', err)
       return false
     }
     finally {

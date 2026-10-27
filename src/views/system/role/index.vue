@@ -65,7 +65,7 @@
                plain
                icon="Edit"
                :disabled="single"
-               @click="handleUpdate"
+               @click="handleUpdate()"
                v-hasPermi="['system:role:edit']"
             >修改</el-button>
          </el-col>
@@ -75,7 +75,7 @@
                plain
                icon="Delete"
                :disabled="multiple"
-               @click="handleDelete"
+               @click="handleDelete()"
                v-hasPermi="['system:role:remove']"
             >删除</el-button>
          </el-col>
@@ -214,7 +214,7 @@
                   ></el-option>
                </el-select>
             </el-form-item>
-            <el-form-item label="数据权限" v-show="form.dataScope == 2">
+            <el-form-item label="数据权限" v-show="form.dataScope === '2'">
                <el-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">展开/折叠</el-checkbox>
                <el-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">全选/全不选</el-checkbox>
                <el-checkbox v-model="form.deptCheckStrictly" @change="handleCheckedTreeConnect($event, 'dept')">父子联动</el-checkbox>
@@ -248,9 +248,10 @@ import type { SysRole, RoleQueryParams } from '@/types/api/system/role'
 import type { TreeSelect } from '@/types/api/common'
 import type { RoleDeptTreeResult } from '@/types/api/system/role'
 import type { RoleMenuTreeselectResult } from '@/types/api/system/menu'
+import type { CheckboxValueType, FormInstance } from 'element-plus'
 
 const router = useRouter()
-const { proxy } = getCurrentInstance()
+const proxy = useGlobalProxy()
 const { sys_normal_disable } = useDict("sys_normal_disable")
 
 const roleList = ref<SysRole[]>([])
@@ -272,6 +273,7 @@ const deptOptions = ref<TreeSelect[]>([])
 const openDataScope = ref<boolean>(false)
 const menuRef = ref<any | null>(null)
 const deptRef = ref<any | null>(null)
+const roleRef = ref<FormInstance | null>(null)
 
 /** 数据范围选项*/
 const dataScopeOptions = ref([
@@ -382,7 +384,7 @@ function handleAuthUser(row: SysRole) {
 /** 查询菜单树结构 */
 function getMenuTreeselect() {
   menuTreeselect().then(response => {
-    menuOptions.value = response.data
+    menuOptions.value = response.data ?? []
   })
 }
 
@@ -468,35 +470,38 @@ function getDeptTree(roleId: number) { Promise<RoleDeptTreeResult>
 }
 
 /** 树权限（展开/折叠）*/
-function handleCheckedTreeExpand(value: boolean, type: string) {
+function handleCheckedTreeExpand(value: CheckboxValueType, type: string) {
+  const expanded = Boolean(value)
   if (type == "menu") {
     let treeList = menuOptions.value
     for (let i = 0; i < treeList.length; i++) {
-      menuRef.value.store.nodesMap[treeList[i].id].expanded = value
+      menuRef.value.store.nodesMap[String(treeList[i].id)].expanded = expanded
     }
   } else if (type == "dept") {
     let treeList = deptOptions.value
     for (let i = 0; i < treeList.length; i++) {
-      deptRef.value.store.nodesMap[treeList[i].id].expanded = value
+      deptRef.value.store.nodesMap[String(treeList[i].id)].expanded = expanded
     }
   }
 }
 
 /** 树权限（全选/全不选） */
-function handleCheckedTreeNodeAll(value: boolean, type: string) {
+function handleCheckedTreeNodeAll(value: CheckboxValueType, type: string) {
+  const checked = Boolean(value)
   if (type == "menu") {
-    menuRef.value.setCheckedNodes(value ? menuOptions.value : [])
+    menuRef.value.setCheckedNodes(checked ? menuOptions.value : [])
   } else if (type == "dept") {
-    deptRef.value.setCheckedNodes(value ? deptOptions.value : [])
+    deptRef.value.setCheckedNodes(checked ? deptOptions.value : [])
   }
 }
 
 /** 树权限（父子联动） */
-function handleCheckedTreeConnect(value: boolean, type: string) {
+function handleCheckedTreeConnect(value: CheckboxValueType, type: string) {
+  const checked = Boolean(value)
   if (type == "menu") {
-    form.value.menuCheckStrictly = value ? true : false
+    form.value.menuCheckStrictly = checked ? true : false
   } else if (type == "dept") {
-    form.value.deptCheckStrictly = value ? true : false
+    form.value.deptCheckStrictly = checked ? true : false
   }
 }
 
@@ -512,7 +517,7 @@ function getMenuAllCheckedKeys(): number[] {
 
 /** 提交按钮 */
 function submitForm() {
-  proxy.$refs["roleRef"].validate((valid: boolean) => {
+  roleRef.value?.validate((valid: boolean) => {
     if (valid) {
       if (form.value.roleId != undefined) {
         form.value.menuIds = getMenuAllCheckedKeys()

@@ -8,11 +8,12 @@ const emit = defineEmits<{
   (e: 'change', val: unknown): void
 }>()
 
-function onUpdate(val: boolean) {
+// el-switch 的 change/update 回调值是标量三元组，与表单值（unknown）对齐后再抛出
+function onUpdate(val: string | number | boolean) {
   emit('update:modelValue', val)
 }
 
-function onChange(val: boolean) {
+function onChange(val: string | number | boolean) {
   emit('change', val)
 }
 </script>

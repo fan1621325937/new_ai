@@ -2,7 +2,7 @@ import type { AjaxResult, OnlineQueryParams, SysUserOnline, TableDataInfo } from
 import request from '@/utils/request'
 
 // 查询在线用户列表
-export function list(query: OnlineQueryParams): Promise<TableDataInfo<SysUserOnline[]>> {
+export function list(query: OnlineQueryParams): Promise<TableDataInfo<SysUserOnline>> {
   return request({
     url: '/monitor/online/list',
     method: 'get',

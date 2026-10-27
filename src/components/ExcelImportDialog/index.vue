@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { UploadFile, UploadInstance } from 'element-plus'
 import type { AjaxResult } from '@/types/api/common'
-import { computed, getCurrentInstance, nextTick, ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import { getToken } from '@/utils/auth'
 
 const props = withDefaults(defineProps<{
@@ -23,7 +23,7 @@ const emit = defineEmits<{
   (e: 'success'): void
 }>()
 
-const { proxy } = getCurrentInstance()!
+const proxy = useGlobalProxy()
 
 const uploadRef = ref<UploadInstance>()
 const visible = ref<boolean>(false)

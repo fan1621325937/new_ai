@@ -51,7 +51,7 @@
                plain
                icon="Edit"
                :disabled="single"
-               @click="handleUpdate"
+               @click="handleUpdate()"
                v-hasPermi="['system:post:edit']"
             >修改</el-button>
          </el-col>
@@ -61,7 +61,7 @@
                plain
                icon="Delete"
                :disabled="multiple"
-               @click="handleDelete"
+               @click="handleDelete()"
                v-hasPermi="['system:post:remove']"
             >删除</el-button>
          </el-col>
@@ -147,8 +147,10 @@
 <script setup lang="ts" name="Post">
 import { listPost, addPost, delPost, getPost, updatePost } from "@/api/system/post"
 import type { SysPost, PostQueryParams } from '@/types/api/system/post'
+import type { FormInstance } from 'element-plus'
 
-const { proxy } = getCurrentInstance()
+const proxy = useGlobalProxy()
+const postRef = ref<FormInstance | null>(null)
 const { sys_normal_disable } = useDict("sys_normal_disable")
 
 const postList = ref<SysPost[]>([])
@@ -239,7 +241,7 @@ function handleUpdate(row?: SysPost) {
   reset()
   const postId = row?.postId || ids.value[0]
   getPost(postId).then(response => {
-    form.value = response.data!
+    form.value = response.data ?? {}
     open.value = true
     title.value = "修改岗位"
   })
@@ -247,7 +249,7 @@ function handleUpdate(row?: SysPost) {
 
 /** 提交按钮 */
 function submitForm() {
-  proxy.$refs["postRef"].validate((valid: boolean) => {
+  postRef.value?.validate((valid: boolean) => {
     if (valid) {
       if (form.value.postId != undefined) {
         updatePost(form.value).then(() => {

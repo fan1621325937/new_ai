@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { PropType } from 'vue'
+import type { RouterVo } from '@/types/api/menu'
 import { getNormalPath } from '@/utils/ruoyi'
 import { isExternal } from '@/utils/validate'
 import AppLink from './Link.vue'
@@ -6,7 +8,7 @@ import AppLink from './Link.vue'
 const props = defineProps({
   // route object
   item: {
-    type: Object,
+    type: Object as PropType<RouterVo>,
     required: true,
   },
   isNest: {
@@ -19,9 +21,10 @@ const props = defineProps({
   },
 })
 
-const onlyOneChild = ref({})
+/** 只有一个可展示子路由时实际渲染的路由（父级兜底时会补 path:'' 与标记） */
+const onlyOneChild = ref<RouterVo & { noShowingChildren?: boolean }>({})
 
-function hasOneShowingChild(children: any[] = [], parent: any) {
+function hasOneShowingChild(children: RouterVo[] | undefined = [], parent: RouterVo) {
   if (!children) {
     children = []
   }
@@ -47,27 +50,29 @@ function hasOneShowingChild(children: any[] = [], parent: any) {
   return false
 }
 
-function resolvePath(routePath: string, routeQuery?: string): string | { path: string, query: Record<string, any> } {
-  if (isExternal(routePath)) {
-    return routePath
+function resolvePath(routePath?: string, routeQuery?: string): string | { path: string, query: Record<string, any> } {
+  const targetPath = routePath ?? ''
+  if (isExternal(targetPath)) {
+    return targetPath
   }
   if (isExternal(props.basePath)) {
     return props.basePath
   }
   if (routeQuery) {
     const query = JSON.parse(routeQuery)
-    return { path: getNormalPath(`${props.basePath}/${routePath}`), query }
+    return { path: getNormalPath(`${props.basePath}/${targetPath}`), query }
   }
-  return getNormalPath(`${props.basePath}/${routePath}`)
+  return getNormalPath(`${props.basePath}/${targetPath}`)
 }
 
-function hasTitle(title: string): string {
-  if (title.length > 5) {
-    return title
-  }
-  else {
-    return ''
-  }
+/** el-menu 的 index 只接受字符串路径（带 query 的对象形态仅用于 router-link） */
+function toMenuIndex(routePath?: string, routeQuery?: string): string {
+  const target = resolvePath(routePath, routeQuery)
+  return typeof target === 'string' ? target : target.path
+}
+
+function hasTitle(title?: string): string {
+  return title && title.length > 5 ? title : ''
 }
 </script>
 
@@ -75,7 +80,7 @@ function hasTitle(title: string): string {
   <div v-if="!item.hidden">
     <template v-if="hasOneShowingChild(item.children, item) && (!onlyOneChild.children || onlyOneChild.noShowingChildren) && !item.alwaysShow">
       <AppLink v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path, onlyOneChild.query)">
-        <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{ 'submenu-title-noDropdown': !isNest }">
+        <el-menu-item :index="toMenuIndex(onlyOneChild.path)" :class="{ 'submenu-title-noDropdown': !isNest }">
           <svg-icon :icon-class="onlyOneChild.meta.icon || (item.meta && item.meta.icon)" />
           <template #title>
             <span class="menu-title" :title="hasTitle(onlyOneChild.meta.title)">{{ onlyOneChild.meta.title }}</span>
@@ -84,7 +89,7 @@ function hasTitle(title: string): string {
       </AppLink>
     </template>
 
-    <el-sub-menu v-else ref="subMenu" :index="resolvePath(item.path)" teleported>
+    <el-sub-menu v-else ref="subMenu" :index="toMenuIndex(item.path)" teleported>
       <template v-if="item.meta" #title>
         <svg-icon :icon-class="item.meta && item.meta.icon" />
         <span class="menu-title" :title="hasTitle(item.meta.title)">{{ item.meta.title }}</span>
@@ -92,10 +97,10 @@ function hasTitle(title: string): string {
 
       <sidebar-item
         v-for="(child, index) in item.children"
-        :key="child.path + index"
+        :key="`${child.path ?? ''}-${index}`"
         :is-nest="true"
         :item="child"
-        :base-path="resolvePath(child.path)"
+        :base-path="toMenuIndex(child.path)"
         class="nest-menu"
       />
     </el-sub-menu>

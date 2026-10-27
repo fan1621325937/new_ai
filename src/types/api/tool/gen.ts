@@ -29,8 +29,8 @@ export interface GenTable extends BaseEntity {
   className?: string
   /** 使用的模板（crud单表操作 tree树表操作 sub主子表操作） */
   tplCategory?: 'crud' | 'tree' | 'sub'
-  /** 前端类型（element-ui模版 element-plus模版） */
-  tplWebType?: 'element-ui' | 'element-plus'
+  /** 前端类型（element-ui模版 element-plus模版 element-plus-typescript模版） */
+  tplWebType?: 'element-ui' | 'element-plus' | 'element-plus-typescript'
   /** 生成包路径 */
   packageName?: string
   /** 生成模块名 */
@@ -41,6 +41,10 @@ export interface GenTable extends BaseEntity {
   functionName?: string
   /** 生成作者 */
   functionAuthor?: string
+  /** 表单布局列数 */
+  formColNum?: number
+  /** 是否生成详情页 */
+  view?: boolean
   /** 生成代码方式（0zip压缩包 1自定义路径） */
   genType?: '0' | '1'
   /** 生成路径（不填默认项目路径） */

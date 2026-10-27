@@ -27,8 +27,10 @@ const iconList = ref<string[]>([])
 const originList: string[] = []
 const key = ref<string>('')
 const active = ref<string>('')
-const emit = defineEmits(['select'])
-const value = defineModel()
+const emit = defineEmits<{
+  (e: 'select', icon: string): void
+}>()
+const value = defineModel<boolean>({ default: false })
 for (const [key] of Object.entries(ElementPlusIconsVue)) {
   iconList.value.push(key)
   originList.push(key)

@@ -34,8 +34,8 @@ export function usePasswordRule() {
       { pattern: rule.pattern, message: rule.message, trigger: 'blur' },
     ]
   })
-  // 校验prompt的inputValidator函数
-  const pwdPromptValidator = (value: string) => {
+  // 校验prompt的inputValidator函数（返回 true 表示校验通过，符合 ElMessageBox 契约）
+  const pwdPromptValidator = (value: string): string | true => {
     const rule = PWD_RULES['0']
     if (!value || value.length < 6 || value.length > 20) {
       return '密码长度必须介于 6 和 20 之间'
@@ -43,6 +43,7 @@ export function usePasswordRule() {
     if (!rule.pattern.test(value)) {
       return rule.message
     }
+    return true
   }
   // 个人中心密码校验
   const infoPwdValidator = computed(() => {

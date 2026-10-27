@@ -1,11 +1,12 @@
 import type { SysUser, UserQueryParams } from '@/types/api/system/user'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { getCurrentInstance, reactive, ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { changeUserStatus, delUser, listUser, resetUserPwd } from '@/api/system/user'
+import { useGlobalProxy } from '@/utils/proxy'
 import { usePasswordRule } from '@/utils/passwordRule'
 
 export function useUserActions() {
-  const { proxy } = getCurrentInstance()!
+  const proxy = useGlobalProxy()
   const { pwdPromptValidator } = usePasswordRule()
 
   const userList = ref<SysUser[]>([])

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { PropType } from 'vue'
 import { scrollTo } from '@/utils/scroll-to'
 
 const props = defineProps({
@@ -15,7 +16,7 @@ const props = defineProps({
     default: 20,
   },
   pageSizes: {
-    type: Array,
+    type: Array as PropType<number[]>,
     default() {
       return [10, 20, 30, 50]
     },
@@ -43,7 +44,12 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits()
+// 事件显式声明类型：父组件内联处理器（如 `p => xxx`）才能推导出参数类型
+const emit = defineEmits<{
+  (e: 'update:page', page: number): void
+  (e: 'update:limit', limit: number): void
+  (e: 'pagination', payload: { page: number, limit: number }): void
+}>()
 const currentPage = computed({
   get() {
     return props.page

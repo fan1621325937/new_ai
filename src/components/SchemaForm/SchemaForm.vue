@@ -78,7 +78,10 @@ async function validate(callback?: (valid: boolean) => void): Promise<boolean> {
 
 defineExpose<SchemaFormInstance>({
   clearValidate: (propsList?: string | string[]) => formRef.value?.clearValidate(propsList),
-  formRef,
+  // 用 getter 暴露：挂载后父组件才能拿到真实实例
+  get formRef() {
+    return formRef.value
+  },
   getFormData: () => JSON.parse(JSON.stringify(props.modelValue)),
   resetFields: () => formRef.value?.resetFields(),
   validate,

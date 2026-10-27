@@ -72,12 +72,10 @@
               @input="onDefaultValueInput" />
           </el-form-item>
           <el-form-item v-if="activeData.tag === 'el-checkbox-group'" label="至少应选">
-            <el-input-number :value="activeData.min" :min="0" placeholder="至少应选"
-              @input="$set(activeData, 'min', $event ? $event : undefined)" />
+            <el-input-number v-model="activeData.min" :min="0" placeholder="至少应选" />
           </el-form-item>
           <el-form-item v-if="activeData.tag === 'el-checkbox-group'" label="最多可选">
-            <el-input-number :value="activeData.max" :min="0" placeholder="最多可选"
-              @input="$set(activeData, 'max', $event ? $event : undefined)" />
+            <el-input-number v-model="activeData.max" :min="0" placeholder="最多可选" />
           </el-form-item>
           <el-form-item v-if="activeData.prepend !== undefined" label="前缀">
             <el-input v-model="activeData.prepend" placeholder="请输入前缀" />
@@ -459,7 +457,7 @@
         </el-form>
       </el-scrollbar>
     </div>
-    <icons-dialog v-model="iconsVisible" :current="activeData[currentIconModel]" @select="setIcon" />
+    <icons-dialog v-model="iconsVisible" :current="activeData[currentIconModel ?? '']" @select="setIcon" />
     <treeNode-dialog v-model="dialogVisible" @commit="addNode" />
 
   </div>
@@ -467,12 +465,12 @@
 
 <script setup lang="ts">
 import draggable from "vuedraggable/dist/vuedraggable.common"
+import type { FormWidget } from './types'
 import { isNumberStr } from '@/utils/index'
 import IconsDialog from './IconsDialog.vue'
 import TreeNodeDialog from './TreeNodeDialog.vue'
 import { inputComponents, selectComponents } from '@/utils/generator/config'
 
-const { proxy } = getCurrentInstance()
 const dateTimeFormat: Record<string, string> = {
   date: 'YYYY-MM-DD',
   week: 'YYYY 第 ww 周',
@@ -488,13 +486,12 @@ const props = defineProps<{
   activeData: any
   formConf: any
 }>()
-
 const data = reactive({
   currentTab: 'field',
-  currentNode: null,
+  currentNode: null as FormWidget[] | null,
   dialogVisible: false,
   iconsVisible: false,
-  currentIconModel: null,
+  currentIconModel: null as string | null,
   dateTypeOptions: [
     {
       label: '日(date)',
@@ -629,7 +626,6 @@ function addSelectItem(): void {
 }
 
 function addTreeItem(): void {
-  ++proxy.idGlobal
   dialogVisible.value = true
   currentNode.value = props.activeData.options
 }
@@ -725,11 +721,11 @@ function setTimeValue(val: string, type?: string): void {
   props.activeData.format = val
 }
 
-function spanChange(val: number): void {
-  props.formConf.span = val
+function spanChange(val: number | number[]): void {
+  props.formConf.span = Array.isArray(val) ? val[0] : val
 }
 
-function multipleChange(val: boolean): void {
+function multipleChange(val: string | number | boolean): void {
   props.activeData.defaultValue = val ? [] : ''
 }
 
@@ -737,15 +733,15 @@ function dateTypeChange(val: string): void {
   setTimeValue(dateTimeFormat[val], val)
 }
 
-function rangeChange(val: boolean): void {
+function rangeChange(val: string | number | boolean): void {
   props.activeData.defaultValue = val ? [props.activeData.min, props.activeData.max] : props.activeData.min
 }
 
-function rateTextChange(val: boolean): void {
+function rateTextChange(val: string | number | boolean): void {
   if (val) props.activeData['show-score'] = false
 }
 
-function rateScoreChange(val: boolean): void {
+function rateScoreChange(val: string | number | boolean): void {
   if (val) props.activeData['show-text'] = false
 }
 

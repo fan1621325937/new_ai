@@ -37,6 +37,11 @@ const currentValue = computed(() => {
   return (props.modelValue as (string | number)[]) || []
 })
 
+/** 选项值：动态 schema 下由调用方保证是标量，此处仅做类型收窄 */
+function optionValue(opt: OptionItem): string | number | boolean {
+  return opt.value as string | number | boolean
+}
+
 function onUpdate(val: unknown) {
   emit('update:modelValue', val)
 }
@@ -58,7 +63,7 @@ function onChange(val: unknown) {
       <el-checkbox-button
         v-for="(opt, idx) in resolvedOptions"
         :key="`${idx}-${String(opt.value)}`"
-        :value="opt.value"
+        :value="optionValue(opt)"
         :disabled="opt.disabled"
       >
         {{ opt.label }}
@@ -68,7 +73,7 @@ function onChange(val: unknown) {
       <el-checkbox
         v-for="(opt, idx) in resolvedOptions"
         :key="`${idx}-${String(opt.value)}`"
-        :value="opt.value"
+        :value="optionValue(opt)"
         :disabled="opt.disabled"
       >
         {{ opt.label }}

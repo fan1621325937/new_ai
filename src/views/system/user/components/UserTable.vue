@@ -134,7 +134,7 @@ function handlePagination(): void {
           inactive-value="1"
           :disabled="(row as SysUser).userId === 1"
           @change="(val: string | number | boolean) => {
-            ;(row as SysUser).status = String(val)
+            ;(row as SysUser).status = String(val) === '0' ? '0' : '1'
             emit('statusChange', row as SysUser)
           }"
         />

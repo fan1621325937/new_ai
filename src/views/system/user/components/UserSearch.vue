@@ -18,7 +18,7 @@ const dateRange = ref<string[]>([])
 const queryParams = reactive<Partial<UserQueryParams>>({
   userName: '',
   phonenumber: '',
-  status: '',
+  status: undefined,
 })
 
 function handleSearch(): void {

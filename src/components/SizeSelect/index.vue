@@ -8,7 +8,7 @@ interface SizeOption {
 
 const appStore = useAppStore()
 const size = computed(() => appStore.size)
-const { proxy } = getCurrentInstance()
+const proxy = useGlobalProxy()
 const sizeOptions = ref<SizeOption[]>([
   { label: '较大', value: 'large' },
   { label: '默认', value: 'default' },

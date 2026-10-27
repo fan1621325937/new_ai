@@ -1,14 +1,14 @@
 import type { FormRules } from 'element-plus'
-import type { ComputedRef } from 'vue'
+import type { Ref } from 'vue'
 import type { OptionItem, SchemaItem } from '../types'
 import { computed, unref } from 'vue'
 
 /** 表单联动与动态计算 Composable */
 export function useFormLinkage<T extends Record<string, unknown>>(
-  schemas: ComputedRef<SchemaItem<T>[]>,
-  formModel: ComputedRef<T>,
-  baseRules?: ComputedRef<FormRules | undefined>,
-  globalDisabled?: ComputedRef<boolean | undefined>,
+  schemas: Ref<SchemaItem<T>[]>,
+  formModel: Ref<T>,
+  baseRules?: Ref<FormRules | undefined>,
+  globalDisabled?: Ref<boolean | undefined>,
 ) {
   /** 1. 过滤可见的表单项列表（visibleWhen） */
   const visibleSchemas = computed(() => {

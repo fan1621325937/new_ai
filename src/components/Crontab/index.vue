@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { PropType } from 'vue'
 import CrontabDay from './day.vue'
 import CrontabHour from './hour.vue'
 import CrontabMin from './min.vue'
@@ -11,7 +12,7 @@ import CrontabYear from './year.vue'
 
 const props = defineProps({
   hideComponent: {
-    type: Array,
+    type: Array as PropType<string[]>,
     default: () => [],
   },
   expression: {
@@ -20,7 +21,7 @@ const props = defineProps({
   },
 })
 const emit = defineEmits(['hide', 'fill'])
-const { proxy } = getCurrentInstance()
+const proxy = useGlobalProxy()
 const tabTitles = ref<string[]>(['秒', '分钟', '小时', '日', '月', '周', '年'])
 const tabActive = ref<number>(0)
 const hideComponent = ref<string[]>([])

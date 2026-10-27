@@ -17,11 +17,13 @@
 </template>
 
 <script setup lang="ts">
+import type { FormInstance, FormRules } from 'element-plus'
 import { usePasswordRule } from "@/utils/passwordRule"
 import { updateUserPwd } from "@/api/system/user"
 
-const { proxy } = getCurrentInstance()
+const proxy = useGlobalProxy()
 const { infoPwdValidator } = usePasswordRule()
+const pwdRef = ref<FormInstance | null>(null)
 
 interface UserProfilePwd {
   // 旧密码
@@ -38,7 +40,7 @@ const user = reactive<UserProfilePwd>({
   confirmPassword: undefined
 })
 
-const equalToPassword = (rule: any, value: string, callback: (error?: Error) => void): void => {
+const equalToPassword = (rule: unknown, value: string, callback: (error?: string | Error) => void): void => {
   if (user.newPassword !== value) {
     callback(new Error("两次输入的密码不一致"))
   } else {
@@ -49,11 +51,11 @@ const equalToPassword = (rule: any, value: string, callback: (error?: Error) => 
 const rules = {
   oldPassword: [{ required: true, message: "旧密码不能为空", trigger: "blur" }],
   confirmPassword: [{ required: true, message: "确认密码不能为空", trigger: "blur" }, { required: true, validator: equalToPassword, trigger: "blur" }]
-}
+} as FormRules
 
 /** 提交按钮 */
 function submit() {
-  proxy.$refs.pwdRef.validate((valid: boolean) => {
+  pwdRef.value?.validate((valid: boolean) => {
     if (valid) {
       updateUserPwd(user.oldPassword!, user.newPassword!).then(() => {
         proxy.$modal.msgSuccess("修改成功")

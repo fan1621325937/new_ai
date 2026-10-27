@@ -20,7 +20,8 @@ function isWhiteList(path: string): boolean {
 router.beforeEach(async (to, from) => {
   NProgress.start()
   if (getToken()) {
-    to.meta.title && useSettingsStore().setTitle(to.meta.title as string)
+    if (to.meta.title)
+      useSettingsStore().setTitle(to.meta.title)
     if (to.path === '/login') {
       NProgress.done()
       return { path: '/' }
@@ -46,7 +47,7 @@ router.beforeEach(async (to, from) => {
       }
       catch (err) {
         await useUserStore().logOut()
-        ElMessage.error(err)
+        ElMessage.error(err instanceof Error ? err.message : '登录状态校验失败，请重新登录')
         return { path: '/' }
       }
     }

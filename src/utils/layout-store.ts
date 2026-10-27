@@ -4,9 +4,34 @@
  */
 import type { LocalLayout, SlotCard } from '@/views/layout-editor/types'
 import { BUILTIN_LAYOUTS, createDefaultCards, findBuiltin } from '@/config/layout-presets'
+import { GRID_SIZE, scaleRectToGrid } from '@/utils/layout-grid'
 
 const STORAGE_KEY = 'layout-editor-layouts'
 const CURRENT_KEY = 'layout-editor-current'
+
+/** 旧本地数据没有 gridSize，统一按 20×20 处理 */
+const LEGACY_GRID_SIZE = 20
+
+/** 把旧栅格布局换算到当前栅格；已是当前版本的布局原样返回 */
+function migrateLayouts(list: LocalLayout[]): { list: LocalLayout[], changed: boolean } {
+  let changed = false
+  const next = list.map((layout) => {
+    if (layout.gridSize === GRID_SIZE) {
+      return layout
+    }
+    changed = true
+    const sourceGrid = Number(layout.gridSize) || LEGACY_GRID_SIZE
+    return {
+      ...layout,
+      gridSize: GRID_SIZE,
+      cards: (layout.cards || []).map(card => ({
+        ...card,
+        ...scaleRectToGrid(card, sourceGrid),
+      })),
+    }
+  })
+  return { list: next, changed }
+}
 
 function readLocalList(): LocalLayout[] {
   try {
@@ -15,7 +40,15 @@ function readLocalList(): LocalLayout[] {
       return []
     }
     const parsed = JSON.parse(raw)
-    return Array.isArray(parsed) ? parsed : []
+    if (!Array.isArray(parsed)) {
+      return []
+    }
+    const migrated = migrateLayouts(parsed)
+    // 迁移结果写回一次，避免每次读取都重复换算
+    if (migrated.changed) {
+      writeLocalList(migrated.list)
+    }
+    return migrated.list
   }
   catch {
     return []
@@ -41,6 +74,7 @@ export function createLayout(name: string): LocalLayout {
     id: `local-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
     name: name.trim() || '未命名布局',
     cards: createDefaultCards(),
+    gridSize: GRID_SIZE,
     builtin: false,
     updatedAt: Date.now(),
   }
@@ -68,6 +102,7 @@ export function saveLayoutCards(
       id: `local-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
       name: targetName,
       cards: cards.map(c => ({ ...c })),
+      gridSize: GRID_SIZE,
       builtin: false,
       updatedAt: Date.now(),
     }
@@ -81,6 +116,7 @@ export function saveLayoutCards(
     id,
     name: targetName,
     cards: cards.map(c => ({ ...c })),
+    gridSize: GRID_SIZE,
     builtin: false,
     updatedAt: Date.now(),
   }
@@ -98,13 +134,30 @@ export function removeLayout(id: string): boolean {
   if (findBuiltin(id)) {
     return false
   }
-  const list = readLocalList().filter(item => item.id !== id)
+  const rawList = readLocalList()
+  const list = rawList.filter(item => item.id !== id)
+  if (list.length === rawList.length) {
+    return false
+  }
   writeLocalList(list)
+  // 删除的是当前布局时立即回退，避免 current 指向已不存在的 id
+  if (getCurrentLayoutId() === id) {
+    setCurrentLayoutId(BUILTIN_LAYOUTS[0].id)
+  }
   return true
 }
 
 export function getCurrentLayoutId(): string {
-  return localStorage.getItem(CURRENT_KEY) || BUILTIN_LAYOUTS[0].id
+  const saved = localStorage.getItem(CURRENT_KEY)
+  if (saved && getLayout(saved)) {
+    return saved
+  }
+  // 历史数据可能残留已删除的 id，这里校正并回落到首个内置布局
+  const fallback = BUILTIN_LAYOUTS[0].id
+  if (saved !== fallback) {
+    setCurrentLayoutId(fallback)
+  }
+  return fallback
 }
 
 export function setCurrentLayoutId(id: string): void {

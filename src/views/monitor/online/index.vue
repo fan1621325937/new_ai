@@ -61,7 +61,7 @@
 import { forceLogout, list as initData } from "@/api/monitor/online"
 import type { SysUserOnline, OnlineQueryParams } from '@/types/api/monitor/online'
 
-const { proxy } = getCurrentInstance()
+const proxy = useGlobalProxy()
 
 const onlineList = ref<SysUserOnline[]>([])
 const loading = ref<boolean>(true)

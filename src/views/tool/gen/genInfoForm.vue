@@ -118,7 +118,8 @@
           <el-tree-select
             v-model="info.parentMenuId"
             :data="menuOptions"
-            :props="{ value: 'menuId', label: 'menuName', children: 'children' }"
+            :props="{ label: 'menuName', children: 'children' }"
+            value-key="menuId"
             placeholder="请选择系统菜单"
             check-strictly
           />
@@ -168,7 +169,7 @@
                 v-for="(column, index) in info.columns"
                 :key="index"
                 :label="column.columnName + '：' + column.columnComment"
-                :value="column.columnName"
+                :value="column.columnName ?? ''"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -186,7 +187,7 @@
                 v-for="(column, index) in info.columns"
                 :key="index"
                 :label="column.columnName + '：' + column.columnComment"
-                :value="column.columnName"
+                :value="column.columnName ?? ''"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -204,7 +205,7 @@
                 v-for="(column, index) in info.columns"
                 :key="index"
                 :label="column.columnName + '：' + column.columnComment"
-                :value="column.columnName"
+                :value="column.columnName ?? ''"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -228,7 +229,7 @@
                 v-for="(table, index) in tables"
                 :key="index"
                 :label="table.tableName + '：' + table.tableComment"
-                :value="table.tableName"
+                :value="table.tableName ?? ''"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -246,7 +247,7 @@
                 v-for="(column, index) in subColumns"
                 :key="index"
                 :label="column.columnName + '：' + column.columnComment"
-                :value="column.columnName"
+                :value="column.columnName ?? ''"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -258,21 +259,19 @@
 </template>
 
 <script setup lang="ts">
+import type { GenTable, GenTableColumn } from '@/types/api/tool/gen'
 import { listMenu } from "@/api/system/menu"
 
-const subColumns = ref([])
-const menuOptions = ref([])
-const { proxy } = getCurrentInstance()
+const subColumns = ref<GenTableColumn[]>([])
+const menuOptions = ref<Array<Record<string, unknown>>>([])
+const proxy = useGlobalProxy()
 
-const props = defineProps({
-  info: {
-    type: Object,
-    default: null
-  },
-  tables: {
-    type: Array,
-    default: null
-  }
+const props = withDefaults(defineProps<{
+  info?: GenTable
+  tables?: GenTable[]
+}>(), {
+  info: () => ({} as GenTable),
+  tables: () => [],
 })
 
 // 表单校验
@@ -310,7 +309,7 @@ function setSubTableColumns(value: string): void {
 /** 查询菜单下拉树结构 */
 function getMenuTreeselect(): void {
   listMenu().then(response => {
-    menuOptions.value = proxy.handleTree(response.data, "menuId")
+    menuOptions.value = proxy.handleTree(response.data ?? [], "menuId")
   })
 }
 
@@ -318,13 +317,13 @@ onMounted(() => {
   getMenuTreeselect()
 })
 
-watch(() => props.info?.subTableName, (val: string) => {
+watch(() => props.info?.subTableName, (val?: string) => {
   if (val) {
     setSubTableColumns(val)
   }
 })
 
-watch(() => props.info?.tplWebType, (val: string) => {
+watch(() => props.info?.tplWebType, (val?: string) => {
   if (val === '' && props.info) {
     props.info.tplWebType = "element-plus-typescript"
   }

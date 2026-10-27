@@ -67,6 +67,12 @@ function handleReset(): void {
   emits('resetLayout')
 }
 
+/** 列透传属性：约定为对象，非对象时返回空对象，避免 v-bind 展开非对象报错 */
+function columnAttrs(col: AppTableProps['columns'][number]): Record<string, unknown> {
+  const attrs = col.attrs
+  return attrs !== null && typeof attrs === 'object' ? attrs as Record<string, unknown> : {}
+}
+
 // 容器高度变化时同步给 el-table（分页切换、侧栏折叠、窗口缩放）
 useResizeObserver(tableWrapRef, (entries) => {
   const h = entries[0]?.contentRect.height ?? 0
@@ -126,7 +132,7 @@ defineExpose({ dragging, columns: innerColumns, resetColumnLayout })
           :sortable="col.sortable"
           :align="col.align"
           :show-overflow-tooltip="col.showOverflowTooltip"
-          v-bind="col.attrs"
+          v-bind="columnAttrs(col)"
         >
           <template v-if="col.headerSlot" #header="scope">
             <slot :name="col.headerSlot" v-bind="scope" />
@@ -153,8 +159,8 @@ defineExpose({ dragging, columns: innerColumns, resetColumnLayout })
       :page="page"
       :limit="limit"
       :page-sizes="pageSizes"
-      @update:page="p => handlePagination(p, limit)"
-      @update:limit="l => handlePagination(page, l)"
+      @update:page="(p: number) => handlePagination(p, limit)"
+      @update:limit="(l: number) => handlePagination(page, l)"
     />
   </div>
 </template>

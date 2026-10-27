@@ -2,7 +2,7 @@ import type { AjaxResult, PostQueryParams, SysPost, TableDataInfo } from '@/type
 import request from '@/utils/request'
 
 // 查询岗位列表
-export function listPost(query: PostQueryParams): Promise<TableDataInfo<SysPost[]>> {
+export function listPost(query: PostQueryParams): Promise<TableDataInfo<SysPost>> {
   return request({
     url: '/system/post/list',
     method: 'get',

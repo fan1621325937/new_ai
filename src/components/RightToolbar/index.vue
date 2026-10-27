@@ -1,41 +1,37 @@
 <script setup lang="ts">
+import type { CheckboxValueType } from 'element-plus'
 import type { TableShowColumns } from '@/types/api/common'
 import cache from '@/plugins/cache'
 
-const props = defineProps({
+/** 调用方可传数组，也可传 key → 列配置的对象（两种历史写法都存在） */
+type ColumnSource = TableShowColumns[] | Record<string, TableShowColumns>
+
+const props = withDefaults(defineProps<{
   /* 是否显示检索条件 */
-  showSearch: {
-    type: Boolean,
-    default: true,
-  },
+  showSearch?: boolean
   /* 显隐列信息（数组格式、对象格式） */
-  columns: {
-    type: [Array, Object],
-    default: () => ({}),
-  },
+  columns?: ColumnSource
   /* 是否显示检索图标 */
-  search: {
-    type: Boolean,
-    default: true,
-  },
+  search?: boolean
   /* 显隐列类型（transfer穿梭框、checkbox复选框） */
-  showColumnsType: {
-    type: String,
-    default: 'checkbox',
-  },
+  showColumnsType?: 'checkbox' | 'transfer'
   /* 右外边距 */
-  gutter: {
-    type: Number,
-    default: 10,
-  },
+  gutter?: number
   /* 列显隐状态记忆的 localStorage key（传入则启用记忆，不传则不记忆） */
-  storageKey: {
-    type: String,
-    default: '',
-  },
+  storageKey?: string
+}>(), {
+  showSearch: true,
+  columns: () => ({}),
+  search: true,
+  showColumnsType: 'checkbox',
+  gutter: 10,
+  storageKey: '',
 })
 
-const emits = defineEmits(['update:showSearch', 'queryTable'])
+const emits = defineEmits<{
+  (e: 'update:showSearch', show: boolean): void
+  (e: 'queryTable'): void
+}>()
 
 // 显隐数据
 const value = ref<number[]>([])
@@ -52,18 +48,29 @@ const style = computed(() => {
   return ret
 })
 
+/** 归一化后的列列表：对象形态按 key 顺序取值，避免后续处处判 Array/Object */
+const columnList = computed<TableShowColumns[]>(() => {
+  const src = props.columns
+  return Array.isArray(src) ? src : Object.keys(src).map(key => src[key])
+})
+/** 每列在原始入参中的 key（数组用下标，对象用原 key），用于持久化与回填 */
+const columnKeys = computed<string[]>(() => {
+  const src = props.columns
+  return Array.isArray(src) ? src.map((_, index) => String(index)) : Object.keys(src)
+})
+
 // 是否全选/半选 状态
 const isChecked = computed({
-  get: () => Array.isArray(props.columns) ? props.columns.every((col: TableShowColumns) => col.visible) : Object.values(props.columns).every(col => (col as TableShowColumns).visible),
+  get: () => columnList.value.every(col => col.visible),
   set: () => {},
 })
-const isIndeterminate = computed(() => Array.isArray(props.columns) ? props.columns.some((col: TableShowColumns) => col.visible) && !isChecked.value : Object.values(props.columns).some(col => (col as TableShowColumns).visible) && !isChecked.value)
-const transferData = computed(() => Array.isArray(props.columns) ? props.columns.map((item: TableShowColumns, index: number) => ({ key: index, label: item.label })) : Object.keys(props.columns).map((key, index) => ({ key: index, label: props.columns[key].label })))
+const isIndeterminate = computed(() => columnList.value.some(col => col.visible) && !isChecked.value)
+const transferData = computed(() => columnList.value.map((item, index) => ({ key: index, label: item.label })))
 
 // 搜索
-const { proxy } = getCurrentInstance()!
+const proxy = useGlobalProxy()
 function toggleSearch(): void {
-  let el: HTMLElement | null = proxy!.$el
+  let el: HTMLElement | null = proxy.$el as HTMLElement | null
   let formEl: HTMLElement | null = null
   while (true) {
     el = el?.parentElement ?? null
@@ -104,19 +111,11 @@ function refresh(): void {
   emits('queryTable')
 }
 
-// 右侧列表元素变化
-function dataChange(data: number[]): void {
-  if (Array.isArray(props.columns)) {
-    for (const item in props.columns) {
-      const key = props.columns[item].key
-      props.columns[item].visible = !data.includes(parseInt(key))
-    }
-  }
-  else {
-    Object.keys(props.columns).forEach((key, index) => {
-      props.columns[key].visible = !data.includes(index)
-    })
-  }
+// 右侧列表元素变化（穿梭框传入的是列下标）
+function dataChange(data: Array<string | number>): void {
+  columnList.value.forEach((col, index) => {
+    col.visible = !data.includes(index)
+  })
   saveStorage()
 }
 
@@ -130,50 +129,28 @@ if (props.storageKey) {
   try {
     const saved = cache.local.getJSON(props.storageKey)
     if (saved && typeof saved === 'object') {
-      if (Array.isArray(props.columns)) {
-        props.columns.forEach((col: TableShowColumns, index: number) => {
-          if (saved[index] !== undefined)
-            col.visible = saved[index]
-        })
-      }
-      else {
-        Object.keys(props.columns).forEach((key) => {
-          if (saved[key] !== undefined)
-            props.columns[key].visible = saved[key]
-        })
-      }
+      columnList.value.forEach((col, index) => {
+        const key = columnKeys.value[index]
+        if (saved[key] !== undefined)
+          col.visible = saved[key]
+      })
     }
   }
   catch (e) {}
 }
-if (props.showColumnsType == 'transfer') {
-  // transfer穿梭显隐列初始默认隐藏列
-  if (Array.isArray(props.columns)) {
-    for (const item in props.columns) {
-      if (props.columns[item].visible === false) {
-        value.value.push(parseInt(item))
-      }
-    }
-  }
-  else {
-    Object.keys(props.columns).forEach((key, index) => {
-      if (props.columns[key].visible === false) {
-        value.value.push(index)
-      }
-    })
-  }
+if (props.showColumnsType === 'transfer') {
+  // transfer 穿梭显隐列初始默认隐藏列
+  columnList.value.forEach((col, index) => {
+    if (col.visible === false)
+      value.value.push(index)
+  })
 }
 
 // 单勾选
-function checkboxChange(event: boolean, key: string): void {
-  if (Array.isArray(props.columns)) {
-    const col = props.columns.filter((item: any) => item.key == key)[0]
-    if (col) {
-      col.visible = event
-    }
-  }
-  else {
-    props.columns[key].visible = event
+function checkboxChange(event: CheckboxValueType, key: string | number): void {
+  const col = columnList.value[columnKeys.value.indexOf(String(key))]
+  if (col) {
+    col.visible = event === true
   }
   saveStorage()
 }
@@ -181,12 +158,9 @@ function checkboxChange(event: boolean, key: string): void {
 // 切换全选/反选
 function toggleCheckAll(): void {
   const newValue = !isChecked.value
-  if (Array.isArray(props.columns)) {
-    props.columns.forEach((col: TableShowColumns) => (col.visible = newValue))
-  }
-  else {
-    Object.values(props.columns).forEach(col => ((col as TableShowColumns).visible = newValue))
-  }
+  columnList.value.forEach((col) => {
+    col.visible = newValue
+  })
   saveStorage()
 }
 
@@ -195,13 +169,10 @@ function saveStorage(): void {
   if (!props.storageKey)
     return
   try {
-    const state: { [key: string]: boolean } = {}
-    if (Array.isArray(props.columns)) {
-      props.columns.forEach((col: TableShowColumns, index: number) => { state[index] = col.visible })
-    }
-    else {
-      Object.keys(props.columns).forEach((key) => { state[key] = props.columns[key].visible })
-    }
+    const state: Record<string, boolean> = {}
+    columnList.value.forEach((col, index) => {
+      state[columnKeys.value[index]] = col.visible
+    })
     cache.local.setJSON(props.storageKey, state)
   }
   catch (e) {}
@@ -217,7 +188,7 @@ function saveStorage(): void {
       <el-tooltip class="item" effect="dark" content="刷新" placement="top">
         <el-button circle icon="Refresh" @click="refresh()" />
       </el-tooltip>
-      <el-tooltip v-if="Object.keys(columns).length > 0" class="item" effect="dark" content="显隐列" placement="top">
+      <el-tooltip v-if="columnList.length > 0" class="item" effect="dark" content="显隐列" placement="top">
         <el-button v-if="showColumnsType == 'transfer'" circle icon="Menu" @click="showColumn()" />
         <el-dropdown v-if="showColumnsType == 'checkbox'" trigger="click" :hide-on-click="false" style="padding-left: 12px">
           <el-button circle icon="Menu" />
@@ -230,7 +201,7 @@ function saveStorage(): void {
                 </el-checkbox>
               </el-dropdown-item>
               <div class="check-line" />
-              <template v-for="(item, key) in columns" :key="item.key">
+              <template v-for="(item, key) in columnList" :key="key">
                 <el-dropdown-item>
                   <el-checkbox v-model="item.visible" :label="item.label" @change="checkboxChange($event, key)" />
                 </el-dropdown-item>

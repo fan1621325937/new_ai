@@ -1,12 +1,11 @@
 <script setup lang="ts">
+import type { UploadFile, UploadInstance, UploadUserFile } from 'element-plus'
 import type { UploadFileResult } from '@/types/api/common'
 import Sortable from 'sortablejs'
 import { getToken } from '@/utils/auth'
 import { isExternal } from '@/utils/validate'
 
-interface UploadImageItem {
-  uid?: number | string
-  name: string
+interface UploadImageItem extends UploadUserFile {
   url: string
 }
 
@@ -53,8 +52,12 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits()
-const { proxy } = getCurrentInstance()
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: string): void
+}>()
+const proxy = useGlobalProxy()
+// 模板 ref：el-upload 实例（失败时需调用 handleRemove 回退文件列表）
+const imageUpload = ref<UploadInstance>()
 const number = ref(0)
 const uploadList = ref<UploadImageItem[]>([])
 const dialogImageUrl = ref('')
@@ -135,7 +138,7 @@ function handleExceed(): void {
 }
 
 // 上传成功回调
-function handleUploadSuccess(res: UploadFileResult, file: any): void {
+function handleUploadSuccess(res: UploadFileResult, file: UploadFile): void {
   if (res.code === 200) {
     uploadList.value.push({ name: res.fileName, url: res.fileName })
     uploadedSuccessfully()
@@ -144,7 +147,7 @@ function handleUploadSuccess(res: UploadFileResult, file: any): void {
     number.value--
     proxy.$modal.closeLoading()
     proxy.$modal.msgError(res.msg)
-    proxy.$refs.imageUpload.handleRemove(file)
+    imageUpload.value?.handleRemove(file)
     uploadedSuccessfully()
   }
 }
@@ -199,10 +202,10 @@ function listToString(list: UploadImageItem[], separator?: string): string {
 onMounted(() => {
   if (props.drag && !props.disabled) {
     nextTick(() => {
-      const element = proxy.$refs.imageUpload?.$el?.querySelector('.el-upload-list') as HTMLElement
+      const element = imageUpload.value?.$el?.querySelector('.el-upload-list') as HTMLElement
       if (element) {
         Sortable.create(element, {
-          onEnd: (evt: any) => {
+          onEnd: (evt) => {
             const movedItem = fileList.value.splice(evt.oldIndex, 1)[0]
             fileList.value.splice(evt.newIndex, 0, movedItem)
             emit('update:modelValue', listToString(fileList.value))

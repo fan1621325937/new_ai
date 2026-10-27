@@ -21,16 +21,27 @@
 </template>
 
 <script setup lang="ts">
-const open = defineModel()
+import type { FormInstance, FormRules } from 'element-plus'
+
+const open = defineModel<boolean>({ default: false })
 const props = defineProps({
   showFileName: Boolean
 })
-const emit = defineEmits(['confirm'])
-const formData = ref({
+const emit = defineEmits<{
+  (e: 'confirm', data: CodeTypeForm): void
+}>()
+
+/** 生成类型表单 */
+interface CodeTypeForm {
+  fileName?: string
+  type: string
+}
+
+const formData = ref<CodeTypeForm>({
   fileName: undefined,
   type: 'file'
 })
-const codeTypeForm = ref()
+const codeTypeForm = ref<FormInstance>()
 const rules = {
   fileName: [{
     required: true,
@@ -42,7 +53,7 @@ const rules = {
     message: '生成类型不能为空',
     trigger: 'change'
   }]
-}
+} as FormRules
 const typeOptions = ref([
   {
     label: '页面',

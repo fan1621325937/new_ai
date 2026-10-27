@@ -4,7 +4,7 @@
  * 职责：定时步进滚动、RAF 平滑动画、悬停暂停、手动交互后自动重启、
  * 页面可见性恢复、容器尺寸监听、prefers-reduced-motion 降级。
  */
-import type { Ref } from 'vue'
+import type { CSSProperties, Ref } from 'vue'
 import type { AutoScrollEngineProps } from './types'
 import { useDebounceFn, useDocumentVisibility, useEventListener, useMediaQuery, useResizeObserver } from '@vueuse/core'
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
@@ -40,7 +40,7 @@ export function useAutoScroll(props: AutoScrollEngineProps, containerRef: Ref<HT
     'auto-scroll--hide-scrollbar': props.scrollbarShowOnHover && !isHover.value,
   }))
 
-  const containerStyle = computed(() => {
+  const containerStyle = computed<CSSProperties>(() => {
     const height = effectiveContainerHeight.value
     const width = effectiveContainerWidth.value
     return {
@@ -52,13 +52,13 @@ export function useAutoScroll(props: AutoScrollEngineProps, containerRef: Ref<HT
     }
   })
 
-  const scrollListStyle = computed(() => ({
+  const scrollListStyle = computed<CSSProperties>(() => ({
     display: props.fadeInOut ? 'flex' : 'block',
     flexDirection: props.horizontal ? ('row' as const) : ('column' as const),
     opacity: props.fadeInOut ? (isHover.value ? 1 : 0.5) : 1,
   }))
 
-  const itemStyle = computed(() => {
+  const itemStyle = computed<CSSProperties>(() => {
     const h = effectiveStepHeight.value
     const w = effectiveStepWidth.value
     return {

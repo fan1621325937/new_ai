@@ -8,6 +8,7 @@ export default function createAutoImport() {
       'pinia',
       {
         '@/utils/dict': ['useDict'],
+        '@/utils/proxy': ['useGlobalProxy'],
         '@/utils/ruoyi': ['selectDictLabel'],
       },
     ],

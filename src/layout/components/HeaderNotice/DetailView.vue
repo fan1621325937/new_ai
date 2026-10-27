@@ -7,8 +7,9 @@ const loading = ref<boolean>(false)
 const detail: Ref<SysNotice | null> = ref<SysNotice | null>(null)
 
 const isStatusNormal = computed<boolean>(() => {
-  const status = detail.value && detail.value.status
-  return status === '0' || status === 0
+  const status = detail.value?.status
+  // 后端 status 可能返回字符串或数字，统一按字符串比较
+  return status != null && String(status) === '0'
 })
 
 const hasContent = computed<boolean>(() => {
@@ -16,11 +17,11 @@ const hasContent = computed<boolean>(() => {
   return content != null && String(content).trim() !== ''
 })
 
-function open(payload: any) {
-  let id = null
-  let preset = null
+function open(payload: SysNotice | number | string | null): void {
+  let id: number | string | null = null
+  let preset: SysNotice | null = null
   if (payload != null && typeof payload === 'object') {
-    id = payload.noticeId
+    id = payload.noticeId ?? null
     if (payload.noticeContent != null) {
       preset = payload
     }
@@ -39,8 +40,9 @@ function open(payload: any) {
   }
   loading.value = true
   detail.value = null
-  getNotice(id).then((res) => {
-    detail.value = res.data
+  // noticeId 在后端为数字主键，字符串形态（路由/列表透传）统一转数值
+  getNotice(Number(id)).then((res) => {
+    detail.value = res.data ?? null
   }).catch(() => {
     detail.value = null
   }).finally(() => {

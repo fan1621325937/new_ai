@@ -23,7 +23,7 @@ export function useUserForm(emitSuccess: () => void) {
       password: '',
       phonenumber: '',
       email: '',
-      sex: '',
+      sex: undefined,
       status: '0',
       remark: '',
       postIds: [],

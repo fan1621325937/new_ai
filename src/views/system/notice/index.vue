@@ -51,7 +51,7 @@
                plain
                icon="Edit"
                :disabled="single"
-               @click="handleUpdate"
+               @click="handleUpdate()"
                v-hasPermi="['system:notice:edit']"
             >修改</el-button>
          </el-col>
@@ -61,7 +61,7 @@
                plain
                icon="Delete"
                :disabled="multiple"
-               @click="handleDelete"
+               @click="handleDelete()"
                v-hasPermi="['system:notice:remove']"
             >删除</el-button>
          </el-col>
@@ -162,11 +162,16 @@
 
 <script setup lang="ts" name="Notice">
 import NoticeDetailView from "@/layout/components/HeaderNotice/DetailView.vue"
+import type { FormInstance } from 'element-plus'
 import ReadUsersDialog from "./ReadUsers.vue"
 import { listNotice, getNotice, delNotice, addNotice, updateNotice } from "@/api/system/notice"
 import type { SysNotice, NoticeQueryParams } from '@/types/api/system/notice'
 
-const { proxy } = getCurrentInstance()
+const noticeRef = ref<FormInstance | null>(null)
+const noticeViewRef = ref<InstanceType<typeof NoticeDetailView> | null>(null)
+const readUsersRef = ref<InstanceType<typeof ReadUsersDialog> | null>(null)
+
+const proxy = useGlobalProxy()
 const { sys_notice_status, sys_notice_type } = useDict("sys_notice_status", "sys_notice_type")
 
 const noticeList = ref<SysNotice[]>([])
@@ -179,8 +184,11 @@ const multiple = ref<boolean>(true)
 const total = ref<number>(0)
 const title = ref<string>("")
 
+/** 公告表单：比实体多一个已读标记，供查看/编辑复用 */
+type NoticeForm = SysNotice & { isRead: boolean }
+
 const data = reactive({
-  form: {} as SysNotice,
+  form: {} as NoticeForm,
   queryParams: {
     pageNum: 1,
     pageSize: 10,
@@ -219,7 +227,8 @@ function reset() {
     noticeTitle: undefined,
     noticeType: undefined,
     noticeContent: undefined,
-    status: "0"
+    status: "0",
+    isRead: false
   }
   proxy.resetForm("noticeRef")
 }
@@ -255,7 +264,7 @@ function handleUpdate(row?: SysNotice) {
   reset()
   const noticeId = row?.noticeId || ids.value[0]
   getNotice(noticeId).then(response => {
-    form.value = response.data!
+    form.value = (response.data ?? {}) as NoticeForm
     open.value = true
     title.value = "修改公告"
   })
@@ -263,7 +272,7 @@ function handleUpdate(row?: SysNotice) {
 
 /** 提交按钮 */
 function submitForm() {
-  proxy.$refs["noticeRef"].validate((valid: boolean) => {
+  noticeRef.value?.validate((valid: boolean) => {
     if (valid) {
       if (form.value.noticeId != undefined) {
         updateNotice(form.value).then(() => {
@@ -284,12 +293,12 @@ function submitForm() {
 
 /** 查看公告详情 */
 function handleViewData(row: SysNotice) {
-  proxy.$refs["noticeViewRef"].open(row)
+  noticeViewRef.value?.open(row)
 }
 
 /** 查看已读用户 */
 function handleReadUsers(row: SysNotice) {
-   proxy.$refs["readUsersRef"].open(row)
+  readUsersRef.value?.open(row)
 }
 
 /** 删除按钮操作 */

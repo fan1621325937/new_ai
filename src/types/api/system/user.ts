@@ -48,6 +48,10 @@ export interface SysUser extends BaseEntity {
   password?: string
   /** 账号状态（0正常 1停用） */
   status?: '0' | '1'
+  /** 最后登录IP */
+  loginIp?: string
+  /** 最后登录时间 */
+  loginDate?: string
   /** 部门对象 */
   dept?: SysDept
   /** 角色对象 */
@@ -102,6 +106,6 @@ export interface UserProfileAvatarResult extends AjaxResult {
 export interface UserAuthRoleResult extends AjaxResult {
   /** 用户信息 */
   user: SysUser
-  /** 角色列表 */
-  roles: SysRole[]
+  /** 角色列表，flag 标识用户是否已拥有该角色 */
+  roles: Array<SysRole & { flag?: boolean }>
 }

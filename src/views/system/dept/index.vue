@@ -32,7 +32,7 @@
                type="primary"
                plain
                icon="Plus"
-               @click="handleAdd"
+               @click="handleAdd()"
                v-hasPermi="['system:dept:add']"
             >新增</el-button>
          </el-col>
@@ -98,7 +98,7 @@
                      <el-tree-select
                         v-model="form.parentId"
                         :data="deptOptions"
-                        :props="{ value: 'deptId', label: 'deptName', children: 'children' }"
+                        :props="{ label: 'deptName', children: 'children' }"
                         value-key="deptId"
                         placeholder="选择上级部门"
                         check-strictly
@@ -157,8 +157,10 @@
 import { listDept, getDept, delDept, addDept, updateDept, updateDeptSort, listDeptExcludeChild } from "@/api/system/dept"
 import type { SysDept, DeptQueryParams } from '@/types/api/system/dept'
 import type { TreeSelect } from '@/types/api/common'
+import type { FormInstance, FormRules } from 'element-plus'
 
-const { proxy } = getCurrentInstance()
+const proxy = useGlobalProxy()
+const deptRef = ref<FormInstance | null>(null)
 const { sys_normal_disable } = useDict("sys_normal_disable")
 
 const deptList = ref<any[]>([])
@@ -183,7 +185,7 @@ const data = reactive({
     orderNum: [{ required: true, message: "显示排序不能为空", trigger: "blur" }],
     email: [{ type: "email", message: "请输入正确的邮箱地址", trigger: ["blur", "change"] }],
     phone: [{ pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: "请输入正确的手机号码", trigger: "blur" }]
-  },
+  } as FormRules,
 })
 
 const { queryParams, form, rules } = toRefs(data)
@@ -192,7 +194,7 @@ const { queryParams, form, rules } = toRefs(data)
 function getList() {
   loading.value = true
   listDept(queryParams.value).then(response => {
-    deptList.value = proxy.handleTree(response.data, "deptId")
+    deptList.value = proxy.handleTree(response.data ?? [], "deptId")
     recordOriginalOrders(deptList.value)
     loading.value = false
   })
@@ -234,7 +236,7 @@ function resetQuery() {
 function handleAdd(row?: SysDept) {
   reset()
   listDept().then(response => {
-    deptOptions.value = proxy.handleTree(response.data, "deptId")
+    deptOptions.value = proxy.handleTree(response.data ?? [], "deptId")
   })
   if (row != undefined) {
     form.value.parentId = row.deptId
@@ -256,10 +258,10 @@ function toggleExpandAll() {
 function handleUpdate(row: SysDept) {
   reset()
   listDeptExcludeChild(row.deptId!).then(response => {
-    deptOptions.value = proxy.handleTree(response.data, "deptId")
+    deptOptions.value = proxy.handleTree(response.data ?? [], "deptId")
   })
   getDept(row.deptId!).then(response => {
-    form.value = response.data!
+    form.value = response.data ?? {}
     open.value = true
     title.value = "修改部门"
   })
@@ -267,7 +269,7 @@ function handleUpdate(row: SysDept) {
 
 /** 提交按钮 */
 function submitForm() {
-  proxy.$refs["deptRef"].validate((valid: boolean) => {
+  deptRef.value?.validate((valid: boolean) => {
     if (valid) {
       if (form.value.deptId != undefined) {
         updateDept(form.value).then(() => {
@@ -289,7 +291,7 @@ function submitForm() {
 /** 递归记录原始排序 */
 function recordOriginalOrders(list: SysDept[]) {
   list.forEach(item => {
-    originalOrders.value[item.deptId] = item.orderNum
+    originalOrders.value[item.deptId!] = item.orderNum ?? 0
     if (item.children && item.children.length) {
       recordOriginalOrders(item.children)
     }

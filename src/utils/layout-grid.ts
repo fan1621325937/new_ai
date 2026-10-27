@@ -1,16 +1,17 @@
 /**
- * 大屏自定义排版 · 20×20 格子几何引擎
+ * 大屏自定义排版 · 24×24 格子几何引擎
  *
  * 约定：
- * - 画布 CSS Grid：repeat(20, 1fr) × repeat(20, 1fr)
- * - 矩形 1-based：col/row ∈ [1,20]，span ≥1，且不越界
+ * - 画布 CSS Grid：repeat(24, 1fr) × repeat(24, 1fr)
+ * - 矩形 1-based：col/row ∈ [1,24]，span ≥1，且不越界
+ * - 24 可被 2/3/4 整除，便于二分、三等分、四分排列
  * - chartsKey 编码：`k-{col}-{row}-{colSpan}-{rowSpan}`
  *   接口仍只存 chartsKey + chartOrder，几何可从 key 还原
  */
 import type { GridRect, LayoutDetailDto } from '@/types/api/viscenter/layout'
 
-/** 逻辑格边长（20×20） */
-export const GRID_SIZE = 20
+/** 逻辑格边长（24×24，可被 2/3/4 整除） */
+export const GRID_SIZE = 24
 
 /** chartsKey 前缀 */
 export const CHARTS_KEY_PREFIX = 'k-'
@@ -129,6 +130,31 @@ export function pointerToCell(
   return {
     col: clampInt(col, 1, GRID_SIZE),
     row: clampInt(row, 1, GRID_SIZE),
+  }
+}
+
+/**
+ * 旧栅格 → 当前栅格的等比换算
+ * 按格子边界映射，保证原本相邻的卡片换算后仍然贴合、不重叠
+ */
+export function scaleRectToGrid(
+  rect: GridRect,
+  fromSize: number,
+  toSize: number = GRID_SIZE,
+): GridRect {
+  if (!fromSize || fromSize === toSize) {
+    return rect
+  }
+  const ratio = toSize / fromSize
+  const col1 = Math.round((rect.col - 1) * ratio) + 1
+  const col2 = Math.round((rect.col + rect.colSpan - 1) * ratio)
+  const row1 = Math.round((rect.row - 1) * ratio) + 1
+  const row2 = Math.round((rect.row + rect.rowSpan - 1) * ratio)
+  return {
+    col: col1,
+    row: row1,
+    colSpan: Math.max(1, col2 - col1 + 1),
+    rowSpan: Math.max(1, row2 - row1 + 1),
   }
 }
 

@@ -52,7 +52,7 @@
                plain
                icon="Edit"
                :disabled="single"
-               @click="handleUpdate"
+               @click="handleUpdate()"
                v-hasPermi="['monitor:job:edit']"
             >修改</el-button>
          </el-col>
@@ -62,7 +62,7 @@
                plain
                icon="Delete"
                :disabled="multiple"
-               @click="handleDelete"
+               @click="handleDelete()"
                v-hasPermi="['monitor:job:remove']"
             >删除</el-button>
          </el-col>
@@ -80,7 +80,7 @@
                type="info"
                plain
                icon="Operation"
-               @click="handleJobLog"
+               @click="handleJobLog()"
                v-hasPermi="['monitor:job:query']"
             >日志</el-button>
          </el-col>
@@ -239,13 +239,15 @@
 </template>
 
 <script setup lang="ts" name="Job">
+import type { FormInstance } from 'element-plus'
 import JobDetail from './detail.vue'
 import Crontab from '@/components/Crontab/index.vue'
 import { listJob, getJob, delJob, addJob, updateJob, runJob, changeJobStatus } from "@/api/monitor/job"
 import type { JobQueryParams, SysJob } from '@/types/api/monitor/job'
 
 const router = useRouter()
-const { proxy } = getCurrentInstance()
+const proxy = useGlobalProxy()
+const jobRef = ref<FormInstance | null>(null)
 const { sys_job_group, sys_job_status } = useDict("sys_job_group", "sys_job_status")
 
 const jobList = ref<SysJob[]>([])
@@ -370,8 +372,8 @@ function crontabFill(value: string) {
 }
 
 /** 任务日志列表查询 */
-function handleJobLog(row: SysJob) {
-  const jobId = row.jobId || 0
+function handleJobLog(row?: SysJob) {
+  const jobId = row?.jobId || ids.value[0] || 0
   router.push('/monitor/job-log/index/' + jobId)
 }
 
@@ -395,7 +397,7 @@ function handleUpdate(row?: SysJob) {
 
 /** 提交按钮 */
 function submitForm() {
-  proxy.$refs["jobRef"].validate((valid: boolean) => {
+  jobRef.value?.validate((valid: boolean) => {
     if (valid) {
       if (form.value.jobId != undefined) {
         updateJob(form.value).then(() => {

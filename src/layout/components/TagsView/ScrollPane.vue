@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ComponentPublicInstance } from 'vue'
 import useTagsViewStore from '@/store/modules/tagsView'
 
 const emits = defineEmits<{
@@ -6,9 +7,10 @@ const emits = defineEmits<{
   (e: 'updateArrows'): void
 }>()
 const tagAndTagSpacing = ref<number>(4)
-const { proxy } = getCurrentInstance()
+// 模板 ref：滚动容器（el-scrollbar 实例）；组件已挂载后必然存在，故直接断言为非空
+const scrollContainer = ref<ComponentPublicInstance | null>(null)
 
-const scrollWrapper = computed(() => proxy.$refs.scrollContainer.$refs.wrapRef)
+const scrollWrapper = computed(() => (scrollContainer.value?.$refs.wrapRef ?? null) as HTMLElement)
 
 onMounted(() => {
   scrollWrapper.value.addEventListener('scroll', emitScroll, true)
@@ -66,7 +68,7 @@ const tagsViewStore = useTagsViewStore()
 const visitedViews = computed(() => tagsViewStore.visitedViews)
 
 function moveToTarget(currentTag: any): void {
-  const $container = proxy.$refs.scrollContainer.$el
+  const $container = scrollContainer.value?.$el as HTMLElement
   const $containerWidth = $container.offsetWidth
   const $scrollWrapper = scrollWrapper.value
 

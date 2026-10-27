@@ -18,7 +18,8 @@ export interface RoleQueryParams extends PageDomain {
 /** 批量授权用户参数 */
 export interface AuthUserSelectParams {
   roleId: number
-  userIds: number[]
+  /** 用户编号，多个以英文逗号分隔（RuoYi 后端按有序数组接收，不能传数组） */
+  userIds: string
 }
 
 /** 用户和角色关联信息 */
@@ -33,8 +34,8 @@ export interface SysUserRole {
 export interface SysUserRoles {
   /** 用户编号 */
   userId?: number
-  /** 角色编号组 */
-  roleIds?: number[]
+  /** 角色编号组，多个以英文逗号分隔（RuoYi 后端按有序数组接收，不能传数组） */
+  roleIds?: string
 }
 
 /** 角色信息 */

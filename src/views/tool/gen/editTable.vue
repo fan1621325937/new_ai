@@ -122,6 +122,8 @@
 </template>
 
 <script setup lang="ts" name="GenEdit">
+import type { ComponentPublicInstance } from 'vue'
+import type { FormInstance } from 'element-plus'
 import { getGenTable, updateGenTable } from "@/api/tool/gen"
 import { optionselect as getDictOptionselect } from "@/api/system/dict/type"
 import type { GenTableInfoResult } from '@/types/api/tool/gen'
@@ -130,7 +132,9 @@ import GenInfoForm from "./genInfoForm.vue"
 import Sortable from 'sortablejs'
 
 const route = useRoute()
-const { proxy } = getCurrentInstance()
+const proxy = useGlobalProxy()
+const basicInfo = ref<InstanceType<typeof BasicInfoForm> | null>(null)
+const genInfo = ref<InstanceType<typeof GenInfoForm> | null>(null)
 
 const activeName = ref<string>("columnInfo")
 const tableHeight = ref<string>(document.documentElement.scrollHeight - 245 + "px")
@@ -139,10 +143,16 @@ const columns = ref<any[]>([])
 const dictOptions = ref<any[]>([])
 const info = ref<Record<string, any>>({})
 
+/** 取子组件内部表单实例，供统一校验 */
+function getChildForm(instance: ComponentPublicInstance | null, key: string): FormInstance | undefined {
+  const refs = instance?.$refs as Record<string, unknown> | undefined
+  return refs?.[key] as FormInstance | undefined
+}
+
 /** 提交按钮 */
 function submitForm(): void {
-  const basicForm = proxy.$refs.basicInfo.$refs.basicInfoForm
-  const genForm = proxy.$refs.genInfo.$refs.genInfoForm
+  const basicForm = getChildForm(basicInfo.value, 'basicInfoForm')
+  const genForm = getChildForm(genInfo.value, 'genInfoForm')
   Promise.all([basicForm, genForm].map(getFormPromise)).then(res => {
     const validateResult = res.every(item => !!item)
     if (validateResult) {
@@ -167,8 +177,12 @@ function submitForm(): void {
   })
 }
 
-function getFormPromise(form: any): Promise<boolean> {
+function getFormPromise(form?: FormInstance): Promise<boolean> {
   return new Promise(resolve => {
+    if (!form) {
+      resolve(false)
+      return
+    }
     form.validate((res: boolean) => {
       resolve(res)
     })
@@ -192,7 +206,7 @@ function close(): void {
     })
     /** 查询字典下拉列表 */
     getDictOptionselect().then(response => {
-      dictOptions.value = response.data
+      dictOptions.value = response.data ?? []
     })
   }
 })()

@@ -37,6 +37,13 @@ function onUpdate(val: unknown) {
   emit('update:modelValue', val)
 }
 
+const currentValue = computed(() => props.modelValue as string | number | boolean | undefined)
+
+/** 选项值：动态 schema 下由调用方保证是标量，此处仅做类型收窄 */
+function optionValue(opt: OptionItem): string | number | boolean {
+  return opt.value as string | number | boolean
+}
+
 function onChange(val: unknown) {
   emit('change', val)
 }
@@ -44,7 +51,7 @@ function onChange(val: unknown) {
 
 <template>
   <el-select
-    :model-value="modelValue"
+    :model-value="currentValue"
     :disabled="disabled"
     clearable
     class="w-full"
@@ -56,7 +63,7 @@ function onChange(val: unknown) {
       v-for="(opt, idx) in resolvedOptions"
       :key="`${idx}-${String(opt.value)}`"
       :label="opt.label"
-      :value="opt.value"
+      :value="optionValue(opt)"
       :disabled="opt.disabled"
     />
   </el-select>

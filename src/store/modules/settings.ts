@@ -63,7 +63,8 @@ const useSettingsStore = defineStore(
       changeSetting<K extends keyof SettingsState>(data: { key: K, value: SettingsState[K] }) {
         const { key, value } = data
         if (Object.hasOwn(this, key)) {
-          this[key] = value
+          // key 已限定为 state 字段；store 实例还包含 actions，故按 state 面赋值
+          (this as unknown as SettingsState)[key] = value
         }
       },
       // 设置网页标题

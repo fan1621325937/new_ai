@@ -70,8 +70,9 @@ function printableColumns(columns: AppTableColumn[]): AppTableColumn[] {
 }
 
 // ---- 打印 CSS 值白名单：localStorage 可能被篡改，禁止注入任意字符串进 <style> ----
-const FONT_FAMILY_SET = new Set(FONT_FAMILY_OPTIONS.map(o => o.value))
-const FONT_SIZE_SET = new Set(FONT_SIZE_OPTIONS.map(o => o.value))
+// 显式标注 Set<string>：选项常量推导出的字面量联合会让 Set.has(string) 无法通过类型检查
+const FONT_FAMILY_SET: Set<string> = new Set(FONT_FAMILY_OPTIONS.map(o => o.value))
+const FONT_SIZE_SET: Set<string> = new Set(FONT_SIZE_OPTIONS.map(o => o.value))
 const ALIGN_SET = new Set(['left', 'center', 'right'])
 const PAPER_SIZE_SET = new Set(['A4', 'A3'])
 const PAPER_DIR_SET = new Set(['portrait', 'landscape'])

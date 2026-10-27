@@ -1,8 +1,8 @@
-import type { AjaxResult, SysCache } from '@/types'
+import type { AjaxResult, CacheMonitorResult, SysCache } from '@/types'
 import request from '@/utils/request'
 
 // 查询缓存详细
-export function getCache(): Promise<AjaxResult<any>> {
+export function getCache(): Promise<CacheMonitorResult> {
   return request({
     url: '/monitor/cache',
     method: 'get',

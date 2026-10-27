@@ -5,7 +5,7 @@ import usePermissionStore from '@/store/modules/permission'
 import useSettingsStore from '@/store/modules/settings'
 import { useDynamicTitle } from '@/utils/dynamicTitle'
 
-const { proxy } = getCurrentInstance()
+const proxy = useGlobalProxy()
 const appStore = useAppStore()
 const settingsStore = useSettingsStore()
 const permissionStore = usePermissionStore()
@@ -40,7 +40,8 @@ function saveSetting(): void {
     themePreset: storeSettings.value.themePreset,
   }
   localStorage.setItem('layout-setting', JSON.stringify(layoutSetting))
-  setTimeout(proxy.$modal.closeLoading(), 1000)
+  // 关闭 loading 要延后执行，直接传调用结果会让它在 1000ms 前就先关掉
+  setTimeout(() => proxy.$modal.closeLoading(), 1000)
 }
 
 function resetSetting(): void {

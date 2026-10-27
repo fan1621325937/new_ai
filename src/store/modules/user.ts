@@ -65,7 +65,8 @@ const useUserStore = defineStore(
             this.name = user.userName || ''
             this.nickName = user.nickName || ''
             this.avatar = avatar
-            cache.session.set('pwrChrtype', res.pwdChrtype)
+            // 后端可能不返回密码限制类型，缺省按 '0'（仅屏蔽非法字符）处理
+            cache.session.set('pwrChrtype', res.pwdChrtype ?? '0')
             /* 初始密码提示 */
             if (res.isDefaultModifyPwd) {
               ElMessageBox.confirm('您的密码还是初始密码，请修改密码！', '安全提示', { confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning' }).then(() => {

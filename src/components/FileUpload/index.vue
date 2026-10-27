@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import type { UploadFile, UploadInstance, UploadUserFile } from 'element-plus'
+import type { ComponentPublicInstance } from 'vue'
 import type { UploadFileResult } from '@/types/api/common'
 import Sortable from 'sortablejs'
 import { getToken } from '@/utils/auth'
 
-interface UploadFileItem {
-  uid?: number | string
-  name: string
+interface UploadFileItem extends UploadUserFile {
   url: string
 }
 
@@ -52,10 +52,15 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits()
-const { proxy } = getCurrentInstance()
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: string): void
+}>()
+const proxy = useGlobalProxy()
 const number = ref(0)
 const uploadList = ref<UploadFileItem[]>([])
+// 模板 ref：el-upload 实例与拖拽排序容器
+const fileUpload = ref<UploadInstance>()
+const uploadFileList = ref<ComponentPublicInstance>()
 const baseUrl = import.meta.env.VITE_APP_BASE_API
 const uploadFileUrl = ref(import.meta.env.VITE_APP_BASE_API + props.action) // 上传文件服务器地址
 const headers = ref({ Authorization: `Bearer ${getToken()}` })
@@ -64,18 +69,16 @@ const showTip = computed(
   () => props.isShowTip && (props.fileType || props.fileSize),
 )
 
-watch(() => props.modelValue, (val: any) => {
+watch(() => props.modelValue, (val) => {
   if (val) {
     let temp = 1
-    // 首先将值转为数组
-    const list = Array.isArray(val) ? val : props.modelValue.split(',')
+    // 首先将值转为数组：字符串按逗号拆分，数组直接使用
+    const list: unknown[] = Array.isArray(val) ? val : String(val).split(',')
     // 然后将数组转为对象数组
-    fileList.value = list.map((item: any) => {
-      if (typeof item === 'string') {
-        item = { name: item, url: item }
-      }
-      item.uid = item.uid || Date.now() + temp++
-      return item
+    fileList.value = list.map((item) => {
+      const entry: UploadFileItem = typeof item === 'string' ? { name: item, url: item } : item as UploadFileItem
+      entry.uid = entry.uid || Date.now() + temp++
+      return entry
     })
   }
   else {
@@ -126,7 +129,7 @@ function handleUploadError(err: Error): void {
 }
 
 // 上传成功回调
-function handleUploadSuccess(res: UploadFileResult, file: any): void {
+function handleUploadSuccess(res: UploadFileResult, file: UploadFile): void {
   if (res.code === 200) {
     uploadList.value.push({ name: res.fileName, url: res.fileName })
     uploadedSuccessfully()
@@ -135,7 +138,7 @@ function handleUploadSuccess(res: UploadFileResult, file: any): void {
     number.value--
     proxy.$modal.closeLoading()
     proxy.$modal.msgError(res.msg)
-    proxy.$refs.fileUpload.handleRemove(file)
+    fileUpload.value?.handleRemove(file)
     uploadedSuccessfully()
   }
 }
@@ -184,7 +187,7 @@ function listToString(list: UploadFileItem[], separator?: string): string {
 onMounted(() => {
   if (props.drag && !props.disabled) {
     nextTick(() => {
-      const element = proxy.$refs.uploadFileList?.$el || proxy.$refs.uploadFileList as HTMLElement
+      const element = (uploadFileList.value?.$el ?? uploadFileList.value) as HTMLElement | undefined
       if (element) {
         Sortable.create(element, {
           ghostClass: 'file-upload-darg',

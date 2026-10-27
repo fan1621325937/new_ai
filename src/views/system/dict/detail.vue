@@ -4,8 +4,8 @@
     <template #header>
       <div class="drawer-head">
         <el-icon style="color:var(--el-color-primary);margin-right:8px;"><List /></el-icon>
-        <span class="drawer-head-name">{{ row.dictName }}</span>
-        <span class="drawer-head-type">{{ row.dictType }}</span>
+        <span class="drawer-head-name">{{ row?.dictName }}</span>
+        <span class="drawer-head-type">{{ row?.dictType }}</span>
       </div>
     </template>
 
@@ -50,7 +50,7 @@
           <div class="dict-cell">
             <div class="dict-cell-key">标签</div>
             <div class="dict-cell-val">
-              <el-tag v-if="item.listClass && item.listClass !== 'default'" :type="item.listClass === 'primary' ? undefined : item.listClass" size="small">{{ item.dictLabel }}</el-tag>
+              <el-tag v-if="item.listClass && item.listClass !== 'default'" :type="tagType(item.listClass)" size="small">{{ item.dictLabel }}</el-tag>
               <span v-else>{{ item.dictLabel }}</span>
             </div>
           </div>
@@ -76,12 +76,24 @@
 import { listData } from '@/api/system/dict/data'
 import type { SysDictData, SysDictType } from '@/types/api/system/dict'
 
-const props = defineProps({
-  visible: { type: Boolean, default: false },
-  row: { type: Object, default: () => ({}) }
-})
+const props = defineProps<{
+  visible: boolean
+  row: SysDictType | null
+}>()
 
-const emit = defineEmits(['update:visible'])
+defineEmits<{
+  (e: 'update:visible', val: boolean): void
+}>()
+
+/** el-tag 仅接受固定的语义色，字典里的 listClass 不可直接透传 */
+type TagType = 'primary' | 'success' | 'info' | 'warning' | 'danger'
+const TAG_TYPES: TagType[] = ['primary', 'success', 'info', 'warning', 'danger']
+
+function tagType(listClass?: string): TagType | undefined {
+  if (!listClass || listClass === 'primary')
+    return undefined
+  return TAG_TYPES.includes(listClass as TagType) ? (listClass as TagType) : undefined
+}
 
 const loading = ref<boolean>(false)
 const dataList = ref<SysDictData[]>([])

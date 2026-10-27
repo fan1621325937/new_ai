@@ -62,6 +62,8 @@ export interface TreeSelect {
   disabled: boolean
   /** 子节点 */
   children: TreeSelect[]
+  /** 其余业务字段（菜单、部门等各自的主键与名称） */
+  [key: string]: unknown
 }
 
 /** 显隐列信息 */

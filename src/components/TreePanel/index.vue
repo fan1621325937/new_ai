@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import type { TreeKey, TreeNodeData, TreeOptionProps } from 'element-plus'
+import type { ComponentInternalInstance, PropType } from 'vue'
+
 const props = defineProps({
   // 树形数据
   treeData: {
-    type: Array,
+    type: Array as PropType<TreeNodeData[]>,
     default: () => [],
   },
   // 标题
@@ -32,7 +35,7 @@ const props = defineProps({
   },
   // 树配置项
   treeProps: {
-    type: Object,
+    type: Object as PropType<TreeOptionProps>,
     default: () => ({
       children: 'children',
       label: 'label',
@@ -65,7 +68,7 @@ const props = defineProps({
   },
   // 默认展开的节点的key数组
   defaultExpandedKeys: {
-    type: Array,
+    type: Array as PropType<TreeKey[]>,
     default: () => [],
   },
   // 默认宽度
@@ -100,7 +103,7 @@ const props = defineProps({
   },
   // 自定义过滤方法
   filterMethod: {
-    type: Function,
+    type: Function as PropType<(value: string, data: TreeNodeData) => boolean>,
     default: null,
   },
 })
@@ -287,9 +290,9 @@ function handleRefresh(): void {
   emit('refresh')
 }
 
-// 节点点击事件
-function onNodeClick(data: any, node: any, e: Event): void {
-  emit('node-click', data, node, e)
+// 节点点击事件（EL 传入的第三个参数是节点实例，第四个才是原生事件）
+function onNodeClick(data: TreeNodeData, node: TreeNodeData, _nodeInstance: ComponentInternalInstance | null, evt: MouseEvent): void {
+  emit('node-click', data, node, evt)
 }
 
 // 复选框选中事件
@@ -298,13 +301,13 @@ function onCheck(data: any, checkedInfo: any): void {
 }
 
 // 节点展开事件
-function onNodeExpand(data: any, node: any, e: Event): void {
-  emit('node-expand', data, node, e)
+function onNodeExpand(data: TreeNodeData, node: TreeNodeData, nodeInstance: ComponentInternalInstance | null): void {
+  emit('node-expand', data, node, nodeInstance)
 }
 
 // 节点折叠事件
-function onNodeCollapse(data: any, node: any, e: Event): void {
-  emit('node-collapse', data, node, e)
+function onNodeCollapse(data: TreeNodeData, node: TreeNodeData, nodeInstance: ComponentInternalInstance | null): void {
+  emit('node-collapse', data, node, nodeInstance)
 }
 
 function setCurrentKey(key: string | number): void {

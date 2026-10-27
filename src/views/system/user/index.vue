@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { TreeSelect } from '@/types/api/common'
-import type { UserQueryParams } from '@/types/api/system/user'
-import { getCurrentInstance, onMounted, ref } from 'vue'
+import type { UserQueryParams, SysUser } from '@/types/api/system/user'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import ExcelImportDialog from '@/components/ExcelImportDialog/index.vue'
 import UserDeptTree from './components/UserDeptTree.vue'
@@ -14,7 +14,7 @@ import UserViewDrawer from './view.vue'
 defineOptions({ name: 'User' })
 
 const router = useRouter()
-const { proxy } = getCurrentInstance()!
+const proxy = useGlobalProxy()
 const { sys_normal_disable, sys_user_sex } = useDict('sys_normal_disable', 'sys_user_sex')
 
 const deptTreeRef = ref<InstanceType<typeof UserDeptTree>>()
@@ -49,6 +49,11 @@ function handleSearch(params: Partial<UserQueryParams>, dates: string[]): void {
   dateRange.value = dates
   queryParams.pageNum = 1
   getList()
+}
+
+/** 多选变化：同步选中用户编号 */
+function handleSelectionChange(selection: SysUser[]): void {
+  selectedUserIds.value = selection.map(it => it.userId).filter((id): id is number => typeof id === 'number')
 }
 
 function handleReset(): void {
@@ -90,7 +95,7 @@ onMounted(() => {
           @update="userFormDialogRef?.open($event?.userId || selectedUserIds[0])" @delete="handleDelete"
           @import="importUserRef?.open()" @view="userViewRef?.open($event.userId)"
           @reset-pwd="handleResetPwd" @auth-role="router.push(`/system/user-auth/role/${$event.userId}`)"
-          @status-change="handleStatusChange" @selection-change="selectedUserIds = $event.map((it) => it.userId!)"
+          @status-change="handleStatusChange" @selection-change="handleSelectionChange"
         />
       </template>
     </FormLayout>

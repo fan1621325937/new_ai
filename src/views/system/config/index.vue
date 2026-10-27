@@ -61,7 +61,7 @@
                plain
                icon="Edit"
                :disabled="single"
-               @click="handleUpdate"
+               @click="handleUpdate()"
                v-hasPermi="['system:config:edit']"
             >修改</el-button>
          </el-col>
@@ -71,7 +71,7 @@
                plain
                icon="Delete"
                :disabled="multiple"
-               @click="handleDelete"
+               @click="handleDelete()"
                v-hasPermi="['system:config:remove']"
             >删除</el-button>
          </el-col>
@@ -166,9 +166,11 @@
 
 <script setup lang="ts" name="Config">
 import type { SysConfig, ConfigQueryParams } from '@/types/api/system/config'
+import type { FormInstance } from 'element-plus'
 import { listConfig, getConfig, delConfig, addConfig, updateConfig, refreshCache } from "@/api/system/config"
 
-const { proxy } = getCurrentInstance()
+const proxy = useGlobalProxy()
+const configRef = ref<FormInstance | null>(null)
 const { sys_yes_no } = useDict("sys_yes_no")
 
 const configList = ref<SysConfig[]>([])
@@ -257,11 +259,11 @@ function handleAdd() {
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row: SysConfig) {
+function handleUpdate(row?: SysConfig) {
   reset()
-  const configId = row.configId || ids.value[0]
+  const configId = row?.configId || ids.value[0]
   getConfig(configId).then(response => {
-    form.value = response.data
+    form.value = response.data ?? {}
     open.value = true
     title.value = "修改参数"
   })
@@ -269,7 +271,7 @@ function handleUpdate(row: SysConfig) {
 
 /** 提交按钮 */
 function submitForm() {
-  proxy.$refs["configRef"].validate((valid: boolean) => {
+  configRef.value?.validate((valid: boolean) => {
     if (valid) {
       if (form.value.configId != undefined) {
         updateConfig(form.value).then(() => {
@@ -289,8 +291,8 @@ function submitForm() {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row: SysConfig) {
-  const configIds = row.configId || ids.value
+function handleDelete(row?: SysConfig) {
+  const configIds = row?.configId || ids.value
   proxy.$modal.confirm('是否确认删除参数编号为"' + configIds + '"的数据项？').then(function () {
     return delConfig(configIds)
   }).then(() => {

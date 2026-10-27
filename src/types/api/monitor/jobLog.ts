@@ -29,6 +29,10 @@ export interface SysJobLog extends BaseEntity {
   jobMessage?: string
   /** 异常信息 */
   exceptionInfo?: string
+  /** 开始时间 */
+  startTime?: string
+  /** 结束时间 */
+  endTime?: string
   /** 状态（0正常 1失败） */
   status?: '0' | '1'
 }

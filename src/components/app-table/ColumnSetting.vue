@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { CheckboxValueType } from 'element-plus'
 import type { AppTableColumn } from './types'
 import { Setting } from '@element-plus/icons-vue'
 import { computed, ref } from 'vue'
@@ -24,9 +25,9 @@ const toggleColumns = computed(() =>
   props.columns.filter(c => c.prop && (!c.type || c.type === 'default')),
 )
 
-function handleChange(col: AppTableColumn, show: boolean): void {
+function handleChange(col: AppTableColumn, show: CheckboxValueType): void {
   if (col.prop)
-    emits('visibleChange', col.prop, show)
+    emits('visibleChange', col.prop, show === true)
 }
 </script>
 

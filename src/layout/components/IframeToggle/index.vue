@@ -5,12 +5,13 @@ import InnerLink from '../InnerLink/index.vue'
 const route = useRoute()
 const tagsViewStore = useTagsViewStore()
 
-function iframeUrl(url: string, query: Record<string, any>): string {
+function iframeUrl(url: string | undefined, query: Record<string, any> = {}): string {
+  const target = url ?? ''
   if (Object.keys(query).length > 0) {
     const params = Object.keys(query).map(key => `${key}=${query[key]}`).join('&')
-    return `${url}?${params}`
+    return `${target}?${params}`
   }
-  return url
+  return target
 }
 </script>
 

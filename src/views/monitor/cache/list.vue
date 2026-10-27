@@ -158,20 +158,15 @@
 import { listCacheName, listCacheKey, getCacheValue, clearCacheName, clearCacheKey, clearCacheAll } from "@/api/monitor/cache"
 import type { SysCache } from '@/types/api/monitor/cache'
 
-interface CacheName {
-  cacheName: string
-  [key: string]: any
-}
-
 interface CacheForm {
   cacheName?: string
   cacheKey?: string
   cacheValue?: string
 }
 
-const { proxy } = getCurrentInstance()
+const proxy = useGlobalProxy()
 
-const cacheNames = ref<CacheName[]>([])
+const cacheNames = ref<SysCache[]>([])
 const cacheKeys = ref<string[]>([])
 const cacheForm = ref<CacheForm>({})
 const loading = ref<boolean>(true)
@@ -204,7 +199,7 @@ function handleClearCacheName(row: SysCache): void {
 
 /** 查询缓存键名列表 */
 function getCacheKeys(row?: SysCache): void {
-  const cacheName = row !== undefined ? row.cacheName : nowCacheName.value
+  const cacheName = (row !== undefined ? row.cacheName : nowCacheName.value) ?? ''
   if (cacheName === "") {
     return
   }

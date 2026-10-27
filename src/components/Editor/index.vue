@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { UploadFileResult } from '@/types/api/common'
 import { QuillEditor } from '@vueup/vue-quill'
-import axios from 'axios'
+import { uploadFile } from '@/api/common/upload'
 import { getToken } from '@/utils/auth'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
@@ -37,9 +37,15 @@ const props = defineProps({
   },
 })
 
-const { proxy } = getCurrentInstance()
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: string): void
+}>()
+
+const proxy = useGlobalProxy()
 
 const quillEditorRef = ref()
+/** 隐藏的图片上传触发器（点击它弹系统选图框） */
+const uploadRef = ref<HTMLElement | null>(null)
 const uploadUrl = ref(`${import.meta.env.VITE_APP_BASE_API}/common/upload`) // 上传的图片服务器地址
 const headers = ref({
   Authorization: `Bearer ${getToken()}`,
@@ -80,7 +86,7 @@ const styles = computed(() => {
 })
 
 const content = ref('')
-watch(() => props.modelValue, (v: string) => {
+watch(() => props.modelValue, (v: string | undefined) => {
   if (v !== content.value) {
     content.value = v == undefined ? '<p></p>' : v
   }
@@ -93,7 +99,7 @@ onMounted(() => {
     const toolbar = quill.getModule('toolbar')
     toolbar.addHandler('image', (value: boolean) => {
       if (value) {
-        proxy.$refs.uploadRef.click()
+        uploadRef.value?.click()
       }
       else {
         quill.format('image', false)
@@ -124,7 +130,7 @@ function handleBeforeUpload(file: File) {
 }
 
 // 上传成功处理
-function handleUploadSuccess(res: UploadFileResult, file: File) {
+function handleUploadSuccess(res: UploadFileResult) {
   // 如果上传成功
   if (res.code == 200) {
     // 获取富文本实例
@@ -146,6 +152,11 @@ function handleUploadError() {
   proxy.$modal.msgError('图片插入失败')
 }
 
+// 内容变化 → 同步给 v-model
+function handleTextChange() {
+  emit('update:modelValue', content.value)
+}
+
 // 复制粘贴图片处理
 function handlePasteCapture(e: ClipboardEvent) {
   const clipboard = e.clipboardData || (window as any).clipboardData
@@ -162,10 +173,8 @@ function handlePasteCapture(e: ClipboardEvent) {
 }
 
 function insertImage(file: File) {
-  const formData = new FormData()
-  formData.append('file', file)
-  axios.post(uploadUrl.value, formData, { headers: { 'Content-Type': 'multipart/form-data', 'Authorization': headers.value.Authorization } }).then((res: { data: UploadFileResult }) => {
-    handleUploadSuccess(res.data as UploadFileResult, file)
+  uploadFile(file).then((res) => {
+    handleUploadSuccess(res)
   })
 }
 </script>
@@ -193,7 +202,7 @@ function insertImage(file: File) {
       content-type="html"
       :options="options"
       :style="styles"
-      @text-change="(e: any) => $emit('update:modelValue', content)"
+      @text-change="handleTextChange"
     />
   </div>
 </template>

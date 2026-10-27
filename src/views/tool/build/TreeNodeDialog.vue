@@ -32,9 +32,21 @@
   </div>
 </template>
 <script setup lang="ts">
-const open = defineModel()
-const emit = defineEmits(['confirm'])
-const formData = ref({
+import type { FormInstance } from 'element-plus'
+
+const open = defineModel<boolean>({ default: false })
+const emit = defineEmits<{
+  (e: 'commit', data: TreeNodeOption): void
+}>()
+
+/** 树节点选项 */
+interface TreeNodeOption {
+  id?: number
+  label?: string
+  value?: string | number
+}
+
+const formData = ref<TreeNodeOption>({
   label: undefined,
   value: undefined
 })
@@ -66,7 +78,7 @@ const dataTypeOptions = ref<any[]>([
   }
 ])
 const id = ref<number>(100)
-const treeNodeForm = ref<any>()
+const treeNodeForm = ref<FormInstance>()
 
 function onOpen(): void {
   formData.value = {

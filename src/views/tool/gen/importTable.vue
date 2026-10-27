@@ -26,7 +26,7 @@
       </el-form-item>
     </el-form>
     <el-row>
-      <el-table @row-click="clickRow" ref="table" :data="dbTableList" @selection-change="handleSelectionChange" height="260px">
+      <el-table @row-click="clickRow" ref="tableRef" :data="dbTableList" @selection-change="handleSelectionChange" height="260px">
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="tableName" label="表名称" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="tableComment" label="表描述" :show-overflow-tooltip="true"></el-table-column>
@@ -51,6 +51,7 @@
 </template>
 
 <script setup lang="ts">
+import type { TableInstance } from 'element-plus'
 import { listDbTable, importTable } from "@/api/tool/gen"
 import type { GenQueryParams, GenTable } from '@/types/api/tool/gen'
 
@@ -58,7 +59,8 @@ const total = ref<number>(0)
 const visible = ref<boolean>(false)
 const tables = ref<string[]>([])
 const dbTableList = ref<GenTable[]>([])
-const { proxy } = getCurrentInstance()
+const proxy = useGlobalProxy()
+const tableRef = ref<TableInstance | null>(null)
 
 const queryParams = reactive<GenQueryParams>({
   pageNum: 1,
@@ -77,12 +79,12 @@ function show(): void {
 
 /** 单击选择行 */
 function clickRow(row: GenTable) {
-  proxy.$refs.table.toggleRowSelection(row)
+  tableRef.value?.toggleRowSelection(row)
 }
 
 /** 多选框选中数据 */
 function handleSelectionChange(selection: GenTable[]) {
-  tables.value = selection.map(item => item.tableName)
+  tables.value = selection.map(item => item.tableName).filter((name): name is string => typeof name === 'string')
 }
 
 /** 查询表数据 */

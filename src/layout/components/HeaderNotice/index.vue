@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { TooltipTriggerType } from 'element-plus'
 import type { SysNotice } from '@/types/api/system/notice'
 import { listNoticeTop, markNoticeRead, markNoticeReadAll } from '@/api/system/notice'
 import NoticeDetailView from './DetailView.vue'
@@ -8,12 +9,17 @@ interface PopperElement extends HTMLElement {
 }
 
 const noticePopover = ref<InstanceType<typeof import('element-plus')['ElPopover']> | null>(null)
+const noticeViewRef = ref<InstanceType<typeof NoticeDetailView> | null>(null)
 const noticeList = ref<SysNotice[]>([])
 const unreadCount = ref<number>(0)
 const noticeLoading = ref<boolean>(false)
 const noticeVisible = ref<boolean>(false)
 const noticeLeaveTimer = ref<ReturnType<typeof setTimeout> | null>(null)
-const { proxy } = getCurrentInstance()
+/**
+ * el-popover 的 trigger 只接受 hover/click/focus/contextmenu；
+ * 本组件用 v-model:visible + 鼠标移入/移除完全受控，传 manual 可让它不绑定任何自动触发。
+ */
+const popoverTrigger = 'manual' as unknown as TooltipTriggerType
 
 // 加载顶部公告列表
 function loadNoticeTop(): void {
@@ -33,7 +39,7 @@ function onNoticeEnter(): void {
   clearTimeout(noticeLeaveTimer.value ?? undefined)
   noticeVisible.value = true
   nextTick(() => {
-    const popper = (noticePopover.value as any)?.popperRef?.contentRef as PopperElement | undefined
+    const popper = (noticePopover.value as unknown as { popperRef?: { contentRef?: PopperElement } } | null)?.popperRef?.contentRef
     if (popper && !popper._noticeBound) {
       popper._noticeBound = true
       popper.addEventListener('mouseenter', () => clearTimeout(noticeLeaveTimer.value ?? undefined))
@@ -58,7 +64,7 @@ function previewNotice(item: SysNotice): void {
       noticeList.value[idx] = { ...item, isRead: true }
     unreadCount.value = Math.max(0, unreadCount.value - 1)
   }
-  proxy.$refs.noticeViewRef.open(item.noticeId)
+  noticeViewRef.value?.open(item.noticeId ?? null)
 }
 
 // 全部已读
@@ -74,7 +80,7 @@ function markAllRead(): void {
 
 <template>
   <div>
-    <el-popover ref="noticePopover" v-model:visible="noticeVisible" placement="bottom-end" :width="320" trigger="manual" popper-class="notice-popover">
+    <el-popover ref="noticePopover" v-model:visible="noticeVisible" placement="bottom-end" :width="320" :trigger="popoverTrigger" popper-class="notice-popover">
       <!-- 弹出内容 -->
       <div class="notice-header">
         <span class="notice-title">通知公告</span>

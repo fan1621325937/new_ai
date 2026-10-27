@@ -17,11 +17,11 @@ watch(deptName, (val) => {
   treeRef.value?.filter(val)
 })
 
-function filterNode(value: string, data: TreeSelect): boolean {
+function filterNode(value: string, data: unknown): boolean {
   if (!value) {
     return true
   }
-  return data.label.includes(value)
+  return ((data as TreeSelect).label ?? '').includes(value)
 }
 
 function handleNodeClick(data: TreeSelect): void {
@@ -30,8 +30,9 @@ function handleNodeClick(data: TreeSelect): void {
 
 function getDeptTree(): void {
   deptTreeSelect().then((response) => {
-    deptOptions.value = response.data
-    emit('loaded', response.data)
+    const list = response.data ?? []
+    deptOptions.value = list
+    emit('loaded', list)
   })
 }
 
