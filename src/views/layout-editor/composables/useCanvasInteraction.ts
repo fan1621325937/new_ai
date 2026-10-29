@@ -3,10 +3,13 @@
  */
 import type { GridEditor } from './useGridEditor'
 import { ElMessage } from 'element-plus'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { onActivated, onBeforeUnmount, onDeactivated, onMounted } from 'vue'
 import { pointerToCell } from '@/utils/layout-grid'
 
-export function useCanvasInteraction(editor: GridEditor) {
+export function useCanvasInteraction(
+  editor: GridEditor,
+  getCanvasEl: () => HTMLElement | null = () => document.querySelector<HTMLElement>('[data-grid-canvas]'),
+) {
   function onCellDown(col: number, row: number): void {
     editor.beginSelect(col, row)
   }
@@ -19,10 +22,6 @@ export function useCanvasInteraction(editor: GridEditor) {
     if (editor.endDrag() === 'rejected') {
       ElMessage.warning('该区域不可放置（越界或与其他卡槽重叠）')
     }
-  }
-
-  function getCanvasEl(): HTMLElement | null {
-    return document.querySelector<HTMLElement>('[data-grid-canvas]')
   }
 
   /** 指针移出画布后仍要跟手（卡片拖拽未做 pointer capture） */
@@ -45,19 +44,25 @@ export function useCanvasInteraction(editor: GridEditor) {
     }
   }
 
-  onMounted(() => {
+  function attach(): void {
     window.addEventListener('pointermove', onWindowMove)
     window.addEventListener('pointerup', onWindowUp)
     window.addEventListener('pointercancel', onWindowUp)
     window.addEventListener('blur', onWindowUp)
-  })
+  }
 
-  onBeforeUnmount(() => {
+  function detach(): void {
+    onWindowUp()
     window.removeEventListener('pointermove', onWindowMove)
     window.removeEventListener('pointerup', onWindowUp)
     window.removeEventListener('pointercancel', onWindowUp)
     window.removeEventListener('blur', onWindowUp)
-  })
+  }
+
+  onMounted(attach)
+  onActivated(attach)
+  onDeactivated(detach)
+  onBeforeUnmount(detach)
 
   return { onCellDown, onCellMove, onCellUp }
 }

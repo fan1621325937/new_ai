@@ -1,4 +1,6 @@
-/** 路由信息 */
+import type { RouteRecordSingleView } from 'vue-router'
+
+/** 路由信息（菜单组件也使用此结构，component 在前端转换后为路由组件）。 */
 export interface RouterVo {
   /** 路由名字 */
   name?: string
@@ -8,8 +10,8 @@ export interface RouterVo {
   hidden?: boolean
   /** 重定向地址，当设置 noRedirect 的时候该路由在面包屑导航中不可被点击 */
   redirect?: string
-  /** 组件地址 */
-  component?: string
+  /** 后端组件地址，或前端已解析的组件 */
+  component?: string | RouteRecordSingleView['component']
   /** 路由参数：如 {"id": 1, "name": "ry"} */
   query?: string
   /** 当你一个路由下面的 children 声明的路由大于1个时，自动会变成嵌套的模式--如组件页面 */

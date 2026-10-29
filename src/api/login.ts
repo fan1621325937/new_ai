@@ -26,6 +26,7 @@ export function register(data: SysRegister): Promise<AjaxResult> {
     url: '/register',
     headers: {
       isToken: false,
+      repeatSubmit: false,
     },
     method: 'post',
     data,
@@ -41,7 +42,7 @@ export function getInfo(): Promise<UserInfoResult> {
 }
 
 // 退出方法
-export function logout() {
+export function logout(): Promise<AjaxResult> {
   return request({
     url: '/logout',
     method: 'post',

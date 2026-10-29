@@ -5,7 +5,6 @@
  * 主题切换会改 html 上的 CSS 变量，这里用 MutationObserver 监听
  * data-theme-* / style 变化后重新解析，使 option 跟随主题。
  */
-import { useEventListener, useMutationObserver } from '@vueuse/core'
 import { onBeforeUnmount, readonly, ref, shallowRef } from 'vue'
 
 /** 解析后的图表配色（均为真实 CSS color 值） */
@@ -43,55 +42,50 @@ const TOKEN_MAP: Record<keyof ChartColorTokens, string> = {
 }
 
 function readToken(style: CSSStyleDeclaration, name: string, fallback: string): string {
-  const val = style.getPropertyValue(name).trim()
-  return val || fallback
+  return style.getPropertyValue(name).trim() || style.getPropertyValue(fallback).trim() || style.color
 }
 
 function resolveFromDom(): ChartColorTokens {
   const style = getComputedStyle(document.documentElement)
   return {
-    text: readToken(style, TOKEN_MAP.text, '#e8eef8'),
-    text2: readToken(style, TOKEN_MAP.text2, '#a8b8d0'),
-    text3: readToken(style, TOKEN_MAP.text3, '#6e82a0'),
-    accent: readToken(style, TOKEN_MAP.accent, '#35bdfa'),
-    accentDeep: readToken(style, TOKEN_MAP.accentDeep, '#3b8ef5'),
-    danger: readToken(style, TOKEN_MAP.danger, '#e04b3a'),
-    bg: readToken(style, TOKEN_MAP.bg, '#12203a'),
-    border: readToken(style, TOKEN_MAP.border, '#243656'),
-    accentSoft: readToken(style, TOKEN_MAP.accentSoft, 'rgb(53 189 250 / 0.14)'),
+    text: readToken(style, TOKEN_MAP.text, '--app-text'),
+    text2: readToken(style, TOKEN_MAP.text2, '--app-text-secondary'),
+    text3: readToken(style, TOKEN_MAP.text3, '--app-text-muted'),
+    accent: readToken(style, TOKEN_MAP.accent, '--app-accent'),
+    accentDeep: readToken(style, TOKEN_MAP.accentDeep, '--app-accent'),
+    danger: readToken(style, TOKEN_MAP.danger, '--app-danger'),
+    bg: readToken(style, TOKEN_MAP.bg, '--app-bg-card'),
+    border: readToken(style, TOKEN_MAP.border, '--app-border'),
+    accentSoft: readToken(style, TOKEN_MAP.accentSoft, '--app-accent-soft'),
   }
 }
 
 // 模块级单例：多个图表共享一份解析结果，主题切换只算一次
 const colors = shallowRef<ChartColorTokens>(resolveFromDom())
 const refCount = ref(0)
-let observerStop: (() => void) | null = null
-let depth = 0
+let observer: MutationObserver | null = null
+let frame = 0
 
 function sync(): void {
   colors.value = resolveFromDom()
 }
 
 function ensureWatcher(): void {
-  if (observerStop)
+  if (observer)
     return
+  sync()
   // 主题引擎会改 html[data-theme-preset] / html[style] / classList(dark)
-  observerStop = useMutationObserver(
-    document.documentElement,
-    () => {
-      // 微批：一次主题切换会连改多个 style，合并到一帧后解析
-      depth += 1
-      if (depth === 1) {
-        requestAnimationFrame(() => {
-          depth = 0
-          sync()
-        })
-      }
-    },
-    { attributes: true, attributeFilter: ['class', 'style', 'data-theme-preset', 'data-theme-mode'] },
-  ).stop
-
-  useEventListener(window, 'resize', sync)
+  observer = new MutationObserver(() => {
+    // 微批：一次主题切换会连改多个 style，合并到一帧后解析
+    if (!frame) {
+      frame = requestAnimationFrame(() => {
+        frame = 0
+        sync()
+      })
+    }
+  })
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style', 'data-theme-preset', 'data-theme-mode'] })
+  window.addEventListener('resize', sync)
 }
 
 /**
@@ -104,9 +98,12 @@ export function useChartColors() {
 
   onBeforeUnmount(() => {
     refCount.value -= 1
-    if (refCount.value <= 0 && observerStop) {
-      observerStop()
-      observerStop = null
+    if (refCount.value <= 0) {
+      observer?.disconnect()
+      observer = null
+      cancelAnimationFrame(frame)
+      frame = 0
+      window.removeEventListener('resize', sync)
     }
   })
 

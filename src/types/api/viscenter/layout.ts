@@ -24,9 +24,8 @@ export type LayoutSystemId = number | string
 export type LayoutInfoId = number
 
 /**
- * 槽位键
- * - 旧固定槽：chart1~chart9
- * - 自定义排版：几何编码 `k-{col}-{row}-{colSpan}-{rowSpan}`
+ * 槽位键：chart1~chartN，N 为 `layout_info.json` 中的 slotNo
+ * 几何（col/row/colSpan/rowSpan）只存 json，不进入该字段
  */
 export type LayoutChartsKey = string
 
@@ -79,15 +78,41 @@ export type LayoutDetailResult = AjaxResult<LayoutDetailDto[]>
 /** 写操作通用结果 */
 export type LayoutWriteResult = AjaxResult<null | undefined | boolean>
 
-/**
- * GET /viscenter/layout/info/{id} 布局信息（预留，旧项目未启用）
- * 字段以联调为准
- */
+/** GET /viscenter/layout/info/{id} 布局模板。 */
 export interface LayoutInfo {
-  layoutInfoId?: LayoutInfoId
-  layoutName?: string
-  remark?: string
-  [key: string]: unknown
+  id: LayoutInfoId
+  name: string
+  chartsNum: number
+  json: string
+  createTime?: string
+  updateTime?: string
+}
+
+export interface LayoutInfoForm {
+  id?: LayoutInfoId
+  name: string
+  chartsNum: number
+  json: string
+}
+
+export interface LayoutInfoQuery {
+  name: string
+  pageNum: number
+  pageSize: number
+}
+
+export interface LayoutInfoPage {
+  list?: LayoutInfo[]
+  rows?: LayoutInfo[]
+  records?: LayoutInfo[]
+}
+
+export interface LayoutInfoListResult {
+  code: number
+  msg: string
+  list?: LayoutInfo[]
+  rows?: LayoutInfo[]
+  data?: LayoutInfo[] | LayoutInfoPage
 }
 
 export type LayoutInfoResult = AjaxResult<LayoutInfo>

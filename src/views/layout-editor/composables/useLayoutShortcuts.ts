@@ -1,7 +1,7 @@
 /**
  * 编辑态快捷键与离开拦截：Esc 取消、Delete/Backspace 删除、未保存拦截
  */
-import { onBeforeUnmount, onMounted } from 'vue'
+import { onActivated, onBeforeUnmount, onDeactivated, onMounted } from 'vue'
 
 export function useLayoutShortcuts(
   isDirty: () => boolean,
@@ -29,13 +29,18 @@ export function useLayoutShortcuts(
     e.returnValue = ''
   }
 
-  onMounted(() => {
+  function attach(): void {
     window.addEventListener('keydown', onKeydown)
     window.addEventListener('beforeunload', onBeforeUnload)
-  })
+  }
 
-  onBeforeUnmount(() => {
+  function detach(): void {
     window.removeEventListener('keydown', onKeydown)
     window.removeEventListener('beforeunload', onBeforeUnload)
-  })
+  }
+
+  onMounted(attach)
+  onActivated(attach)
+  onDeactivated(detach)
+  onBeforeUnmount(detach)
 }

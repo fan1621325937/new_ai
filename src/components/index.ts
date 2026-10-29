@@ -8,14 +8,13 @@
  * 4. 组件自身的 props/emits 类型定义在组件目录的 types.ts；跨组件复用的类型放 src/types/components/
  */
 import type { App, Component } from 'vue'
+import { defineAsyncComponent } from 'vue'
 
 import AppTable from './app-table/index.vue'
 import AppDialog from './AppDialog/index.vue'
 import AutoScroll from './auto-scroll/index.vue'
 import ChartBox from './chart-box/index.vue'
 import DictTag from './DictTag/index.vue'
-import ECharts from './echarts-view/index.vue'
-import Editor from './Editor/index.vue'
 import FileUpload from './FileUpload/index.vue'
 import FormLayout from './FormLayout/index.vue'
 import ImagePreview from './ImagePreview/index.vue'
@@ -35,12 +34,12 @@ export const GLOBAL_COMPONENTS: Record<string, Component> = {
   AppTable,
   // 图表外壳（标题栏 + 时间维度切换 + 内容插槽）
   ChartBox,
-  // ECharts 自适应画布（ResizeObserver 容器自适应 + option 深度同步）
-  ECharts,
+  // ECharts 自适应画布（ResizeObserver 容器自适应 + option 同步，首次使用加载）
+  'ECharts': defineAsyncComponent(() => import('./echarts-view/index.vue')),
   // 字典标签
   DictTag,
-  // 富文本编辑器
-  Editor,
+  // 富文本编辑器（首次使用加载）
+  'Editor': defineAsyncComponent(() => import('./Editor/index.vue')),
   // 文件上传
   FileUpload,
   // 多模态表单页面布局组件（支持上下收缩、左右收缩与复合嵌套布局）

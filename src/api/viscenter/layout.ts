@@ -15,6 +15,9 @@ import type {
   LayoutDetailDto,
   LayoutDetailQuery,
   LayoutDetailResult,
+  LayoutInfo,
+  LayoutInfoForm,
+  LayoutInfoListResult,
   LayoutInfoResult,
   LayoutWriteResult,
   SlotChartMap,
@@ -35,8 +38,9 @@ export function layoutDetailToSlotMap(rows: LayoutDetailDto[] | undefined | null
     return map
   }
   rows.forEach((row) => {
-    if (row?.chartsKey != null && row?.chartOrder != null) {
-      map[row.chartsKey] = `charts${row.chartOrder}`
+    const order = Number(row?.chartOrder)
+    if (/^chart[1-9]\d*$/.test(row?.chartsKey || '') && Number.isInteger(order) && order > 0) {
+      map[row.chartsKey] = `charts${order}`
     }
   })
   return map
@@ -45,11 +49,11 @@ export function layoutDetailToSlotMap(rows: LayoutDetailDto[] | undefined | null
 /**
  * 组件名 → chartOrder
  * 例：charts15 → 15
- * @remark 旧项目用正则取第一段数字；命名含多段数字时建议改为显式映射表
+ * @remark 只接受目录中的标准 chartsN 标识，拒绝混合字符串
  */
 export function componentNameToChartOrder(componentName: string): number {
-  const matched = componentName.match(/\d+/)
-  return matched ? Number(matched[0]) : 0
+  const matched = componentName.match(/^charts([1-9]\d*)$/)
+  return matched ? Number(matched[1]) : 0
 }
 
 // ---------------------------------------------------------------------------
@@ -155,4 +159,23 @@ export function getLayoutInfo(id: number | string): Promise<LayoutInfoResult> {
     url: `/viscenter/layout/info/${id}`,
     method: 'get',
   })
+}
+
+export async function listLayoutInfo(): Promise<LayoutInfo[]> {
+  const res = await request<LayoutInfoListResult>({ url: '/viscenter/layout/info/list', method: 'get' })
+  const data = res.data
+  const rows = res.list ?? res.rows ?? (Array.isArray(data) ? data : data?.list ?? data?.rows ?? data?.records)
+  return rows ?? []
+}
+
+export function addLayoutInfo(data: LayoutInfoForm): Promise<LayoutWriteResult> {
+  return request({ url: '/viscenter/layout/info/add', method: 'post', data })
+}
+
+export function editLayoutInfo(data: LayoutInfoForm & { id: number }): Promise<LayoutWriteResult> {
+  return request({ url: '/viscenter/layout/info/edit', method: 'post', data })
+}
+
+export function removeLayoutInfo(id: number): Promise<LayoutWriteResult> {
+  return request({ url: `/viscenter/layout/info/remove/${id}`, method: 'get' })
 }

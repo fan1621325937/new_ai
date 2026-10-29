@@ -5,7 +5,7 @@ import useSettingsStore from '@/store/modules/settings'
 import useUserStore from '@/store/modules/user'
 import { getToken } from '@/utils/auth'
 import { isRelogin } from '@/utils/request'
-import { isHttp, isPathMatch } from '@/utils/validate'
+import { isPathMatch } from '@/utils/validate'
 import router from './router'
 import 'nprogress/nprogress.css'
 
@@ -17,7 +17,7 @@ function isWhiteList(path: string): boolean {
   return whiteList.some((pattern: string) => isPathMatch(pattern, path))
 }
 
-router.beforeEach(async (to, from) => {
+router.beforeEach(async (to) => {
   NProgress.start()
   if (getToken()) {
     if (to.meta.title)
@@ -29,26 +29,24 @@ router.beforeEach(async (to, from) => {
     if (isWhiteList(to.path)) {
       return true
     }
-    if (useUserStore().roles.length === 0) {
+    if (useUserStore().roles.length === 0 || !usePermissionStore().routesReady) {
       isRelogin.show = true
       try {
         // 拉取user_info信息
         await useUserStore().getInfo()
-        isRelogin.show = false
-        // 根据roles权限生成可访问的路由
-        const accessRoutes = await usePermissionStore().generateRoutes()
-        accessRoutes.forEach((route: any) => {
-          if (!isHttp(route.path)) {
-            router.addRoute(route)
-          }
-        })
+        // 根据roles权限生成可访问的路由，统一由 store 注册与卸载
+        await usePermissionStore().generateRoutes()
         // 重新导航到目标路由，确保动态路由已注册
         return { ...to, replace: true }
       }
       catch (err) {
         await useUserStore().logOut()
         ElMessage.error(err instanceof Error ? err.message : '登录状态校验失败，请重新登录')
-        return { path: '/' }
+        return { path: '/login', query: { redirect: to.fullPath }, replace: true }
+      }
+      finally {
+        isRelogin.show = false
+        NProgress.done()
       }
     }
     return true

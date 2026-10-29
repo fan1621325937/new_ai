@@ -64,7 +64,7 @@ export const constantRoutes = [
     children: [
       {
         path: '/index',
-        component: () => import('@/views/index.vue'),
+        component: () => import('@/views/viscenter/dashboard/index.vue'),
         name: 'Index',
         meta: { title: '首页', icon: 'dashboard', affix: true },
       },
@@ -85,9 +85,35 @@ export const constantRoutes = [
     ],
   },
   {
+    path: '/dashboard-config',
+    component: Layout,
+    hidden: true,
+    meta: { title: '大屏配置', icon: 'dashboard' },
+    children: [
+      {
+        path: 'home-layout',
+        component: () => import('@/views/viscenter/home-layout/index.vue'),
+        name: 'DashboardHomeLayout',
+        meta: { title: '主页排版设置', icon: 'build', noCache: true },
+      },
+      {
+        path: 'system-diagram',
+        component: () => import('@/views/system/systemDiagram/index.vue'),
+        name: 'DashboardSystemDiagram',
+        meta: { title: '系统图表配置', icon: 'chart', noCache: true },
+      },
+      {
+        path: 'layout-management',
+        component: () => import('@/views/system/layoutManagement/index.vue'),
+        name: 'DashboardLayoutManagement',
+        meta: { title: '布局管理', icon: 'component', noCache: true },
+      },
+    ],
+  },
+  {
     path: '/layout-editor',
     component: Layout,
-    hidden: false,
+    hidden: true,
     children: [
       {
         path: 'index',

@@ -3,7 +3,7 @@
 ## 一、环境与命令
 
 ```bash
-npm install            # 安装依赖（本项目统一使用 npm）
+npm ci                 # 按已提交的 package-lock.json 安装固定依赖（统一使用 npm）
 npm run dev            # 开发服务：http://localhost:86（86 端口），代理 /dev-api → http://172.16.41.201:8889
 npm run build:prod     # 生产构建（产物 dist/，含 gzip）
 npm run build:stage    # 预发布构建
@@ -20,7 +20,7 @@ Node 版本：本地开发使用 Node 24，CI 使用 Node 22（LTS）。
 | `pre-commit` | 对暂存文件执行 `eslint --fix` + `stylelint --fix` | `.husky/pre-commit`、`lint-staged.config.js` |
 | `commit-msg` | 校验提交信息格式 | `commitlint.config.js` |
 
-注意：ESLint 治理范围由 `eslint.config.js` 的 `ignores` 统一决定（当前仅排除`views/system`、`views/monitor`、`views/tool`、`views/redirect`、`views/index.vue` 等若依存量页），lint-staged 不再重复过滤。
+注意：ESLint 治理范围由 `eslint.config.js` 的 `ignores` 统一决定（当前仅排除 `views/system` 下若依存量模块 config / dept / dict / menu / notice / post / role / user，以及 `views/monitor`、`views/tool`、`views/redirect`、`views/index.vue` 等存量页），lint-staged 不再重复过滤。
 
 ### 手动检查（提交前建议执行）
 
@@ -93,7 +93,9 @@ chore(tooling): 升级 ESLint 配置
 
 `.github/workflows/ci.yml`，触发时机：push / PR 到 `main`。
 
-步骤：`npm ci` → `npm run lint` → `npm run lint:style` → `npm run type-check`（非阻断基线）→ `npm run build:prod`
+步骤：`npm ci` → `npm run lint` → `npm run lint:style` → `npm run type-check`（强制门禁）→ `npm test` → `npm run build:prod`
+
+`package-lock.json` 纳入版本管理；新增依赖用 `npm install --save-exact` 更新依赖与锁文件。回归测试使用 Vitest 3.2.4、Vue Test Utils 2.4.6 和 jsdom 26.1.0，覆盖请求、权限、布局契约及组件交互。测试不得连接真实后端或修改共享业务数据。
 
 **本地必须通过 lint 与构建再提交**，CI 只是最后一道防线。
 

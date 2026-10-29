@@ -24,6 +24,7 @@ export function addUser(data: SysUser): Promise<AjaxResult> {
   return request({
     url: '/system/user',
     method: 'post',
+    headers: { repeatSubmit: false },
     data,
   })
 }
@@ -33,6 +34,7 @@ export function updateUser(data: SysUser): Promise<AjaxResult> {
   return request({
     url: '/system/user',
     method: 'put',
+    headers: { repeatSubmit: false },
     data,
   })
 }
@@ -54,6 +56,7 @@ export function resetUserPwd(userId: number, password: string): Promise<AjaxResu
   return request({
     url: '/system/user/resetPwd',
     method: 'put',
+    headers: { repeatSubmit: false },
     data,
   })
 }
@@ -84,6 +87,7 @@ export function updateUserProfile(data: SysUser): Promise<AjaxResult> {
   return request({
     url: '/system/user/profile',
     method: 'put',
+    headers: { repeatSubmit: false },
     data,
   })
 }
@@ -97,6 +101,7 @@ export function updateUserPwd(oldPassword: string, newPassword: string): Promise
   return request({
     url: '/system/user/profile/updatePwd',
     method: 'put',
+    headers: { repeatSubmit: false },
     data,
   })
 }

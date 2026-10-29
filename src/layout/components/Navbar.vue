@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ElMessageBox } from 'element-plus'
+import { useRoute, useRouter } from 'vue-router'
 import Breadcrumb from '@/components/Breadcrumb/index.vue'
 import Hamburger from '@/components/Hamburger/index.vue'
 import HeaderSearch from '@/components/HeaderSearch/index.vue'
@@ -17,6 +18,8 @@ const emits = defineEmits(['setLayout'])
 const appStore = useAppStore()
 const userStore = useUserStore()
 const settingsStore = useSettingsStore()
+const route = useRoute()
+const router = useRouter()
 
 const currentTime = ref('')
 const currentDate = ref('')
@@ -81,6 +84,14 @@ function logout(): void {
 function setLayout(): void {
   emits('setLayout')
 }
+
+function openCompose(): void {
+  if (route.name === 'Index') {
+    appStore.setComposeVisible(true)
+    return
+  }
+  void router.push('/index').then(() => appStore.setComposeVisible(true))
+}
 </script>
 
 <template>
@@ -108,6 +119,12 @@ function setLayout(): void {
 
           <el-tooltip content="布局大小" effect="dark" placement="bottom">
             <SizeSelect id="size-select" class="action-item" />
+          </el-tooltip>
+
+          <el-tooltip content="切换布局" effect="dark" placement="bottom">
+            <div id="compose-btn" class="action-item" @click="openCompose">
+              <svg-icon icon-class="templateSwitch" class-name="theme-icon" />
+            </div>
           </el-tooltip>
 
           <el-tooltip content="主题与布局设置" effect="dark" placement="bottom">

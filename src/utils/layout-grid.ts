@@ -5,33 +5,12 @@
  * - 画布 CSS Grid：repeat(24, 1fr) × repeat(24, 1fr)
  * - 矩形 1-based：col/row ∈ [1,24]，span ≥1，且不越界
  * - 24 可被 2/3/4 整除，便于二分、三等分、四分排列
- * - chartsKey 编码：`k-{col}-{row}-{colSpan}-{rowSpan}`
- *   接口仍只存 chartsKey + chartOrder，几何可从 key 还原
+ * - 卡槽几何持久化在后端 layout_info.json，图表绑定使用 chartN → chartsN
  */
-import type { GridRect, LayoutDetailDto } from '@/types/api/viscenter/layout'
+import type { GridRect } from '@/types/api/viscenter/layout'
 
 /** 逻辑格边长（24×24，可被 2/3/4 整除） */
 export const GRID_SIZE = 24
-
-/** chartsKey 前缀 */
-export const CHARTS_KEY_PREFIX = 'k-'
-
-export function encodeChartsKey(rect: GridRect): string {
-  return `${CHARTS_KEY_PREFIX}${rect.col}-${rect.row}-${rect.colSpan}-${rect.rowSpan}`
-}
-
-export function decodeChartsKey(key: string): GridRect | null {
-  if (!key?.startsWith(CHARTS_KEY_PREFIX)) {
-    return null
-  }
-  const parts = key.slice(CHARTS_KEY_PREFIX.length).split('-').map(Number)
-  if (parts.length !== 4 || parts.some(n => !Number.isInteger(n))) {
-    return null
-  }
-  const [col, row, colSpan, rowSpan] = parts
-  const rect = { col, row, colSpan, rowSpan }
-  return isValidRect(rect) ? rect : null
-}
 
 export function isValidRect(rect: GridRect): boolean {
   const { col, row, colSpan, rowSpan } = rect
@@ -160,21 +139,4 @@ export function scaleRectToGrid(
 
 function clampInt(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, Math.round(value)))
-}
-
-/**
- * 卡槽几何 → 接口明细（ECharts 放置阶段使用）
- * chartsKey 编码几何；chartOrder 由真实图表编号填入
- */
-export function slotRectsToDetails(
-  slots: Array<GridRect & { chartOrder: number }>,
-  ctx: { userId: number | string, layoutInfoId: number, systemId: number | string },
-): LayoutDetailDto[] {
-  return slots.map(slot => ({
-    userId: ctx.userId,
-    layoutInfoId: ctx.layoutInfoId,
-    systemId: ctx.systemId,
-    chartsKey: encodeChartsKey(slot),
-    chartOrder: slot.chartOrder,
-  }))
 }

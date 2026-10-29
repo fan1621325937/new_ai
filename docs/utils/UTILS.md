@@ -69,6 +69,12 @@
 | `dynamicTitle.ts` | `useDynamicTitle()` | 动态标题 |
 | `jsencrypt.ts` | `encrypt` / `decrypt` | 密码加解密 |
 | `request.ts` | 默认导出 axios 实例、`download` | 请求层，仅 `src/api` 可用 |
+| `repeat-submit.ts` | `createRepeatSubmitGuard()` | 防重复提交（请求层内部使用） |
+| `layout-grid.ts` | `GRID_SIZE`、`isValidRect`、`rectsOverlap`、`canPlace`、`normalizeRect`、`clampRect`、`ratioToCell`、`rectToGridArea`、`pointerToCell`、`scaleRectToGrid` | 大屏排版 24×24 格几何计算 |
+| `layout-serialization.ts` | `parseLayoutJson`、`serializeLayout`、`resolveDashboardLayout`、`mergeLayoutOptions`、`bindingsToDetails` | 布局 JSON ↔ 卡槽、旧模板回退、保存明细生成 |
+| `layout-store.ts` | 本地布局 CRUD | 仅 `/layout-editor` 独立编辑器使用，不参与大屏配置 |
+| `platform-charts.ts` | `getPlatformCharts` / `savePlatformCharts` / `resetPlatformCharts`、`PLATFORM_CHARTS_STORAGE_KEY`、`PLATFORM_CHARTS_UPDATED_EVENT` | 平台可选图表 localStorage 配置 |
+| `dashboard-chart-data.ts` | `isDashboardChartKey`、`toDashboardNumber`、`normalizeDashboardChartData`、`hasDashboardChartData`、`hasDashboardChartSeries`、`getDashboardChartOption` | 大屏图表数据归一化与 ECharts option 生成 |
 
 ## 三、用法示例
 

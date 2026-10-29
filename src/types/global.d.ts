@@ -64,8 +64,7 @@ declare module 'jsencrypt/bin/jsencrypt.min' {
   export default JSEncrypt
 }
 
-// axios
-declare module 'axios'
+// axios 使用依赖自带的原生类型；环境模块声明会覆盖其类型，禁止在此声明。
 
 // vue-quill
 declare module '@vueup/vue-quill'

@@ -1,10 +1,16 @@
 import { ElMessageBox } from 'element-plus'
+import { defineStore } from 'pinia'
 import { getInfo, login, logout } from '@/api/login'
 import defAva from '@/assets/images/profile.jpg'
 import cache from '@/plugins/cache'
 import router from '@/router'
 import { getToken, removeToken, setToken } from '@/utils/auth'
 import { isEmpty, isHttp } from '@/utils/validate'
+import { useDashboardStore } from './dashboard'
+import useDictStore from './dict'
+import usePermissionStore from './permission'
+import usePlatformStore from './platform'
+import useTagsViewStore from './tagsView'
 
 interface UserState {
   token: string | undefined
@@ -85,19 +91,33 @@ const useUserStore = defineStore(
           })
         })
       },
-      // 退出系统
-      logOut() {
-        return new Promise<void>((resolve, reject) => {
-          logout().then(() => {
-            this.token = ''
-            this.roles = []
-            this.permissions = []
-            removeToken()
-            resolve()
-          }).catch((error: any) => {
-            reject(error)
-          })
-        })
+      // 退出系统：服务端失败也必须完成本地退出，让现有调用方继续跳转登录页。
+      async logOut(): Promise<void> {
+        try {
+          await logout()
+        }
+        catch {
+          // 本地退出不代表服务端会话已注销，避免输出含认证头的原始错误。
+          console.warn('服务端注销失败，已退出本地会话')
+        }
+        finally {
+          this.token = ''
+          this.id = ''
+          this.name = ''
+          this.nickName = ''
+          this.avatar = ''
+          this.roles = []
+          this.permissions = []
+          removeToken()
+          usePermissionStore().resetRoutes()
+          useTagsViewStore().$reset()
+          useDictStore().cleanDict()
+          useDashboardStore().reset()
+          usePlatformStore().resetPlatform()
+          cache.local.remove('tags-view-visited')
+          cache.session.remove('pwrChrtype')
+          cache.session.remove('sessionObj')
+        }
       },
     },
   },

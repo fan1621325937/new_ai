@@ -1,13 +1,27 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { getMainPlatform, setMainPlatform, setType } from '@/api/menu'
+import cache from '@/plugins/cache'
 import router from '@/router'
+import useDictStore from './dict'
 import usePermissionStore from './permission'
+import useTagsViewStore from './tagsView'
+import useUserStore from './user'
 
 export const usePlatformStore = defineStore('platform', () => {
   const dictValue = ref<string | number>(localStorage.getItem('PLATFORM_CURRENT_ID') || 0)
   const mainPlatform = ref<string | number | null>(null)
   const isSwitching = ref(false)
+  let sessionVersion = 0
+
+  /** 退出时丢弃平台偏好及在途切换，避免下个用户继承旧上下文。 */
+  function resetPlatform(): void {
+    sessionVersion++
+    dictValue.value = 0
+    mainPlatform.value = null
+    isSwitching.value = false
+    cache.local.remove('PLATFORM_CURRENT_ID')
+  }
 
   /** 设置当前激活平台ID并持久化 */
   function setDictValue(val: string | number): void {
@@ -44,26 +58,47 @@ export const usePlatformStore = defineStore('platform', () => {
       return false
     isSwitching.value = true
     const previousId = dictValue.value
+    const version = sessionVersion
+    let contextChanged = false
+    let menusCommitted = false
     try {
-      const res = await setType(targetId)
-      if (res && res.code === 200) {
-        // 后端上下文切换成功后才落本地，避免切换失败时本地平台与后端不一致
-        setDictValue(targetId)
-        const permissionStore = usePermissionStore()
-        await permissionStore.generateRoutes()
-        // 导航到该系统的主页（已在首页时会抛重复导航，忽略即可）
-        await router.push('/').catch(() => {})
-        return true
-      }
-      return false
+      await setType(targetId)
+      if (version !== sessionVersion)
+        return false
+      contextChanged = true
+      // 后端上下文切换成功后清除旧视图（包括固定标签和 iframe）及平台相关字典。
+      useTagsViewStore().$reset()
+      useDictStore().cleanDict()
+      cache.local.remove('tags-view-visited')
+      await usePermissionStore().generateRoutes()
+      if (version !== sessionVersion)
+        return false
+      menusCommitted = true
+      // 后端上下文和新菜单都就绪才落本地；失败不能只回滚本地平台 ID。
+      setDictValue(targetId)
+      // 经公共重定向页进入主页，即使已在首页也重新挂载，避免沿用旧平台视图。
+      await router.replace('/redirect/index')
+      return true
     }
     catch (err) {
-      setDictValue(previousId)
       console.warn('切换平台失败:', err)
+      if (version === sessionVersion && contextChanged && !menusCommitted) {
+        try {
+          // generateRoutes 失败保留旧路由，必须同时恢复服务端上下文才可继续使用。
+          await setType(previousId)
+        }
+        catch (rollbackError) {
+          console.warn('平台上下文恢复失败，退出本地会话:', rollbackError)
+          await useUserStore().logOut()
+          await router.replace('/login').catch(error => console.warn('登录页跳转失败:', error))
+        }
+      }
+      // 已提交新菜单时保留新平台 ID，不因导航失败制造前后端上下文错配。
       return false
     }
     finally {
-      isSwitching.value = false
+      if (version === sessionVersion)
+        isSwitching.value = false
     }
   }
 
@@ -71,6 +106,7 @@ export const usePlatformStore = defineStore('platform', () => {
     dictValue,
     mainPlatform,
     isSwitching,
+    resetPlatform,
     setDictValue,
     fetchMainPlatform,
     updateMainPlatform,

@@ -65,14 +65,15 @@
 ## 5. 命名与代码风格
 
 - 组件目录/普通文件：`kebab-case`；组件名：`PascalCase`；变量/函数：`camelCase`；常量：`UPPER_SNAKE_CASE`
+  - 例外：`views/system/systemDiagram`、`views/system/layoutManagement` 必须与后端菜单 `component` 路径逐字一致，不得改成 kebab-case
 - 缩进 2 空格、单引号、无分号（由 ESLint 统一，交由 `npm run lint:fix`）
 - 类型放 `src/types/`（api 与目录同构）；组件私有类型放组件目录 `types.ts`
 - 提交信息：`type(scope): 中文描述`，type ∈ feat/fix/refactor/docs/style/test/chore/build/ci/perf/revert
 
 ## 6. 治理范围说明
 
-- ESLint **严格治理**：`src/api`、`src/components`、`src/directive`、`src/layout`、`src/plugins`、`src/router`、`src/store`、`src/types`、`src/utils`、`vite`，以及新页面（`views/demo`、`views/layout-editor`、`views/error`、`login.vue`、`register.vue`）
-- ESLint **暂不治理**：若依存量页面 `views/system`、`views/monitor`、`views/tool`、`views/redirect`、`views/index.vue`（后续随页面改造逐个收敛）
+- ESLint **严格治理**：`src/api`、`src/components`、`src/directive`、`src/layout`、`src/plugins`、`src/router`、`src/store`、`src/types`、`src/utils`、`vite`，以及新页面（`views/demo`、`views/layout-editor`、`views/error`、`views/system/systemDiagram`、`views/system/layoutManagement`、`login.vue`、`register.vue`）
+- ESLint **暂不治理**：若依存量页面 `views/system`（config / dept / dict / menu / notice / post / role / user）、`views/monitor`、`views/tool`、`views/redirect`、`views/index.vue`（后续随页面改造逐个收敛）
 - 类型检查：`npm run type-check` 已**全量 0 error**，CI 为**强制门禁**，新增错误直接阻断
 - 存量降级为 warn 的规则见 `eslint.config.js` 注释；新代码不得依赖这些放宽
 

@@ -14,6 +14,8 @@
     "type-check": "vue-tsc --noEmit",
     "lint:style": "stylelint \"src/**/*.{vue,scss,css}\"",
     "lint:style:fix": "stylelint \"src/**/*.{vue,scss,css}\" --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "prepare": "husky"
   },
   "dependencies": {
@@ -27,9 +29,11 @@
     "file-saver": "2.0.5",
     "fuse.js": "7.1.0",
     "gsap": "3.15.0",
+    "hls.js": "1.7.3",
     "js-beautify": "1.15.4",
     "js-cookie": "3.0.5",
     "jsencrypt": "3.3.2",
+    "mpegts.js": "1.8.2",
     "nprogress": "0.2.0",
     "pinia": "3.0.4",
     "vue": "3.5.42",
@@ -43,9 +47,11 @@
     "@commitlint/config-conventional": "^21.2.2",
     "@tailwindcss/vite": "^4.3.3",
     "@vitejs/plugin-vue": "5.2.4",
+    "@vue/test-utils": "2.4.6",
     "@vue/tsconfig": "0.5.1",
     "eslint": "^10.10.0",
     "husky": "^9.1.7",
+    "jsdom": "26.1.0",
     "lint-staged": "^17.5.1",
     "postcss-html": "^2.0.0",
     "sass-embedded": "1.97.2",
@@ -59,6 +65,7 @@
     "vite": "6.4.1",
     "vite-plugin-compression": "0.5.1",
     "vite-plugin-svg-icons": "2.0.1",
+    "vitest": "3.2.4",
     "vue-tsc": "2.1.10"
   },
   "overrides": {

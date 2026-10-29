@@ -4,20 +4,23 @@
 
 ## 环境要求
 
-- Node.js >= 18
+- Node.js 22.12+（CI 使用 Node 22，本地推荐 Node 24）
 - 后端服务 `http://172.16.41.201:8889`（`/dev-api` 代理，配置见 `vite.config.ts`）
 
 ## 快速开始
 
 ```bash
-# 安装依赖
-npm install
+# 按版本管理中的 package-lock.json 安装依赖
+npm ci
 
 # 启动开发服务（http://localhost:86）
 npm run dev
 
-# 类型检查（存量基线非 0）
+# 类型检查（全量 0 error 强制门禁）
 npm run type-check
+
+# 回归测试
+npm test
 
 # 生产构建
 npm run build:prod

@@ -33,5 +33,8 @@ jobs:
         # 类型错误已收敛为 0（含存量 views/system|monitor|tool），任何新增错误都会阻断 CI
         run: npm run type-check
 
+      - name: Regression Tests
+        run: npm test
+
       - name: Build
         run: npm run build:prod

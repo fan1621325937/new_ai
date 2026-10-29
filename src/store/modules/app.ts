@@ -11,6 +11,7 @@ interface AppState {
   sidebar: SidebarState
   device: string
   size: string
+  composeVisible: boolean
 }
 
 const useAppStore = defineStore(
@@ -24,6 +25,7 @@ const useAppStore = defineStore(
       },
       device: 'desktop',
       size: Cookies.get('size') || 'default',
+      composeVisible: false,
     }),
     actions: {
       toggleSideBar(withoutAnimation?: boolean) {
@@ -53,6 +55,9 @@ const useAppStore = defineStore(
       },
       toggleSideBarHide(status: boolean) {
         this.sidebar.hide = status
+      },
+      setComposeVisible(visible: boolean) {
+        this.composeVisible = visible
       },
     },
   },

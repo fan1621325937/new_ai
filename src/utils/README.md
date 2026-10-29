@@ -19,8 +19,11 @@
 | `jsencrypt.ts` | 密码加解密 |
 | `passwordRule.ts` | 密码强度规则 |
 | `scroll-to.ts` | 平滑滚动 |
-| `layout-grid.ts` | 大屏自定义排版 24×24 格几何：chartsKey 编解码、重叠检测、矩形规范化与旧栅格等比换算 |
-| `layout-store.ts` | 本地布局存取（localStorage）：预设+用户布局新建/保存/删除 |
+| `layout-grid.ts` | 大屏排版 24×24 格几何：重叠检测、矩形规范化/夹紧、指针换算、旧栅格等比换算 |
+| `layout-serialization.ts` | 布局 JSON 序列化/解析、旧模板回退、布局选项合并、槽位绑定转接口明细 |
+| `layout-store.ts` | 本地布局存取（localStorage）：仅服务独立 `/layout-editor` 页面 |
+| `platform-charts.ts` | 平台可选图表（localStorage `platformChartsConfig`）：默认值、归一化、写入通知 |
+| `dashboard-chart-data.ts` | 大屏图表数据归一化与 ECharts option 生成（14/16/18/21/23/24/37/40/44/52/53） |
 | `generator/` | 表单构建器（tool/build 使用）的历史代码，非通用工具 |
 
 ## 二、已挂载为全局方法（无需 import）

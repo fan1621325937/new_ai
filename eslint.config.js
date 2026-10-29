@@ -6,7 +6,8 @@ import antfu from '@antfu/eslint-config'
  * 治理范围说明：
  * - 严格治理：src 下公共层（api / components / directive / layout / plugins / router / store / types / utils）+ 新页面
  * - 已纳入新页面：src/views/demo、src/views/layout-editor、src/views/error、login.vue、register.vue
- * - 暂不治理：若依存量页面（system / monitor / tool / redirect / 首页）
+ * - 已纳入大屏页：src/views/system/systemDiagram、src/views/system/layoutManagement（与后端菜单路由一致）
+ * - 暂不治理：若依存量页面（system/config、dept、dict、menu、notice、post、role、user，以及 monitor / tool / redirect / 首页）
  *
  * 架构红线（error 级，防止生成代码污染工程）：
  * - 禁止直连 @/utils/request（必须先在 src/api 下封装接口）
@@ -34,7 +35,15 @@ export default antfu(
       // 独立浏览器测试页（自带主题令牌，非 Vue 工程源码）
       'test-pages/**',
       'auto-imports.d.ts',
-      'src/views/system/**',
+      // 仅忽略 system 下的若依存量模块；systemDiagram / layoutManagement 已按后端路由迁移完成，纳入治理
+      'src/views/system/config/**',
+      'src/views/system/dept/**',
+      'src/views/system/dict/**',
+      'src/views/system/menu/**',
+      'src/views/system/notice/**',
+      'src/views/system/post/**',
+      'src/views/system/role/**',
+      'src/views/system/user/**',
       'src/views/monitor/**',
       'src/views/tool/**',
       'src/views/redirect/**',
