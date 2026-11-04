@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue'
+import AppDialog from '@/components/AppDialog/index.vue'
 import useAppStore from '@/store/modules/app'
 import { useDashboardStore } from '@/store/modules/dashboard'
 import usePlatformStore from '@/store/modules/platform'
@@ -64,16 +65,51 @@ onBeforeUnmount(deactivate)
         开始排版
       </el-button>
     </el-empty>
-    <el-dialog v-model="appStore.composeVisible" title="主页排版设置" width="100%" top="5vh" append-to-body destroy-on-close class="dashboard-compose-dialog" :before-close="handleComposeClose">
+    <AppDialog
+      v-model="appStore.composeVisible"
+      title="主页排版设置"
+      type="primary"
+      width="96%"
+      top="3vh"
+      drag
+      destroy-on-close
+      class="dashboard-compose-dialog"
+      :before-close="handleComposeClose"
+    >
       <HomeLayout v-if="appStore.composeVisible" ref="homeLayoutRef" embedded />
-    </el-dialog>
+    </AppDialog>
   </div>
 </template>
 
 <style scoped lang="scss">
-.dashboard-page { position: relative; min-height: calc(100vh - 110px); }
-.dashboard-grid { display: grid; height: max(560px, calc(100vh - 110px)); grid-template: repeat(24, minmax(0, 1fr)) / repeat(24, minmax(0, 1fr)); gap: 6px; }
-.dashboard-empty { min-height: calc(100vh - 110px); }
-.dashboard-error { position: absolute; top: 18px; left: 50%; z-index: 10; width: min(640px, calc(100% - 40px)); transform: translateX(-50%); }
-:global(.dashboard-compose-dialog .el-dialog__body) { max-height: 78vh; overflow-y: auto; }
+.dashboard-page {
+  position: relative;
+  min-height: var(--dashboard-viewport-height, calc(100vh - 110px));
+}
+
+.dashboard-grid {
+  display: grid;
+  height: max(560px, var(--dashboard-viewport-height, calc(100vh - 110px)));
+  grid-template: repeat(24, minmax(0, 1fr)) / repeat(24, minmax(0, 1fr));
+  gap: 6px;
+  transition: height 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dashboard-empty {
+  min-height: var(--dashboard-viewport-height, calc(100vh - 110px));
+}
+
+.dashboard-error {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  z-index: 10;
+  width: min(640px, calc(100% - 40px));
+  transform: translateX(-50%);
+}
+
+:global(.dashboard-compose-dialog .el-dialog__body) {
+  max-height: 80vh;
+  overflow-y: auto;
+}
 </style>

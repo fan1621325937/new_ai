@@ -12,6 +12,7 @@ interface AppState {
   device: string
   size: string
   composeVisible: boolean
+  headerCollapsed: boolean
 }
 
 const useAppStore = defineStore(
@@ -26,6 +27,7 @@ const useAppStore = defineStore(
       device: 'desktop',
       size: Cookies.get('size') || 'default',
       composeVisible: false,
+      headerCollapsed: false,
     }),
     actions: {
       toggleSideBar(withoutAnimation?: boolean) {
@@ -58,6 +60,22 @@ const useAppStore = defineStore(
       },
       setComposeVisible(visible: boolean) {
         this.composeVisible = visible
+      },
+      toggleHeaderCollapse(collapsed?: boolean) {
+        this.headerCollapsed = collapsed !== undefined ? collapsed : !this.headerCollapsed
+        if (typeof window !== 'undefined') {
+          setTimeout(() => {
+            window.dispatchEvent(new Event('resize'))
+          }, 320)
+        }
+      },
+      setHeaderCollapse(collapsed: boolean) {
+        this.headerCollapsed = collapsed
+        if (typeof window !== 'undefined') {
+          setTimeout(() => {
+            window.dispatchEvent(new Event('resize'))
+          }, 320)
+        }
       },
     },
   },

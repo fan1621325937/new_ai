@@ -4,53 +4,93 @@ import { GRID_SIZE, rectToGridArea } from '@/utils/layout-grid'
 
 defineProps<{ options: DashboardLayout[], currentId: number | null, disabled: boolean }>()
 defineEmits<{ select: [id: number] }>()
-const gridStyle = { gridTemplateColumns: `repeat(${GRID_SIZE}, minmax(0, 1fr))`, gridTemplateRows: `repeat(${GRID_SIZE}, minmax(0, 1fr))` }
+const gridStyle = {
+  gridTemplateColumns: `repeat(${GRID_SIZE}, minmax(0, 1fr))`,
+  gridTemplateRows: `repeat(${GRID_SIZE}, minmax(0, 1fr))`,
+}
 </script>
 
 <template>
-  <section aria-label="选择主页布局" class="rounded-md border border-line bg-surface p-4">
-    <div class="mb-3 flex items-center justify-between gap-2">
-      <h3 class="m-0 text-base text-fg">
-        选择布局
-      </h3>
-      <span class="text-xs text-fg-muted">切换立即生效，图表编辑需另行保存</span>
+  <section aria-label="选择主页布局" class="mb-4 rounded-xl border border-[var(--app-border)] bg-[var(--app-bg-surface)] p-3 shadow-[var(--app-shadow-xs)]">
+    <div class="mb-2.5 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <h3 class="m-0 text-sm font-semibold text-[var(--app-text)]">
+          选择排版布局
+        </h3>
+        <span class="rounded bg-[var(--app-bg-subtle)] px-2 py-0.5 text-xs text-[var(--app-primary)]">
+          {{ options.length }} 种模板
+        </span>
+      </div>
+      <span class="text-xs text-[var(--app-text-muted)]">点击即刻切换当前画布，修改图表后请点击保存</span>
     </div>
-    <div v-if="options.length" class="flex gap-3 overflow-x-auto pb-2">
+
+    <div v-if="options.length" class="layout-picker-scroll flex gap-3 overflow-x-auto pb-1.5 pt-0.5">
       <button
-        v-for="item in options" :key="item.id" type="button" class="layout-option shrink-0 p-2 text-left"
-        :class="{ 'is-current': item.id === currentId }" :disabled="disabled"
-        :aria-pressed="item.id === currentId" :data-layout-id="item.id"
+        v-for="item in options"
+        :key="item.id"
+        type="button"
+        class="layout-card relative shrink-0 rounded-xl border border-[var(--app-border)] p-2.5 text-left transition-all duration-200"
+        :class="{ 'is-current': item.id === currentId }"
+        :disabled="disabled"
+        :aria-pressed="item.id === currentId"
+        :data-layout-id="item.id"
         @click="$emit('select', item.id)"
       >
-        <span class="grid24x24 mb-2 grid h-20 w-36 gap-0" :style="gridStyle" aria-hidden="true">
-          <span v-for="slot in item.slots" :key="slot.key" class="m-px rounded-sm bg-surface-subtle" :style="{ gridArea: rectToGridArea(slot) }" />
+        <span class="mini-grid mb-2 block h-16 w-32 overflow-hidden rounded-md border border-[var(--app-border-light)] bg-[var(--app-bg-subtle)] p-0.5" :style="gridStyle" aria-hidden="true">
+          <span
+            v-for="slot in item.slots"
+            :key="slot.key"
+            class="m-px rounded-[2px] bg-[var(--app-border-strong)] opacity-70 transition-colors"
+            :style="{ gridArea: rectToGridArea(slot) }"
+          />
         </span>
-        <span class="block max-w-36 truncate text-sm" :title="item.name">{{ item.name }}</span>
-        <span class="mt-1 block text-xs text-fg-muted">{{ item.source === 'json' ? '自定义' : '旧模板' }} · {{ item.slots.length }} 槽</span>
-        <span v-if="item.id === currentId" class="mt-1 block text-xs text-primary">当前布局</span>
+        <span class="block max-w-32 truncate text-xs font-semibold text-[var(--app-text)]" :title="item.name">{{ item.name }}</span>
+        <div class="mt-1 flex items-center justify-between text-[11px] text-[var(--app-text-muted)]">
+          <span>{{ item.slots.length }} 卡槽</span>
+          <span v-if="item.id === currentId" class="font-bold text-[var(--app-primary)]">当前使用</span>
+        </div>
+        <span v-if="item.id === currentId" class="active-badge absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--app-primary)] text-[10px] text-[var(--el-color-white)]">
+          ✓
+        </span>
       </button>
     </div>
-    <el-empty v-else description="暂无可选布局，请重试加载" :image-size="48" />
+    <el-empty v-else description="暂无可选布局" :image-size="48" />
   </section>
 </template>
 
 <style scoped lang="scss">
-.layout-option {
-  color: var(--app-text);
-  background: var(--app-bg-plain);
-  border: 1px solid var(--app-border);
-  border-radius: var(--app-radius-md);
-  cursor: pointer;
-  transition: border-color 150ms;
+.layout-card {
+  background-color: var(--app-bg-card);
 
-  &:hover:not(:disabled), &:focus-visible, &.is-current {
-    border-color: var(--app-accent);
-    outline-color: var(--app-accent);
+  &:hover:not(:disabled) {
+    border-color: var(--app-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--app-border-color-light);
+
+    .mini-grid span {
+      background-color: var(--app-primary);
+      opacity: 0.85;
+    }
+  }
+
+  &.is-current {
+    border-color: var(--app-primary);
+    background-color: var(--app-bg-active);
+    box-shadow: 0 0 0 1px var(--app-primary);
+
+    .mini-grid span {
+      background-color: var(--app-primary);
+      opacity: 1;
+    }
   }
 
   &:disabled {
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: 0.5;
   }
+}
+
+.layout-picker-scroll::-webkit-scrollbar {
+  height: 4px;
 }
 </style>

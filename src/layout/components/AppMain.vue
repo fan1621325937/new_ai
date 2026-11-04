@@ -49,14 +49,12 @@ function addIframe(): void {
   scrollbar-gutter: auto;
   height: calc(100vh - 50px);
   min-height: 0;
+  margin-top: 50px;
+  transition: margin-top 0.28s cubic-bezier(0.4, 0, 0.2, 1), height 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .app-main:has(.copyright) {
   padding-bottom: 36px;
-}
-
-.fixed-header + .app-main {
-  margin-top: 50px;
 }
 
 .hasTagsView {
@@ -69,6 +67,21 @@ function addIframe(): void {
     margin-top: 84px;
     height: calc(100vh - 84px);
     min-height: 0;
+  }
+}
+
+.header-collapsed {
+  .app-main {
+    min-height: 100vh;
+  }
+
+  .fixed-header + .app-main {
+    margin-top: 0;
+    height: 100vh;
+  }
+
+  .app-main:has(.copyright) {
+    padding-bottom: 0;
   }
 }
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ArrowUp } from '@element-plus/icons-vue'
 import { ElMessageBox } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
 import Breadcrumb from '@/components/Breadcrumb/index.vue'
@@ -81,6 +82,10 @@ function logout(): void {
   }).catch(() => { })
 }
 
+function collapseHeader(): void {
+  appStore.setHeaderCollapse(true)
+}
+
 function setLayout(): void {
   emits('setLayout')
 }
@@ -116,6 +121,14 @@ function openCompose(): void {
           <HeaderSearch id="header-search" class="action-item" />
 
           <Screenfull id="screenfull" class="action-item" />
+
+          <el-tooltip content="收起顶栏与页签" effect="dark" placement="bottom">
+            <div id="header-collapse-btn" class="action-item" @click="collapseHeader">
+              <el-icon class="theme-icon">
+                <ArrowUp />
+              </el-icon>
+            </div>
+          </el-tooltip>
 
           <el-tooltip content="布局大小" effect="dark" placement="bottom">
             <SizeSelect id="size-select" class="action-item" />

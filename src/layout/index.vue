@@ -1,16 +1,34 @@
 <script setup lang="ts">
 import { useWindowSize } from '@vueuse/core'
+import { computed, nextTick, ref, watch, watchEffect } from 'vue'
+import { useRoute } from 'vue-router'
 import useAppStore from '@/store/modules/app'
 import useSettingsStore from '@/store/modules/settings'
-import { AppMain, Navbar, Settings, TagsView } from './components/index.js'
+import { AppMain, HeaderCollapseTrigger, Navbar, Settings, TagsView } from './components/index.js'
 import Sidebar from './components/Sidebar/index.vue'
 
+const route = useRoute()
+const appStore = useAppStore()
 const settingsStore = useSettingsStore()
 const theme = computed(() => settingsStore.theme)
-const sidebar = computed(() => useAppStore().sidebar)
-const device = computed(() => useAppStore().device)
-const needTagsView = computed(() => settingsStore.tagsView)
+const sidebar = computed(() => appStore.sidebar)
+const device = computed(() => appStore.device)
 const fixedHeader = computed(() => settingsStore.fixedHeader)
+const isHeaderCollapsed = computed(() => appStore.headerCollapsed)
+
+const isDashboard = computed(() => {
+  return route.path === '/index'
+    || route.name === 'Index'
+    || route.name === 'Dashboard'
+    || !!route.meta?.noTagsView
+    || !!route.meta?.isDashboard
+    || route.path.startsWith('/dashboard')
+})
+const needTagsView = computed(() => settingsStore.tagsView && !isDashboard.value)
+
+watch(isDashboard, () => {
+  nextTick(() => window.dispatchEvent(new Event('resize')))
+})
 
 const classObj = computed(() => ({
   hideSidebar: !sidebar.value.opened,
@@ -19,27 +37,27 @@ const classObj = computed(() => ({
   mobile: device.value === 'mobile',
 }))
 
-const { width, height } = useWindowSize()
+const { width } = useWindowSize()
 const WIDTH = 992 // refer to Bootstrap's responsive design
 
 watch(() => device.value, () => {
   if (device.value === 'mobile' && sidebar.value.opened) {
-    useAppStore().closeSideBar({ withoutAnimation: false })
+    appStore.closeSideBar({ withoutAnimation: false })
   }
 })
 
 watchEffect(() => {
   if (width.value - 1 < WIDTH) {
-    useAppStore().toggleDevice('mobile')
-    useAppStore().closeSideBar({ withoutAnimation: true })
+    appStore.toggleDevice('mobile')
+    appStore.closeSideBar({ withoutAnimation: true })
   }
   else {
-    useAppStore().toggleDevice('desktop')
+    appStore.toggleDevice('desktop')
   }
 })
 
 function handleClickOutside(): void {
-  useAppStore().closeSideBar({ withoutAnimation: false })
+  appStore.closeSideBar({ withoutAnimation: false })
 }
 
 const settingRef = ref<InstanceType<typeof Settings> | null>(null)
@@ -52,11 +70,12 @@ function setLayout() {
   <div :class="classObj" class="app-wrapper" :style="{ '--current-color': theme, '--current-color-light': `${theme}1a`, '--current-color-dark-bg': `${theme}33` }">
     <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
     <Sidebar v-if="!sidebar.hide" class="sidebar-container" />
-    <div :class="{ hasTagsView: needTagsView, sidebarHide: sidebar.hide }" class="main-container">
-      <div :class="{ 'fixed-header': fixedHeader }">
+    <div :class="{ 'hasTagsView': needTagsView, 'sidebarHide': sidebar.hide, 'header-collapsed': isHeaderCollapsed }" class="main-container">
+      <div :class="{ 'fixed-header': fixedHeader, 'is-collapsed': isHeaderCollapsed }">
         <Navbar @set-layout="setLayout" />
         <TagsView v-if="needTagsView" />
       </div>
+      <HeaderCollapseTrigger />
       <AppMain />
       <Settings ref="settingRef" />
     </div>
@@ -83,6 +102,14 @@ function setLayout() {
 .main-container {
   background-color: var(--app-bg-page);
   transition: background-color 0.25s ease;
+
+  &:not(.hasTagsView) {
+    --dashboard-viewport-height: calc(100vh - 70px);
+  }
+
+  &.header-collapsed {
+    --dashboard-viewport-height: calc(100vh - 20px);
+  }
 }
 
 .main-container:has(.fixed-header) {
@@ -106,7 +133,12 @@ function setLayout() {
   right: 0;
   z-index: 9;
   width: calc(100% - #{vars.$base-sidebar-width});
-  transition: width 0.28s;
+  transition: width 0.28s, transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.is-collapsed {
+    transform: translateY(-100%);
+    pointer-events: none;
+  }
 }
 
 .hideSidebar .fixed-header {

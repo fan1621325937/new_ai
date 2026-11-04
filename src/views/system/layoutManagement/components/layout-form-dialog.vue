@@ -4,6 +4,7 @@ import type { LayoutInfo } from '@/types/api/viscenter/layout'
 import { ElMessage } from 'element-plus'
 import { computed, ref } from 'vue'
 import { addLayoutInfo, editLayoutInfo, getLayoutInfo } from '@/api/viscenter/layout'
+import AppDialog from '@/components/AppDialog/index.vue'
 import { BUILTIN_LAYOUTS } from '@/config/layout-presets'
 import { serializeLayout } from '@/utils/layout-serialization'
 
@@ -52,21 +53,19 @@ async function load(): Promise<void> {
 }
 
 function open(id?: number): void {
-  if (saving.value)
-    return
   requestVersion++
   targetId.value = id
   info.value = null
   error.value = ''
   loading.value = false
+  saving.value = false
   form.value = { name: '', presetId: BUILTIN_LAYOUTS[0]?.id || '' }
   visible.value = true
-  void load()
+  if (id !== undefined)
+    void load()
 }
 
 function close(): void {
-  if (saving.value)
-    return
   requestVersion++
   visible.value = false
 }
@@ -112,7 +111,15 @@ defineExpose({ open })
 </script>
 
 <template>
-  <el-dialog v-model="visible" :title="targetId === undefined ? '新建布局' : '重命名布局'" width="520px" append-to-body destroy-on-close :before-close="close" :close-on-click-modal="false">
+  <AppDialog
+    v-model="visible"
+    :title="targetId === undefined ? '新建布局' : '重命名布局'"
+    type="primary"
+    width="520px"
+    drag
+    :before-close="close"
+    :close-on-click-modal="false"
+  >
     <div v-if="error" class="mb-4 flex items-center gap-4" role="alert">
       <el-alert :title="error" type="error" :closable="false" />
       <el-button :loading="loading" @click="load">
@@ -128,7 +135,7 @@ defineExpose({ open })
           <el-option v-for="preset in BUILTIN_LAYOUTS" :key="preset.id" :label="preset.name" :value="preset.id" />
         </el-select>
       </el-form-item>
-      <p class="text-[var(--app-text-muted)]">
+      <p class="text-xs text-[var(--app-text-muted)]">
         {{ targetId === undefined ? '新建后可进入设计调整卡槽；图表绑定请在主页配置。' : '仅修改名称，不改变布局几何或已有图表绑定。' }}
       </p>
     </el-form>
@@ -140,5 +147,5 @@ defineExpose({ open })
         保存
       </el-button>
     </template>
-  </el-dialog>
+  </AppDialog>
 </template>

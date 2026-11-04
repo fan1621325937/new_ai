@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { AppDialogProps, DialogTheme } from './types'
 import { computed, watch } from 'vue'
+import SvgIcon from '@/components/SvgIcon/index.vue'
 import { THEME_ICON_MAP } from './types'
 import { useDialogDrag } from './useDialogDrag'
 
@@ -74,7 +75,7 @@ watch(() => props.modelValue, (val) => {
       <slot name="header" v-bind="headerSlotProps || {}">
         <div class="app-dialog__header-box">
           <div v-if="showIcon" class="app-dialog__badge">
-            <svg-icon :icon-class="activeIcon" class-name="app-dialog__badge-icon" />
+            <SvgIcon :icon-class="activeIcon" class-name="app-dialog__badge-icon" />
           </div>
           <span class="app-dialog__title">{{ title || $attrs.title }}</span>
         </div>
